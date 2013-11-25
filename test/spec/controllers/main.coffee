@@ -14,14 +14,12 @@ describe 'Controller: MainCtrl', ()->
     Restangular = $injector.get("Restangular");
     $httpBackend = $injector.get("$httpBackend");
 
-    nodes = [
-      'node1': {
-        'id': 'my1.full.fqdn',
-        'packages': []
-      }
+    @nodes = [
+      { 'id': 'my1.full.fqdn' },
+      { 'id': 'my2.full.fqdn' }
     ]
 
-    $httpBackend.whenGET("/nodes").respond(nodes);
+    $httpBackend.whenGET("/nodes").respond(@nodes);
 
     MainCtrl = $controller('MainCtrl', {
       $scope: scope,
@@ -31,3 +29,8 @@ describe 'Controller: MainCtrl', ()->
 
   it 'should have a default host configured', () ->
     expect(scope.ponyExpressHost).toBe('127.0.0.1')
+
+  it 'should be able to list /nodes', () ->
+    expect(scope.nodes.length).toBe(2)
+    expect(scope.nodes[0]).toBe(@nodes[0]['id'])
+    expect(scope.nodes[1]).toBe(@nodes[1]['id'])
