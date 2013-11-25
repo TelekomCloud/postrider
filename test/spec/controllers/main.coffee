@@ -37,10 +37,13 @@ describe 'Controller: MainCtrl', ()->
 
   it 'should be able to list /nodes', () ->
     expect(scope.nodes.length).toBe(2)
-    expect(scope.nodes[0]).toBe(@nodes[0]['id'])
-    expect(scope.nodes[1]).toBe(@nodes[1]['id'])
+    # test both nodes
+    for idx in [1,2]
+      expect(@typeOf(scope.nodes[idx])).toBe('object')
+      expect(scope.nodes[idx]['id']).toBe(@nodes[idx]['id'])
 
   it 'should be able to access /node/xyz info', () ->
-    n = @nodes[0]['id']
-    expect(@typeOf(scope.node[n])).toBe('object')
-    expect(scope.node[n].packages.length).toBe(0)
+    # check if the first node has no nodes
+    expect(@typeOf(scope.nodes[0])).toBe('object')
+    expect(scope.nodes[0]['id']).toBe(@nodes[0]['id'])
+    expect(scope.nodes[0]['packages'].length).toBe(0)
