@@ -33,6 +33,8 @@ module.exports = function(config) {
       'app/bower_components/angular-mocks/angular-mocks.js',
       'app/bower_components/angular-cookies/angular-cookies.js',
       'app/bower_components/angular-sanitize/angular-sanitize.js',
+      'app/bower_components/lodash/dist/lodash.min.js',
+      'app/bower_components/restangular/dist/restangular.min.js',
       'app/scripts/*.js',
       'app/scripts/**/*.js',
       'test/mock/**/*.coffee',
