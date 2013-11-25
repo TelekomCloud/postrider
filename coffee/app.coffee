@@ -1,8 +1,10 @@
 'use strict'
 
-angular.module 'postriderApp', [
+angular.module('postriderApp', [
   'ngCookies',
-  'ngSanitize'
-]
+  'ngSanitize',
+  'restangular'
+]).config (RestangularProvider) ->
+  RestangularProvider.setBaseUrl 'https://localhost/v1'
 
 $(document).foundation() if $?

@@ -31,19 +31,25 @@
       <div class="large-12 columns">
         <h2>Postrider</h2>
         <hr />
-        <p>Host: <code>{{ponyExpressHost}}</code></p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="small-3 large-1 columns">
+        <label for="right-label" class="right inline">Host</label>
+      </div>
+      <div class="small-9 large-3 columns">
+        <input type="text" ng-model="ponyExpressHost">
+      </div>
+      <div class="small-0 large-8 columns">
       </div>
     </div>
   </div>
   
-    <!-- Add your site or application content here -->
-    <div class="container" ng-view=""></div>
-
-    <script src="bower_components/angular/angular.js"></script>
-
     <!-- build:js scripts/modules.js -->
+    <script src="bower_components/angular/angular.js"></script>
     <script src="bower_components/angular-cookies/angular-cookies.js"></script>
     <script src="bower_components/angular-sanitize/angular-sanitize.js"></script>
+    <script src="bower_components/lodash/dist/lodash.min.js"></script>
     <script src="bower_components/restangular/dist/restangular.min.js"></script>
     <!-- endbuild -->
 

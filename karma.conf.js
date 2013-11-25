@@ -3,6 +3,24 @@
 
 module.exports = function(config) {
   config.set({
+    // coffeescript compiling
+    preprocessors: {
+      '**/*.coffee': ['coffee']
+    },
+
+    // coffee config
+    coffeePreprocessor: {
+      // options passed to the coffee compiler
+      options: {
+        bare: true,
+        sourceMap: false
+      },
+      // transforming the filenames
+      transformPath: function(path) {
+        return path.replace(/\.js$/, '.coffee');
+      }
+    },
+
     // base path, that will be used to resolve files and exclude
     basePath: '',
 
@@ -15,8 +33,12 @@ module.exports = function(config) {
       'app/bower_components/angular-mocks/angular-mocks.js',
       'app/bower_components/angular-cookies/angular-cookies.js',
       'app/bower_components/angular-sanitize/angular-sanitize.js',
+      'app/bower_components/lodash/dist/lodash.min.js',
+      'app/bower_components/restangular/dist/restangular.min.js',
       'app/scripts/*.js',
       'app/scripts/**/*.js',
+      'test/mock/**/*.coffee',
+      'test/spec/**/*.coffee',
       'test/mock/**/*.js',
       'test/spec/**/*.js'
     ],
