@@ -37,10 +37,18 @@ describe 'Controller: MainCtrl', ()->
     })
   ))
 
+  afterEach () ->
+    @httpBackend.verifyNoOutstandingExpectation()
+    @httpBackend.verifyNoOutstandingRequest()
+
   it 'should have a default host configured', () ->
     expect(scope.ponyExpressHost).toBe('127.0.0.1')
 
   it 'should be able to list /nodes', () ->
+    @httpBackend.expectGET('/v1/nodes')
+    scope.fetch()
+    @httpBackend.flush()
+
     expect(scope.nodes.length).toBe(2)
     # test both nodes
     for idx in [1,2]
