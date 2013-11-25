@@ -11,8 +11,8 @@ describe 'Controller: MainCtrl', ()->
   # Initialize the controller and a mock scope
   beforeEach( inject( ($injector, $controller, $rootScope) ->
     scope = $rootScope.$new();
-    Restangular = $injector.get("Restangular");
-    $httpBackend = $injector.get("$httpBackend");
+    @Restangular = $injector.get("Restangular");
+    @httpBackend = $injector.get("$httpBackend");
 
     # reliably determine object types
     # http://stackoverflow.com/questions/7390426/better-way-to-get-type-of-a-javascript-variable
@@ -28,12 +28,12 @@ describe 'Controller: MainCtrl', ()->
       'packages': []
     }
 
-    $httpBackend.whenGET("/nodes").respond(@nodes);
-    $httpBackend.whenGET("/node/"+@nodes[0]['id']).respond(@node1);
+    @httpBackend.whenGET("/v1/nodes").respond(@nodes);
+    @httpBackend.whenGET("/v1/node/"+@nodes[0]['id']).respond(@node1);
 
     MainCtrl = $controller('MainCtrl', {
       $scope: scope,
-      Restangular: Restangular
+      Restangular: @Restangular
     })
   ))
 
