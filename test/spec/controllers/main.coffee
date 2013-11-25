@@ -24,7 +24,12 @@ describe 'Controller: MainCtrl', ()->
       { 'id': 'my2.full.fqdn' }
     ]
 
+    @node1 = {
+      'packages': []
+    }
+
     $httpBackend.whenGET("/nodes").respond(@nodes);
+    $httpBackend.whenGET("/node/"+@nodes[0]['id']).respond(@node1);
 
     MainCtrl = $controller('MainCtrl', {
       $scope: scope,
