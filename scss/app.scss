@@ -13,6 +13,26 @@
   }
 }
 
+.animate-show {
+  padding: 20px 0px 20px 0px;
+  max-height: 800px;
+  overflow: hidden;
+
+  -webkit-transition: all 500ms !important;
+  transition: all 500ms !important;
+
+  display:block !important;
+}
+
+.animate-show.ng-hide-add,
+.animate-show.ng-hide-remove {
+}
+
+.animate-show.ng-hide {
+  max-height: 0;
+  padding: 0px 0px 0px 0px;
+}
+
 .mainContents {
   padding: 20px 0px 20px 0px;
 }
