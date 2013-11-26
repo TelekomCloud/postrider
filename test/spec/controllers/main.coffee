@@ -39,7 +39,7 @@ describe 'Controller: MainCtrl', ()->
     ]
     @httpBackend.whenGET('/v1/nodes').respond(nodes);
     @httpBackend.expectGET('/v1/nodes')
-    scope.fetch()
+    scope.fetch_nodes()
     @httpBackend.flush()
 
     expect(scope.nodes.length).toBe(2)

@@ -8,13 +8,13 @@ angular.module('postriderApp')
     $scope.nodes = []
     $scope.node = {}
 
-    $scope.fetch = ()->
+    $scope.fetch_nodes = ()->
       Restangular.all('nodes').getList().
         then (ns) ->
           console.log 'fetch nodes'
           $scope.nodes = ns
         , (error) ->
-          console.log 'EE: cannot fetch data'
+          console.log 'EE: cannot fetch nodes'
           console.log error
 
     $scope.fetch_node = (id)->
@@ -31,7 +31,7 @@ angular.module('postriderApp')
       $scope.fetch_node(id) if not $scope.node[id]?
 
     $scope.init = ()->
-      $scope.fetch()
+      $scope.fetch_nodes()
 
     # initialize this module
     $? && $(document).ready ()->
