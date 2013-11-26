@@ -65,7 +65,7 @@ describe 'Controller: MainCtrl', ()->
     expect(@typeOf(n.packages)).toBe('array')
     expect(n.packages.length).toBe( 0 )
 
-  it 'should be able to access /node/xzy info (filled onde)', () ->
+  it 'should be able to access /node/xzy info (filled one)', () ->
     id = 'test'
     @httpBackend.whenGET('/v1/node/'+id).respond({
       'packages':[
@@ -111,3 +111,31 @@ describe 'Controller: MainCtrl', ()->
     p = scope.package[id]
     expect(@typeOf(p)).toBe('object')
     expect(p.id).toBe(id)
+
+
+  it 'should be able to access /package/xyz info (filled one)', () ->
+    id = 'xyz'
+    r = {
+        "name": "accountsservice",
+        "uri": "http://us.archive.ubuntu.com/ubuntu/pool/main/a/accountsservice/accountsservice_0.6.15-2ubuntu9_amd64.deb",
+        "summary": "query and manipulate user account information",
+        "version": "0.6.15-2ubuntu9",
+        "architecture": "amd64",
+        "provider": "apt",
+        "archive": "precise"
+      }
+    @httpBackend.whenGET('/v1/package/'+id).respond(r)
+    @httpBackend.expectGET('/v1/package/'+id)
+    scope.fetch_package(id)
+    @httpBackend.flush()
+
+    p = scope.package[id]
+    expect(@typeOf(p)).toBe('object')
+    expect(p.id).toBe(id)
+    expect(p.name).toBe(r.name)
+    expect(p.uri).toBe(r.uri)
+    expect(p.summary).toBe(r.summary)
+    expect(p.version).toBe(r.version)
+    expect(p.architecture).toBe(r.architecture)
+    expect(p.provider).toBe(r.provider)
+    expect(p.archive).toBe(r.archive)
