@@ -19,13 +19,6 @@ describe 'Controller: MainCtrl', ()->
     @typeOf = (obj) ->
       ({}).toString.call(obj).match(/\s([a-zA-Z]+)/)[1].toLowerCase()
 
-    @nodes = [
-      { 'id': 'my1.full.fqdn' },
-      { 'id': 'my2.full.fqdn' }
-    ]
-
-    @httpBackend.whenGET("/v1/nodes").respond(@nodes);
-
     MainCtrl = $controller('MainCtrl', {
       $scope: scope,
       Restangular: @Restangular
@@ -40,6 +33,11 @@ describe 'Controller: MainCtrl', ()->
     expect(scope.ponyExpressHost).toBe('127.0.0.1')
 
   it 'should be able to list /nodes', () ->
+    nodes = [
+      { 'id': 'my1.full.fqdn' },
+      { 'id': 'my2.full.fqdn' }
+    ]
+    @httpBackend.whenGET('/v1/nodes').respond(nodes);
     @httpBackend.expectGET('/v1/nodes')
     scope.fetch()
     @httpBackend.flush()
@@ -48,7 +46,7 @@ describe 'Controller: MainCtrl', ()->
     # test both nodes
     for idx in [0,1]
       expect(@typeOf(scope.nodes[idx])).toBe('object')
-      expect(scope.nodes[idx]['id']).toBe(@nodes[idx]['id'])
+      expect(scope.nodes[idx]['id']).toBe(nodes[idx]['id'])
 
   it 'should be able to access /node/xyz info (empty node)', () ->
     id = 'test'
