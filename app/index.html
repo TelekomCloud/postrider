@@ -43,6 +43,34 @@
       <div class="small-0 large-8 columns">
       </div>
     </div>
+
+    <div class="row">
+
+      <div class="small-12 large-6 columns">
+        <div class="row">
+          <div class="small-12 large-12 columns">
+            <h4>Nodes</h4>
+          </div>
+        </div>
+
+        <div class="row" data-ng-repeat="n in nodes">
+          <div class="small-12 large-12 columns">{{n.id}}</div>
+        </div>
+      </div>
+
+      <div class="small-12 large-6 columns">
+        <div class="row">
+          <div class="small-12 large-12 columns">
+            <h4>Packages</h4>
+          </div>
+        </div>
+
+        <div class="row" data-ng-repeat="p in packages">
+          <div class="small-12 large-12 columns">{{p.id}}</div>
+        </div>
+      </div>
+
+    </div>
   </div>
   
     <!-- build:js scripts/modules.js -->
