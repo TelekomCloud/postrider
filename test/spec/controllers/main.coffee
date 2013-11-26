@@ -29,8 +29,8 @@ describe 'Controller: MainCtrl', ()->
     @httpBackend.verifyNoOutstandingExpectation()
     @httpBackend.verifyNoOutstandingRequest()
 
-  it 'should have a default host configured', () ->
-    expect(scope.ponyExpressHost).toBe('127.0.0.1')
+  it 'should have no default host configured', () ->
+    expect(scope.ponyExpressHost).toBe(undefined)
 
   it 'should be able to list /nodes', () ->
     nodes = [
