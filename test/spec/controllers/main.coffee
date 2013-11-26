@@ -100,3 +100,14 @@ describe 'Controller: MainCtrl', ()->
     for idx in [0,1]
       expect(@typeOf(scope.packages[idx])).toBe('object')
       expect(scope.packages[idx]['id']).toBe(packages[idx]['id'])
+
+  it 'should be able to access /package/xyz info (empty one)', () ->
+    id = 'xyz'
+    @httpBackend.whenGET('/v1/package/'+id).respond({})
+    @httpBackend.expectGET('/v1/package/'+id)
+    scope.fetch_package(id)
+    @httpBackend.flush()
+
+    p = scope.package[id]
+    expect(@typeOf(p)).toBe('object')
+    expect(p.id).toBe(id)

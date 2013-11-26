@@ -8,6 +8,7 @@ angular.module('postriderApp')
     $scope.nodes = []
     $scope.packages = []
     $scope.node = {}
+    $scope.package = {}
 
     $scope.fetch_nodes = ()->
       Restangular.all('nodes').getList().
@@ -35,6 +36,16 @@ angular.module('postriderApp')
           $scope.node[id] = n
         , (error) ->
           console.log 'EE: cannot fetch node info for '+id
+          console.log error
+
+    $scope.fetch_package = (id)->
+      Restangular.one('package', id).get().
+        then (n) ->
+          console.log 'fetch package '+id
+          n['id'] = id
+          $scope.package[id] = n
+        , (error) ->
+          console.log 'EE: cannot fetch package info for '+id
           console.log error
 
     $scope.ensure_node = (id)->
