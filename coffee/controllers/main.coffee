@@ -11,8 +11,7 @@ angular.module('postriderApp')
     $scope.fetch = ()->
       Restangular.all('nodes').getList().
         then (ns) ->
-          console.log 'fetch nodes: '
-          console.log ns
+          console.log 'fetch nodes'
           $scope.nodes = ns
         , (error) ->
           console.log 'EE: cannot fetch data'
@@ -21,8 +20,7 @@ angular.module('postriderApp')
     $scope.fetch_node = (id)->
       Restangular.one('node', id).get().
         then (n) ->
-          console.log 'fetch node '+id+': '
-          console.log n
+          console.log 'fetch node '+id
           n['id'] = id
           $scope.node[id] = n
         , (error) ->
