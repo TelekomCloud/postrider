@@ -24,12 +24,7 @@ describe 'Controller: MainCtrl', ()->
       { 'id': 'my2.full.fqdn' }
     ]
 
-    @node1 = {
-      'packages': []
-    }
-
     @httpBackend.whenGET("/v1/nodes").respond(@nodes);
-    @httpBackend.whenGET("/v1/node/my1.full.fqdn").respond(@node1);
 
     MainCtrl = $controller('MainCtrl', {
       $scope: scope,
@@ -55,15 +50,19 @@ describe 'Controller: MainCtrl', ()->
       expect(@typeOf(scope.nodes[idx])).toBe('object')
       expect(scope.nodes[idx]['id']).toBe(@nodes[idx]['id'])
 
-  it 'should be able to access /node/xyz info', () ->
-    id = @nodes[0]['id']
+  it 'should be able to access /node/xyz info (empty node)', () ->
+    id = 'test'
+    @httpBackend.whenGET('/v1/node/'+id).respond({
+      'packages':[]
+      });
     @httpBackend.expectGET('/v1/node/'+id)
+    # issue the call
     scope.ensure_node(id)
     @httpBackend.flush()
 
     n = scope.node[id]
     # check if the first node has properties
     expect(@typeOf(n)).toBe('object')
-    expect(n['id']).toBe(@nodes[0]['id'])
+    expect(n['id']).toBe(id)
     expect(@typeOf(n['packages'])).toBe('array')
-    expect(n['packages'].length).toBe(0)
+    expect(n['packages'].length).toBe( 0 )
