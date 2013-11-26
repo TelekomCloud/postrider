@@ -84,3 +84,19 @@ describe 'Controller: MainCtrl', ()->
     expect(@typeOf(n.packages)).toBe('array')
     expect(n.packages.length).toBe( 1 )
     expect(n.packages[0].id).toBe( 'poiu' )
+
+  it 'should be a able to fetch /packages', () ->
+    packages = [
+      { 'id': 'xx' },
+      { 'id': 'yy' }
+    ]
+    @httpBackend.whenGET('/v1/packages').respond(packages);
+    @httpBackend.expectGET('/v1/packages')
+    scope.fetch_packages()
+    @httpBackend.flush()
+
+    expect(scope.packages.length).toBe(2)
+    # test both packages
+    for idx in [0,1]
+      expect(@typeOf(scope.packages[idx])).toBe('object')
+      expect(scope.packages[idx]['id']).toBe(packages[idx]['id'])

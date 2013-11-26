@@ -6,6 +6,7 @@ angular.module('postriderApp')
 
     $scope.ponyExpressHost = '127.0.0.1'
     $scope.nodes = []
+    $scope.packages = []
     $scope.node = {}
 
     $scope.fetch_nodes = ()->
@@ -15,6 +16,15 @@ angular.module('postriderApp')
           $scope.nodes = ns
         , (error) ->
           console.log 'EE: cannot fetch nodes'
+          console.log error
+
+    $scope.fetch_packages = ()->
+      Restangular.all('packages').getList().
+        then (ns) ->
+          console.log 'fetch packages'
+          $scope.packages = ns
+        , (error) ->
+          console.log 'EE: cannot fetch packages'
           console.log error
 
     $scope.fetch_node = (id)->
@@ -32,6 +42,7 @@ angular.module('postriderApp')
 
     $scope.init = ()->
       $scope.fetch_nodes()
+      $scope.fetch_packages()
 
     # initialize this module
     $? && $(document).ready ()->
