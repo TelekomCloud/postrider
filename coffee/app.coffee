@@ -5,6 +5,6 @@ angular.module('postriderApp', [
   'ngSanitize',
   'restangular'
 ]).config (RestangularProvider) ->
-  RestangularProvider.setBaseUrl 'https://localhost/v1'
+  RestangularProvider.setBaseUrl '/v1'
 
 $(document).foundation() if $?

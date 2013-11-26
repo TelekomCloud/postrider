@@ -11,36 +11,131 @@ describe 'Controller: MainCtrl', ()->
   # Initialize the controller and a mock scope
   beforeEach( inject( ($injector, $controller, $rootScope) ->
     scope = $rootScope.$new();
-    Restangular = $injector.get("Restangular");
-    $httpBackend = $injector.get("$httpBackend");
+    @Restangular = $injector.get("Restangular");
+    @httpBackend = $injector.get("$httpBackend");
 
     # reliably determine object types
     # http://stackoverflow.com/questions/7390426/better-way-to-get-type-of-a-javascript-variable
     @typeOf = (obj) ->
       ({}).toString.call(obj).match(/\s([a-zA-Z]+)/)[1].toLowerCase()
 
-    @nodes = [
-      { 'id': 'my1.full.fqdn' },
-      { 'id': 'my2.full.fqdn' }
-    ]
-
-    $httpBackend.whenGET("/nodes").respond(@nodes);
-
     MainCtrl = $controller('MainCtrl', {
       $scope: scope,
-      Restangular: Restangular
+      Restangular: @Restangular
     })
   ))
+
+  afterEach () ->
+    @httpBackend.verifyNoOutstandingExpectation()
+    @httpBackend.verifyNoOutstandingRequest()
 
   it 'should have a default host configured', () ->
     expect(scope.ponyExpressHost).toBe('127.0.0.1')
 
   it 'should be able to list /nodes', () ->
-    expect(scope.nodes.length).toBe(2)
-    expect(scope.nodes[0]).toBe(@nodes[0]['id'])
-    expect(scope.nodes[1]).toBe(@nodes[1]['id'])
+    nodes = [
+      { 'id': 'my1.full.fqdn' },
+      { 'id': 'my2.full.fqdn' }
+    ]
+    @httpBackend.whenGET('/v1/nodes').respond(nodes);
+    @httpBackend.expectGET('/v1/nodes')
+    scope.fetch_nodes()
+    @httpBackend.flush()
 
-  it 'should be able to access /node/xyz info', () ->
-    n = @nodes[0]['id']
-    expect(@typeOf(scope.node[n])).toBe('object')
-    expect(scope.node[n].packages.length).toBe(0)
+    expect(scope.nodes.length).toBe(2)
+    # test both nodes
+    for idx in [0,1]
+      expect(@typeOf(scope.nodes[idx])).toBe('object')
+      expect(scope.nodes[idx]['id']).toBe(nodes[idx]['id'])
+
+  it 'should be able to access /node/xyz info (empty node)', () ->
+    id = 'test'
+    @httpBackend.whenGET('/v1/node/'+id).respond({
+      'packages':[]
+      });
+    @httpBackend.expectGET('/v1/node/'+id)
+    # issue the call
+    scope.ensure_node(id)
+    @httpBackend.flush()
+
+    n = scope.node[id]
+    # check if the first node has properties
+    expect(@typeOf(n)).toBe('object')
+    expect(n.id).toBe(id)
+    expect(@typeOf(n.packages)).toBe('array')
+    expect(n.packages.length).toBe( 0 )
+
+  it 'should be able to access /node/xzy info (filled one)', () ->
+    id = 'test'
+    @httpBackend.whenGET('/v1/node/'+id).respond({
+      'packages':[
+        {'id': 'poiu'}
+      ]
+      })
+    @httpBackend.expectGET('/v1/node/'+id)
+    # issue the call
+    scope.ensure_node(id)
+    @httpBackend.flush()
+
+    n = scope.node[id]
+    # check if the first node has properties
+    expect(@typeOf(n)).toBe('object')
+    expect(n.id).toBe(id)
+    expect(@typeOf(n.packages)).toBe('array')
+    expect(n.packages.length).toBe( 1 )
+    expect(n.packages[0].id).toBe( 'poiu' )
+
+  it 'should be a able to fetch /packages', () ->
+    packages = [
+      { 'id': 'xx' },
+      { 'id': 'yy' }
+    ]
+    @httpBackend.whenGET('/v1/packages').respond(packages);
+    @httpBackend.expectGET('/v1/packages')
+    scope.fetch_packages()
+    @httpBackend.flush()
+
+    expect(scope.packages.length).toBe(2)
+    # test both packages
+    for idx in [0,1]
+      expect(@typeOf(scope.packages[idx])).toBe('object')
+      expect(scope.packages[idx]['id']).toBe(packages[idx]['id'])
+
+  it 'should be able to access /package/xyz info (empty one)', () ->
+    id = 'xyz'
+    @httpBackend.whenGET('/v1/package/'+id).respond({})
+    @httpBackend.expectGET('/v1/package/'+id)
+    scope.fetch_package(id)
+    @httpBackend.flush()
+
+    p = scope.package[id]
+    expect(@typeOf(p)).toBe('object')
+    expect(p.id).toBe(id)
+
+
+  it 'should be able to access /package/xyz info (filled one)', () ->
+    id = 'xyz'
+    r = {
+        "name": "accountsservice",
+        "uri": "http://us.archive.ubuntu.com/ubuntu/pool/main/a/accountsservice/accountsservice_0.6.15-2ubuntu9_amd64.deb",
+        "summary": "query and manipulate user account information",
+        "version": "0.6.15-2ubuntu9",
+        "architecture": "amd64",
+        "provider": "apt",
+        "archive": "precise"
+      }
+    @httpBackend.whenGET('/v1/package/'+id).respond(r)
+    @httpBackend.expectGET('/v1/package/'+id)
+    scope.fetch_package(id)
+    @httpBackend.flush()
+
+    p = scope.package[id]
+    expect(@typeOf(p)).toBe('object')
+    expect(p.id).toBe(id)
+    expect(p.name).toBe(r.name)
+    expect(p.uri).toBe(r.uri)
+    expect(p.summary).toBe(r.summary)
+    expect(p.version).toBe(r.version)
+    expect(p.architecture).toBe(r.architecture)
+    expect(p.provider).toBe(r.provider)
+    expect(p.archive).toBe(r.archive)
