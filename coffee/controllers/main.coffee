@@ -10,23 +10,25 @@ angular.module('postriderApp')
     $scope.node = {}
     $scope.package = {}
 
+
+    fetch_error = (name)->
+      (data) ->
+        console.log 'EE: cannot fetch '+name
+        console.log data
+
     $scope.fetch_nodes = ()->
       Restangular.all('nodes').getList().
         then (ns) ->
           console.log 'fetch nodes'
           $scope.nodes = ns
-        , (error) ->
-          console.log 'EE: cannot fetch nodes'
-          console.log error
+        , fetch_error('nodes')
 
     $scope.fetch_packages = ()->
       Restangular.all('packages').getList().
         then (ns) ->
           console.log 'fetch packages'
           $scope.packages = ns
-        , (error) ->
-          console.log 'EE: cannot fetch packages'
-          console.log error
+        , fetch_error('packages')
 
     $scope.fetch_node = (id)->
       Restangular.one('node', id).get().
@@ -34,9 +36,7 @@ angular.module('postriderApp')
           console.log 'fetch node '+id
           n['id'] = id
           $scope.node[id] = n
-        , (error) ->
-          console.log 'EE: cannot fetch node info for '+id
-          console.log error
+        , fetch_error('node')
 
     $scope.fetch_package = (id)->
       Restangular.one('package', id).get().
@@ -44,9 +44,7 @@ angular.module('postriderApp')
           console.log 'fetch package '+id
           n['id'] = id
           $scope.package[id] = n
-        , (error) ->
-          console.log 'EE: cannot fetch package info for '+id
-          console.log error
+        , fetch_error('packages')
 
     $scope.ensure_node = (id)->
       $scope.fetch_node(id) if not $scope.node[id]?
