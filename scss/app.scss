@@ -1,2 +1,18 @@
 @import "settings";
 @import "foundation";
+
+.top-bar [class^="fi-"] {
+  font-size: 20px;
+}
+
+.settingsRow {
+  background: rgb(44, 151, 201);
+  color: white;
+  h1,h2,h3,h4,h5,h6,label {
+    color: white;
+  }
+}
+
+.mainContents {
+  padding: 20px 0px 20px 0px;
+}
