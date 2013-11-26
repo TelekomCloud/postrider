@@ -61,6 +61,26 @@ describe 'Controller: MainCtrl', ()->
     n = scope.node[id]
     # check if the first node has properties
     expect(@typeOf(n)).toBe('object')
-    expect(n['id']).toBe(id)
-    expect(@typeOf(n['packages'])).toBe('array')
-    expect(n['packages'].length).toBe( 0 )
+    expect(n.id).toBe(id)
+    expect(@typeOf(n.packages)).toBe('array')
+    expect(n.packages.length).toBe( 0 )
+
+  it 'should be able to access /node/xzy info (filled onde)', () ->
+    id = 'test'
+    @httpBackend.whenGET('/v1/node/'+id).respond({
+      'packages':[
+        {'id': 'poiu'}
+      ]
+      })
+    @httpBackend.expectGET('/v1/node/'+id)
+    # issue the call
+    scope.ensure_node(id)
+    @httpBackend.flush()
+
+    n = scope.node[id]
+    # check if the first node has properties
+    expect(@typeOf(n)).toBe('object')
+    expect(n.id).toBe(id)
+    expect(@typeOf(n.packages)).toBe('array')
+    expect(n.packages.length).toBe( 1 )
+    expect(n.packages[0].id).toBe( 'poiu' )
