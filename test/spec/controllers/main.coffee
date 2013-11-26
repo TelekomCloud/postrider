@@ -69,7 +69,11 @@ describe 'Controller: MainCtrl', ()->
     id = 'test'
     @httpBackend.whenGET('/v1/node/'+id).respond({
       'packages':[
-        {'id': 'poiu'}
+        {
+          "id": "poiu",
+          "name": "accountsservice",
+          "summary": "query and manipulate user account information"
+        }
       ]
       })
     @httpBackend.expectGET('/v1/node/'+id)
@@ -84,6 +88,8 @@ describe 'Controller: MainCtrl', ()->
     expect(@typeOf(n.packages)).toBe('array')
     expect(n.packages.length).toBe( 1 )
     expect(n.packages[0].id).toBe( 'poiu' )
+    expect(n.packages[0].name).toBe( 'accountsservice' )
+    expect(n.packages[0].summary).toBe( 'query and manipulate user account information' )
 
   it 'should be a able to fetch /packages', () ->
     packages = [
