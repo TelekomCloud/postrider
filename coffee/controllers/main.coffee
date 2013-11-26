@@ -4,17 +4,26 @@ angular.module('postriderApp')
   .controller('MainCtrl', ($scope, Restangular) ->
     root.scope = $scope
 
-    $scope.ponyExpressHost = '127.0.0.1'
+    $scope.ponyExpressHost = undefined
+    $scope.ponyExpressVersion = 'v1'
     $scope.nodes = []
     $scope.packages = []
     $scope.node = {}
     $scope.package = {}
 
-
     fetch_error = (name)->
       (data) ->
         console.log 'EE: cannot fetch '+name
         console.log data
+
+    api_url = ()->
+      if ($scope.ponyExpressHost + '').length > 0
+        'http://'+$scope.ponyExpressHost+'/'+$scope.ponyExpressVersion
+      else
+        '/'+$scope.ponyExpressVersion
+
+    $scope.update_url = ()->
+      Restangular.setBaseUrl api_url()
 
     $scope.fetch_nodes = ()->
       Restangular.all('nodes').getList().
