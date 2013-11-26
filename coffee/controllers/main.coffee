@@ -24,6 +24,7 @@ angular.module('postriderApp')
 
     $scope.update_url = ()->
       Restangular.setBaseUrl api_url()
+      $scope.init()
 
     $scope.fetch_nodes = ()->
       Restangular.all('nodes').getList().
