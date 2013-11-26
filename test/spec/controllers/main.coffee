@@ -29,7 +29,7 @@ describe 'Controller: MainCtrl', ()->
     }
 
     @httpBackend.whenGET("/v1/nodes").respond(@nodes);
-    @httpBackend.whenGET("/v1/node/"+@nodes[0]['id']).respond(@node1);
+    @httpBackend.whenGET("/v1/node/my1.full.fqdn").respond(@node1);
 
     MainCtrl = $controller('MainCtrl', {
       $scope: scope,
@@ -51,12 +51,19 @@ describe 'Controller: MainCtrl', ()->
 
     expect(scope.nodes.length).toBe(2)
     # test both nodes
-    for idx in [1,2]
+    for idx in [0,1]
       expect(@typeOf(scope.nodes[idx])).toBe('object')
       expect(scope.nodes[idx]['id']).toBe(@nodes[idx]['id'])
 
   it 'should be able to access /node/xyz info', () ->
-    # check if the first node has no nodes
-    expect(@typeOf(scope.nodes[0])).toBe('object')
-    expect(scope.nodes[0]['id']).toBe(@nodes[0]['id'])
-    expect(scope.nodes[0]['packages'].length).toBe(0)
+    id = @nodes[0]['id']
+    @httpBackend.expectGET('/v1/node/'+id)
+    scope.ensure_node(id)
+    @httpBackend.flush()
+
+    n = scope.node[id]
+    # check if the first node has properties
+    expect(@typeOf(n)).toBe('object')
+    expect(n['id']).toBe(@nodes[0]['id'])
+    expect(@typeOf(n['packages'])).toBe('array')
+    expect(n['packages'].length).toBe(0)
