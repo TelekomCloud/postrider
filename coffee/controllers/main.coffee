@@ -11,6 +11,8 @@ angular.module('postriderApp')
     $scope.node = {}
     $scope.package = {}
     $scope.showConfig = false
+    $scope.nodeQuery = ''
+    $scope.packageQuery = ''
 
     fetch_error = (name)->
       (data) ->

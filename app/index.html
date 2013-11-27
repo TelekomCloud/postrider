@@ -74,7 +74,7 @@
           <div class="small-2 large-2 columns"></div>
         </div>
 
-        <div class="row packageList" data-ng-repeat="n in nodes">
+        <div class="row packageList" data-ng-repeat="n in nodes | filter:nodeQuery">
           <div class="small-12 large-12 columns">{{n.id}}</div>
         </div>
       </div>
@@ -96,7 +96,7 @@
           <div class="small-2 large-2 columns"></div>
         </div>
 
-        <div class="row" data-ng-repeat="p in packages">
+        <div class="row" data-ng-repeat="p in packages | filter:packageQuery">
           <div class="small-12 large-12 columns">{{p.name}}</div>
         </div>
       </div>
