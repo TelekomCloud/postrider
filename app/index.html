@@ -64,6 +64,16 @@
           </div>
         </div>
 
+        <div class="row collapse">
+          <div class="small-3 large-2 columns">
+            <span class="prefix">Node:</span>
+          </div>
+          <div class="small-7 large-8 columns">
+            <input type="text" ng-model="nodeQuery" ng-change="query_node()" placeholder="what are you looking for?">
+          </div>
+          <div class="small-2 large-2 columns"></div>
+        </div>
+
         <div class="row packageList" data-ng-repeat="n in nodes">
           <div class="small-12 large-12 columns">{{n.id}}</div>
         </div>
@@ -74,6 +84,16 @@
           <div class="small-12 large-12 columns">
             <h4>Packages <small>({{packages.length}})</small></h4>
           </div>
+        </div>
+
+        <div class="row collapse">
+          <div class="small-3 large-2 columns">
+            <span class="prefix">Package:</span>
+          </div>
+          <div class="small-7 large-8 columns">
+            <input type="text" ng-model="packageQuery" ng-change="query_package()" placeholder="which do you want?">
+          </div>
+          <div class="small-2 large-2 columns"></div>
         </div>
 
         <div class="row" data-ng-repeat="p in packages">
