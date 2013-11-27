@@ -10,6 +10,7 @@ angular.module('postriderApp')
     $scope.packages = []
     $scope.node = {}
     $scope.package = {}
+    $scope.showConfig = false
 
     fetch_error = (name)->
       (data) ->
