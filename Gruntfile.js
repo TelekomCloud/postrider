@@ -29,11 +29,11 @@ module.exports = function (grunt) {
     watch: {
       coffee: {
         files: ['coffee/{,*/}*.coffee'],
-        tasks: ['coffee']
+        tasks: ['coffee','newer:coffeelint']
       },
       jsTest: {
-        files: ['test/spec/{,*/}*.js'],
-        tasks: ['karma']
+        files: ['test/spec/{,*/}*.js','test/spec/{,*/}*.coffee'],
+        tasks: ['karma','newer:coffeelint']
       },
       styles: {
         files: ['<%= yeoman.app %>/styles/{,*/}*.css'],
@@ -99,6 +99,11 @@ module.exports = function (grunt) {
           '<%= yeoman.app %>/scripts/app.js': ['coffee/{,*/}*.coffee']
         }
       }
+    },
+
+    // Lint Coffee
+    coffeelint: {
+      app: ['coffee/{,*/}*.coffee','spec/{,*/}*.coffee']
     },
 
     // Empties folders to start fresh
@@ -372,6 +377,7 @@ module.exports = function (grunt) {
   ]);
 
   grunt.registerTask('default', [
+    'newer:coffeelint',
     'test',
     'build'
   ]);
