@@ -1,5 +1,7 @@
 # Postrider
 
+[![Build Status](https://travis-ci.org/TelekomCloud/postrider.png)](https://travis-ci.org/TelekomCloud/postrider.png)
+
 A web UI for The Pony Express.
 
 **Under construction...**
