@@ -39,7 +39,7 @@ describe 'Controller: MainCtrl', ()->
     ]
     @httpBackend.whenGET('/v1/nodes').respond(nodes)
     @httpBackend.expectGET('/v1/nodes')
-    scope.fetch_nodes()
+    scope.fetchNodes()
     @httpBackend.flush()
 
     expect(scope.nodes.length).toBe(2)
@@ -55,7 +55,7 @@ describe 'Controller: MainCtrl', ()->
       })
     @httpBackend.expectGET('/v1/node/'+id)
     # issue the call
-    scope.ensure_node(id)
+    scope.ensureNode(id)
     @httpBackend.flush()
 
     n = scope.node[id]
@@ -78,7 +78,7 @@ describe 'Controller: MainCtrl', ()->
       })
     @httpBackend.expectGET('/v1/node/'+id)
     # issue the call
-    scope.ensure_node(id)
+    scope.ensureNode(id)
     @httpBackend.flush()
 
     n = scope.node[id]
@@ -98,7 +98,7 @@ describe 'Controller: MainCtrl', ()->
     ]
     @httpBackend.whenGET('/v1/packages').respond(packages)
     @httpBackend.expectGET('/v1/packages')
-    scope.fetch_packages()
+    scope.fetchPackages()
     @httpBackend.flush()
 
     expect(scope.packages.length).toBe(2)
@@ -111,7 +111,7 @@ describe 'Controller: MainCtrl', ()->
     id = 'xyz'
     @httpBackend.whenGET('/v1/package/'+id).respond({})
     @httpBackend.expectGET('/v1/package/'+id)
-    scope.fetch_package(id)
+    scope.fetchPackage(id)
     @httpBackend.flush()
 
     p = scope.package[id]
@@ -135,7 +135,7 @@ describe 'Controller: MainCtrl', ()->
       }
     @httpBackend.whenGET('/v1/package/'+id).respond(r)
     @httpBackend.expectGET('/v1/package/'+id)
-    scope.fetch_package(id)
+    scope.fetchPackage(id)
     @httpBackend.flush()
 
     p = scope.package[id]
