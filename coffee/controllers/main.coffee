@@ -47,7 +47,7 @@ angular.module('postriderApp')
       Restangular.one('node', id).get().
         then (n) ->
           console.log 'fetch node '+id
-          n['id'] = id
+          n.id = id
           $scope.node[id] = n
         , fetchError('node')
 
@@ -55,7 +55,7 @@ angular.module('postriderApp')
       Restangular.one('package', id).get().
         then (n) ->
           console.log 'fetch package '+id
-          n['id'] = id
+          n.id = id
           $scope.package[id] = n
         , fetchError('packages')
 
