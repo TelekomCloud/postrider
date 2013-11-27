@@ -128,7 +128,10 @@ describe 'Controller: MainCtrl', ()->
         "version": "0.6.15-2ubuntu9",
         "architecture": "amd64",
         "provider": "apt",
-        "archive": "precise"
+        "archive": "precise",
+        "nodes": [
+          'my1.full.fqdn'
+        ]
       }
     @httpBackend.whenGET('/v1/package/'+id).respond(r)
     @httpBackend.expectGET('/v1/package/'+id)
@@ -145,3 +148,4 @@ describe 'Controller: MainCtrl', ()->
     expect(p.architecture).toBe(r.architecture)
     expect(p.provider).toBe(r.provider)
     expect(p.archive).toBe(r.archive)
+    expect(p.nodes).toBe(r.nodes)
