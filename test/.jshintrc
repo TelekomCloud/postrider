@@ -19,6 +19,7 @@
   "trailing": true,
   "smarttabs": true,
   "globals": {
+    "$": false,
     "after": false,
     "afterEach": false,
     "angular": false,
@@ -29,6 +30,7 @@
     "expect": false,
     "inject": false,
     "it": false,
+    "jQuery": false
     "spyOn": false
   }
 }
