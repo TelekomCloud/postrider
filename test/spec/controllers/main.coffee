@@ -3,7 +3,7 @@
 describe 'Controller: MainCtrl', ()->
 
   # load the required module
-  beforeEach(angular.mock.module("restangular"))
+  beforeEach(angular.mock.module('restangular'))
 
   # load the controller's module
   beforeEach(module('postriderApp'))
@@ -11,8 +11,8 @@ describe 'Controller: MainCtrl', ()->
   # Initialize the controller and a mock scope
   beforeEach( inject( ($injector, $controller, $rootScope) ->
     scope = $rootScope.$new()
-    @Restangular = $injector.get("Restangular")
-    @httpBackend = $injector.get("$httpBackend")
+    @Restangular = $injector.get('Restangular')
+    @httpBackend = $injector.get('$httpBackend')
 
     # reliably determine object types
     # http://stackoverflow.com/questions/7390426/better-way-to-get-type-of-a-javascript-variable
@@ -70,9 +70,9 @@ describe 'Controller: MainCtrl', ()->
     @httpBackend.whenGET('/v1/node/'+id).respond({
       'packages':[
         {
-          "id": "poiu",
-          "name": "accountsservice",
-          "summary": "query and manipulate user account information"
+          'id': 'poiu',
+          'name': 'accountsservice',
+          'summary': 'query and manipulate user account information'
         }
       ]
       })
@@ -122,14 +122,14 @@ describe 'Controller: MainCtrl', ()->
   it 'should be able to access /package/xyz info (filled one)', () ->
     id = 'xyz'
     r = {
-        "name": "accountsservice",
-        "uri": "http://us.archive.ubuntu.com/ubuntu/pool/main/a/accountsservice/accountsservice_0.6.15-2ubuntu9_amd64.deb",
-        "summary": "query and manipulate user account information",
-        "version": "0.6.15-2ubuntu9",
-        "architecture": "amd64",
-        "provider": "apt",
-        "archive": "precise",
-        "nodes": [
+        'name': 'accountsservice',
+        'uri': 'http://us.archive.ubuntu.com/ubuntu/pool/main/a/accountsservice/accountsservice_0.6.15-2ubuntu9_amd64.deb',
+        'summary': 'query and manipulate user account information',
+        'version': '0.6.15-2ubuntu9',
+        'architecture': 'amd64',
+        'provider': 'apt',
+        'archive': 'precise',
+        'nodes': [
           'my1.full.fqdn'
         ]
       }
