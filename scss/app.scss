@@ -36,3 +36,12 @@
 .mainContents {
   padding: 20px 0px 20px 0px;
 }
+
+.packageList {
+  padding: 4px 0px 4px 0px;
+  cursor: pointer;
+  &:hover {
+    background: #f8f8f8;
+    color: rgb(44, 151, 201);
+  }
+}
