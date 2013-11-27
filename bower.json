@@ -8,6 +8,7 @@
     "angular-cookies": "~1.2.2",
     "angular-sanitize": "~1.2.2",
     "angular-resource": "~1.2.2",
+    "angular-animate": "~1.2.2",
     "restangular": "~1.1.8",
     "foundation": "zurb/bower-foundation"
   },

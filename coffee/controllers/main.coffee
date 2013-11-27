@@ -10,6 +10,9 @@ angular.module('postriderApp')
     $scope.packages = []
     $scope.node = {}
     $scope.package = {}
+    $scope.showConfig = false
+    $scope.nodeQuery = ''
+    $scope.packageQuery = ''
 
     fetch_error = (name)->
       (data) ->
@@ -24,6 +27,7 @@ angular.module('postriderApp')
 
     $scope.update_url = ()->
       Restangular.setBaseUrl api_url()
+      $scope.init()
 
     $scope.fetch_nodes = ()->
       Restangular.all('nodes').getList().

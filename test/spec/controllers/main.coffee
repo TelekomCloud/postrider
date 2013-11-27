@@ -3,16 +3,16 @@
 describe 'Controller: MainCtrl', ()->
 
   # load the required module
-  beforeEach(angular.mock.module("restangular"));
+  beforeEach(angular.mock.module("restangular"))
 
   # load the controller's module
   beforeEach(module('postriderApp'))
 
   # Initialize the controller and a mock scope
   beforeEach( inject( ($injector, $controller, $rootScope) ->
-    scope = $rootScope.$new();
-    @Restangular = $injector.get("Restangular");
-    @httpBackend = $injector.get("$httpBackend");
+    scope = $rootScope.$new()
+    @Restangular = $injector.get("Restangular")
+    @httpBackend = $injector.get("$httpBackend")
 
     # reliably determine object types
     # http://stackoverflow.com/questions/7390426/better-way-to-get-type-of-a-javascript-variable
@@ -37,7 +37,7 @@ describe 'Controller: MainCtrl', ()->
       { 'id': 'my1.full.fqdn' },
       { 'id': 'my2.full.fqdn' }
     ]
-    @httpBackend.whenGET('/v1/nodes').respond(nodes);
+    @httpBackend.whenGET('/v1/nodes').respond(nodes)
     @httpBackend.expectGET('/v1/nodes')
     scope.fetch_nodes()
     @httpBackend.flush()
@@ -52,7 +52,7 @@ describe 'Controller: MainCtrl', ()->
     id = 'test'
     @httpBackend.whenGET('/v1/node/'+id).respond({
       'packages':[]
-      });
+      })
     @httpBackend.expectGET('/v1/node/'+id)
     # issue the call
     scope.ensure_node(id)
@@ -69,7 +69,11 @@ describe 'Controller: MainCtrl', ()->
     id = 'test'
     @httpBackend.whenGET('/v1/node/'+id).respond({
       'packages':[
-        {'id': 'poiu'}
+        {
+          "id": "poiu",
+          "name": "accountsservice",
+          "summary": "query and manipulate user account information"
+        }
       ]
       })
     @httpBackend.expectGET('/v1/node/'+id)
@@ -84,13 +88,15 @@ describe 'Controller: MainCtrl', ()->
     expect(@typeOf(n.packages)).toBe('array')
     expect(n.packages.length).toBe( 1 )
     expect(n.packages[0].id).toBe( 'poiu' )
+    expect(n.packages[0].name).toBe( 'accountsservice' )
+    expect(n.packages[0].summary).toBe( 'query and manipulate user account information' )
 
   it 'should be a able to fetch /packages', () ->
     packages = [
       { 'id': 'xx' },
       { 'id': 'yy' }
     ]
-    @httpBackend.whenGET('/v1/packages').respond(packages);
+    @httpBackend.whenGET('/v1/packages').respond(packages)
     @httpBackend.expectGET('/v1/packages')
     scope.fetch_packages()
     @httpBackend.flush()

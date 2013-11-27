@@ -8,14 +8,12 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>Postrider</title>
     <link rel="stylesheet" href="styles/app.css" />
+    <link rel="stylesheet" href="styles/foundation-icons.css" />
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width">
     <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
 
-        <!-- build:css({.tmp,app}) styles/main.css -->
-        <link rel="stylesheet" href="styles/main.css">
-        <!-- endbuild -->
-</head>
+  </head>
   <body ng-app="postriderApp">
     <!--[if lt IE 7]>
       <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
@@ -27,21 +25,82 @@
     <![endif]-->
 
   <div ng-controller="MainCtrl">
-    <div class="row">
-      <div class="large-12 columns">
-        <h2>Postrider</h2>
-        <hr />
+    <nav class="top-bar" data-topbar>
+      <ul class="title-area">
+        <li class="name">
+          <h1><a href="#">Postrider</a></h1>
+        </li>
+      </ul>
+
+      <section class="top-bar-section">
+        <!-- Right Nav Section -->
+        <ul class="right">
+          <li><a ng-click="showConfig = !showConfig" class="fi-widget settingsButton" href="#"></a></li>
+        </ul>
+      </section>
+    </nav>
+
+    <div class="centered-text settingsRow animate-show ng-hide" ng-show="showConfig">
+      <div class="row">
+        <div class="small-12 large-12 columns">
+          <h4>Settings</h4>
+        </div>
+      </div>
+      <div class="row">
+        <div class="small-12 large-4 columns">
+          <label>Host</label>
+          <input type="text" ng-model="ponyExpressHost" ng-change="update_url()">
+        </div>
+        <div class="small-0 large-8 columns">
+        </div>
       </div>
     </div>
+
     <div class="row">
-      <div class="small-3 large-1 columns">
-        <label for="right-label" class="right inline">Host</label>
+      <div class="small-12 large-6 columns">
+        <div class="row mainContents">
+          <div class="small-12 large-12 columns">
+            <h4>Nodes <small>({{nodes.length}})</small></h4>
+          </div>
+        </div>
+
+        <div class="row collapse">
+          <div class="small-3 large-2 columns">
+            <span class="prefix">Node:</span>
+          </div>
+          <div class="small-7 large-8 columns">
+            <input type="text" ng-model="nodeQuery" ng-change="query_node()" placeholder="what are you looking for?">
+          </div>
+          <div class="small-2 large-2 columns"></div>
+        </div>
+
+        <div class="row nodeList" data-ng-repeat="n in nodes | filter:nodeQuery">
+          <div class="small-12 large-12 columns">{{n.id}}</div>
+        </div>
       </div>
-      <div class="small-9 large-3 columns">
-        <input type="text" ng-model="ponyExpressHost">
+
+      <div class="small-12 large-6 columns">
+        <div class="row mainContents">
+          <div class="small-12 large-12 columns">
+            <h4>Packages <small>({{packages.length}})</small></h4>
+          </div>
+        </div>
+
+        <div class="row collapse">
+          <div class="small-3 large-2 columns">
+            <span class="prefix">Package:</span>
+          </div>
+          <div class="small-7 large-8 columns">
+            <input type="text" ng-model="packageQuery" ng-change="query_package()" placeholder="which do you want?">
+          </div>
+          <div class="small-2 large-2 columns"></div>
+        </div>
+
+        <div class="row packageList" data-ng-repeat="p in packages | filter:packageQuery">
+          <div class="small-12 large-12 columns">{{p.name}}</div>
+        </div>
       </div>
-      <div class="small-0 large-8 columns">
-      </div>
+
     </div>
   </div>
   
@@ -49,6 +108,7 @@
     <script src="bower_components/angular/angular.js"></script>
     <script src="bower_components/angular-cookies/angular-cookies.js"></script>
     <script src="bower_components/angular-sanitize/angular-sanitize.js"></script>
+    <script src="bower_components/angular-animate/angular-animate.min.js"></script>
     <script src="bower_components/lodash/dist/lodash.min.js"></script>
     <script src="bower_components/restangular/dist/restangular.min.js"></script>
     <!-- endbuild -->

@@ -1,2 +1,48 @@
 @import "settings";
 @import "foundation";
+
+.top-bar [class^="fi-"] {
+  font-size: 20px;
+}
+
+.settingsRow {
+  background: rgb(44, 151, 201);
+  color: white;
+  h1,h2,h3,h4,h5,h6,label {
+    color: white;
+  }
+}
+
+.animate-show {
+  padding: 20px 0px 20px 0px;
+  max-height: 800px;
+  overflow: hidden;
+
+  -webkit-transition: all 500ms !important;
+  transition: all 500ms !important;
+
+  display:block !important;
+}
+
+.animate-show.ng-hide-add,
+.animate-show.ng-hide-remove {
+}
+
+.animate-show.ng-hide {
+  max-height: 0;
+  padding: 0px 0px 0px 0px;
+}
+
+.mainContents {
+  padding: 20px 0px 20px 0px;
+}
+
+.nodeList,
+.packageList {
+  padding: 4px 0px 4px 0px;
+  cursor: pointer;
+  &:hover {
+    background: #f8f8f8;
+    color: rgb(44, 151, 201);
+  }
+}

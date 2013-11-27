@@ -3,6 +3,7 @@
 angular.module('postriderApp', [
   'ngCookies',
   'ngSanitize',
+  'ngAnimate',
   'restangular'
 ]).config (RestangularProvider) ->
   RestangularProvider.setBaseUrl '/v1'
