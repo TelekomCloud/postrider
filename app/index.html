@@ -78,8 +78,30 @@
           <div class="small-2 large-2 columns"></div>
         </div>
 
-        <div class="row nodeList" data-ng-repeat="n in nodes | filter:nodeQuery">
-          <div class="small-12 large-12 columns">{{n.id}}</div>
+        <div class="row nodeList expanded-{{nodeVisible[n.id]}}" data-ng-repeat="n in nodes | filter:nodeQuery">
+          <div class="columns" ng-click="showNode(n.id)" >
+            <div class="row">
+              <div class="small-12 large-12 columns">{{n.id}}</div>
+            </div>
+            <!-- Detailed information on a node -->
+            <div class="row" ng-show="nodeVisible[n.id]">
+              <div class="columns" ng-show="node[n.id] === undefined">
+                <div class="row">
+                  <div class="columns"><div class="loading"></div></div>
+                </div>
+              </div>
+              <div class="columns" ng-show="node[n.id] !== undefined && node[n.id].packages.length === 0">
+                <div class="row">
+                  <div class="columns">no packages found</div>
+                </div>
+              </div>
+              <div class="columns" ng-show="node[n.id] !== undefined && node[n.id].packages.length > 0">
+                <div class="row">
+                  <div class="columns">{{node[n.id].packages.length}} packages</div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -101,12 +123,29 @@
         </div>
 
         <div class="row packageList" data-ng-repeat="p in packages | filter:packageQuery">
-          <div class="small-12 large-12 columns">{{p.name}}</div>
-        </div>
-      </div>
+          <div class="columns" ng-click="showPackage(p)">
 
+            <div class="row">
+              <div class="columns">{{p.name}}</div>
+            </div>
+            <!-- Detailed information on a node -->
+            <div class="row" ng-show="packageVisible[p.name]">
+              <div class="columns" ng-show="p.versions.length === 0">
+                <div class="row">
+                  <div class="columns">no versions found</div>
+                </div>
+              </div>
+              <div class="columns" ng-show="p.versions.length > 0">
+                <div class="row" data-ng-repeat="pv in p.versions">
+                  <div class="columns">{{pv.version}}</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
     </div>
-  </div>
   
     <!-- build:js scripts/modules.js -->
     <script src="bower_components/angular/angular.js"></script>
