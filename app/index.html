@@ -87,7 +87,7 @@
             <div class="row" ng-show="nodeVisible[n.id]">
               <div class="columns" ng-show="node[n.id] === undefined">
                 <div class="row">
-                  <div class="columns">loading...</div>
+                  <div class="columns"><div class="loading"></div></div>
                 </div>
               </div>
               <div class="columns" ng-show="node[n.id] !== undefined && node[n.id].packages.length === 0">

@@ -1,6 +1,13 @@
 @import "settings";
 @import "foundation";
 
+.loading {
+  display: block;
+  height: 24px;
+  width: 24px;
+  background: url('loading.gif') no-repeat;
+}
+
 .top-bar [class^="fi-"] {
   font-size: 20px;
 }
