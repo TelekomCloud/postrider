@@ -123,12 +123,29 @@
         </div>
 
         <div class="row packageList" data-ng-repeat="p in packages | filter:packageQuery">
-          <div class="small-12 large-12 columns">{{p.name}}</div>
-        </div>
-      </div>
+          <div class="columns" ng-click="showPackage(p)">
 
+            <div class="row">
+              <div class="columns">{{p.name}}</div>
+            </div>
+            <!-- Detailed information on a node -->
+            <div class="row" ng-show="packageVisible[p.name]">
+              <div class="columns" ng-show="p.versions.length === 0">
+                <div class="row">
+                  <div class="columns">no versions found</div>
+                </div>
+              </div>
+              <div class="columns" ng-show="p.versions.length > 0">
+                <div class="row" data-ng-repeat="pv in p.versions">
+                  <div class="columns">{{pv.version}}</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
     </div>
-  </div>
   
     <!-- build:js scripts/modules.js -->
     <script src="bower_components/angular/angular.js"></script>

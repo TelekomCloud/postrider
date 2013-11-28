@@ -13,6 +13,7 @@ angular.module('postriderApp')
 
     $scope.showConfig = false
     $scope.nodeVisible = {}
+    $scope.packageVisible = {}
 
     $scope.nodeQuery = ''
     $scope.packageQuery = ''
@@ -71,6 +72,11 @@ angular.module('postriderApp')
       console.log("show node #{id}")
       $scope.ensureNode(id)
       $scope.nodeVisible[id] = not $scope.nodeVisible[id]
+
+    $scope.showPackage = (p)->
+      console.log("show package #{p.name}")
+      $scope.packageVisible[p.name] = not $scope.packageVisible[p.name]
+      # ... query all versions of this package
 
     $scope.loadData = ()->
       # update the cookie with a working url
