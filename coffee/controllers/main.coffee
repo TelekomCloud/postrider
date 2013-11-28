@@ -10,7 +10,10 @@ angular.module('postriderApp')
     $scope.packages = []
     $scope.node = {}
     $scope.package = {}
+
     $scope.showConfig = false
+    $scope.nodeVisible = {}
+
     $scope.nodeQuery = ''
     $scope.packageQuery = ''
 
@@ -37,6 +40,12 @@ angular.module('postriderApp')
         then (ns) ->
           console.log 'fetch packages'
           $scope.packages = ns
+          for p in ns
+            for v in p.versions
+              if not $scope.package[v.id]?
+                $scope.package[v.id] = {}
+                $scope.package[v.id].name = p.name
+                $scope.package[v.id].version = v.version
         , fetchError('packages')
 
     $scope.fetchNode = (id)->
@@ -57,6 +66,11 @@ angular.module('postriderApp')
 
     $scope.ensureNode = (id)->
       $scope.fetchNode(id) if not $scope.node[id]?
+
+    $scope.showNode = (id)->
+      console.log("show node #{id}")
+      $scope.ensureNode(id)
+      $scope.nodeVisible[id] = not $scope.nodeVisible[id]
 
     $scope.loadData = ()->
       # update the cookie with a working url

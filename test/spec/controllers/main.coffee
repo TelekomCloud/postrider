@@ -93,8 +93,15 @@ describe 'Controller: MainCtrl', ()->
 
   it 'should be a able to fetch /packages', () ->
     packages = [
-      { 'id': 'xx' },
-      { 'id': 'yy' }
+      { 'name': 'xx', 'versions': [
+          {'version':'1.0','id':'xx10'}
+        ]
+      },
+      { 'name': 'yy', 'versions': [
+          {'version':'1.1','id':'yy11'},
+          {'version':'1.2','id':'yy12'}
+        ]
+      }
     ]
     @httpBackend.whenGET('/v1/packages').respond(packages)
     @httpBackend.expectGET('/v1/packages')
@@ -104,8 +111,18 @@ describe 'Controller: MainCtrl', ()->
     expect(scope.packages.length).toBe(2)
     # test both packages
     for idx in [0,1]
-      expect(@typeOf(scope.packages[idx])).toBe('object')
-      expect(scope.packages[idx]['id']).toBe(packages[idx]['id'])
+      ps = scope.packages[idx]
+      expect(@typeOf(ps)).toBe('object')
+      expect(ps['name']).toBe(packages[idx]['name'])
+      expect(ps['versions'].length).toBe(packages[idx]['versions'].length)
+
+      # every package we load creates an entry in the package map
+      for v in ps['versions']
+        p = scope.package[v['id']]
+        expect(@typeOf(p)).toBe('object')
+        expect(p['name']).toBe(packages[idx]['name'])
+        expect(p['version']).toBe(v['version'])
+        expect(p['versions']).toBe(undefined)
 
   it 'should be able to access /package/xyz info (empty one)', () ->
     id = 'xyz'
