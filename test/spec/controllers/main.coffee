@@ -113,16 +113,16 @@ describe 'Controller: MainCtrl', ()->
     for idx in [0,1]
       ps = scope.packages[idx]
       expect(@typeOf(ps)).toBe('object')
-      expect(ps['name']).toBe(packages[idx]['name'])
-      expect(ps['versions'].length).toBe(packages[idx]['versions'].length)
+      expect(ps.name).toBe(packages[idx].name)
+      expect(ps.versions.length).toBe(packages[idx].versions.length)
 
       # every package we load creates an entry in the package map
-      for v in ps['versions']
-        p = scope.package[v['id']]
+      for v in ps.versions
+        p = scope.package[v.id]
         expect(@typeOf(p)).toBe('object')
-        expect(p['name']).toBe(packages[idx]['name'])
-        expect(p['version']).toBe(v['version'])
-        expect(p['versions']).toBe(undefined)
+        expect(p.name).toBe(packages[idx].name)
+        expect(p.version).toBe(v.version)
+        expect(p.versions).toBe(undefined)
 
   it 'should be able to access /package/xyz info (empty one)', () ->
     id = 'xyz'
