@@ -29,15 +29,11 @@ module.exports = function (grunt) {
     watch: {
       coffee: {
         files: ['coffee/{,*/}*.coffee'],
-        tasks: ['coffee']
-      },
-      js: {
-        files: ['{.tmp,<%= yeoman.app %>}/scripts/{,*/}*.js'],
-        tasks: ['newer:jshint:all']
+        tasks: ['coffee','newer:coffeelint']
       },
       jsTest: {
-        files: ['test/spec/{,*/}*.js'],
-        tasks: ['newer:jshint:test', 'karma']
+        files: ['test/spec/{,*/}*.js','test/spec/{,*/}*.coffee'],
+        tasks: ['karma','newer:coffeelint']
       },
       styles: {
         files: ['<%= yeoman.app %>/styles/{,*/}*.css'],
@@ -105,22 +101,9 @@ module.exports = function (grunt) {
       }
     },
 
-    // Make sure code styles are up to par and there are no obvious mistakes
-    jshint: {
-      options: {
-        jshintrc: '.jshintrc',
-        reporter: require('jshint-stylish')
-      },
-      all: [
-        'Gruntfile.js',
-        '<%= yeoman.app %>/scripts/{,*/}*.js'
-      ],
-      test: {
-        options: {
-          jshintrc: 'test/.jshintrc'
-        },
-        src: ['test/spec/{,*/}*.js']
-      }
+    // Lint Coffee
+    coffeelint: {
+      app: ['coffee/{,*/}*.coffee','spec/{,*/}*.coffee']
     },
 
     // Empties folders to start fresh
@@ -394,7 +377,7 @@ module.exports = function (grunt) {
   ]);
 
   grunt.registerTask('default', [
-    'newer:jshint',
+    'newer:coffeelint',
     'test',
     'build'
   ]);

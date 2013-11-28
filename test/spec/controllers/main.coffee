@@ -3,7 +3,7 @@
 describe 'Controller: MainCtrl', ()->
 
   # load the required module
-  beforeEach(angular.mock.module("restangular"))
+  beforeEach(angular.mock.module('restangular'))
 
   # load the controller's module
   beforeEach(module('postriderApp'))
@@ -11,8 +11,8 @@ describe 'Controller: MainCtrl', ()->
   # Initialize the controller and a mock scope
   beforeEach( inject( ($injector, $controller, $rootScope) ->
     scope = $rootScope.$new()
-    @Restangular = $injector.get("Restangular")
-    @httpBackend = $injector.get("$httpBackend")
+    @Restangular = $injector.get('Restangular')
+    @httpBackend = $injector.get('$httpBackend')
 
     # reliably determine object types
     # http://stackoverflow.com/questions/7390426/better-way-to-get-type-of-a-javascript-variable
@@ -39,7 +39,7 @@ describe 'Controller: MainCtrl', ()->
     ]
     @httpBackend.whenGET('/v1/nodes').respond(nodes)
     @httpBackend.expectGET('/v1/nodes')
-    scope.fetch_nodes()
+    scope.fetchNodes()
     @httpBackend.flush()
 
     expect(scope.nodes.length).toBe(2)
@@ -55,7 +55,7 @@ describe 'Controller: MainCtrl', ()->
       })
     @httpBackend.expectGET('/v1/node/'+id)
     # issue the call
-    scope.ensure_node(id)
+    scope.ensureNode(id)
     @httpBackend.flush()
 
     n = scope.node[id]
@@ -70,15 +70,15 @@ describe 'Controller: MainCtrl', ()->
     @httpBackend.whenGET('/v1/node/'+id).respond({
       'packages':[
         {
-          "id": "poiu",
-          "name": "accountsservice",
-          "summary": "query and manipulate user account information"
+          'id': 'poiu',
+          'name': 'accountsservice',
+          'summary': 'query and manipulate user account information'
         }
       ]
       })
     @httpBackend.expectGET('/v1/node/'+id)
     # issue the call
-    scope.ensure_node(id)
+    scope.ensureNode(id)
     @httpBackend.flush()
 
     n = scope.node[id]
@@ -98,7 +98,7 @@ describe 'Controller: MainCtrl', ()->
     ]
     @httpBackend.whenGET('/v1/packages').respond(packages)
     @httpBackend.expectGET('/v1/packages')
-    scope.fetch_packages()
+    scope.fetchPackages()
     @httpBackend.flush()
 
     expect(scope.packages.length).toBe(2)
@@ -111,7 +111,7 @@ describe 'Controller: MainCtrl', ()->
     id = 'xyz'
     @httpBackend.whenGET('/v1/package/'+id).respond({})
     @httpBackend.expectGET('/v1/package/'+id)
-    scope.fetch_package(id)
+    scope.fetchPackage(id)
     @httpBackend.flush()
 
     p = scope.package[id]
@@ -122,17 +122,20 @@ describe 'Controller: MainCtrl', ()->
   it 'should be able to access /package/xyz info (filled one)', () ->
     id = 'xyz'
     r = {
-        "name": "accountsservice",
-        "uri": "http://us.archive.ubuntu.com/ubuntu/pool/main/a/accountsservice/accountsservice_0.6.15-2ubuntu9_amd64.deb",
-        "summary": "query and manipulate user account information",
-        "version": "0.6.15-2ubuntu9",
-        "architecture": "amd64",
-        "provider": "apt",
-        "archive": "precise"
+        'name': 'accountsservice',
+        'uri': 'http://us.archive.ubuntu.com/ubuntu/pool/main/a/accountsservice/accountsservice_0.6.15-2ubuntu9_amd64.deb',
+        'summary': 'query and manipulate user account information',
+        'version': '0.6.15-2ubuntu9',
+        'architecture': 'amd64',
+        'provider': 'apt',
+        'archive': 'precise',
+        'nodes': [
+          'my1.full.fqdn'
+        ]
       }
     @httpBackend.whenGET('/v1/package/'+id).respond(r)
     @httpBackend.expectGET('/v1/package/'+id)
-    scope.fetch_package(id)
+    scope.fetchPackage(id)
     @httpBackend.flush()
 
     p = scope.package[id]
@@ -145,3 +148,4 @@ describe 'Controller: MainCtrl', ()->
     expect(p.architecture).toBe(r.architecture)
     expect(p.provider).toBe(r.provider)
     expect(p.archive).toBe(r.archive)
+    expect(p.nodes).toBe(r.nodes)
