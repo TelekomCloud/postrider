@@ -1,10 +1,10 @@
 root = exports ? this
 
 angular.module('postriderApp')
-  .controller('MainCtrl', ($scope, Restangular) ->
+  .controller('MainCtrl', ($scope, $cookies, Restangular) ->
     root.scope = $scope
 
-    $scope.ponyExpressHost = undefined
+    $scope.ponyExpressHost = $cookies.ponyExpressHost or undefined
     $scope.ponyExpressVersion = 'v1'
     $scope.nodes = []
     $scope.packages = []
@@ -24,10 +24,6 @@ angular.module('postriderApp')
         'http://'+$scope.ponyExpressHost+'/'+$scope.ponyExpressVersion
       else
         '/'+$scope.ponyExpressVersion
-
-    $scope.updateUrl = ()->
-      Restangular.setBaseUrl apiUrl()
-      $scope.init()
 
     $scope.fetchNodes = ()->
       Restangular.all('nodes').getList().
@@ -62,11 +58,16 @@ angular.module('postriderApp')
     $scope.ensureNode = (id)->
       $scope.fetchNode(id) if not $scope.node[id]?
 
-    $scope.init = ()->
+    $scope.loadData = ()->
+      # update the cookie with a working url
+      $cookies.ponyExpressHost = $scope.ponyExpressHost
+      # set restangular to use the current url
+      Restangular.setBaseUrl apiUrl()
+      # fetch base data
       $scope.fetchNodes()
       $scope.fetchPackages()
 
     # initialize this module
     $? && $(document).ready ()->
-      $scope.init()
+      $scope.loadData()
   )
