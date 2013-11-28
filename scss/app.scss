@@ -57,8 +57,15 @@ $light_bg: #CFF0FF;
   }
 }
 
+.nodeDetails,
 .packageDetails {
   font-size: small;
   padding: 5px 0 10px 0;
-
+  .row .columns:before {
+    content: "├──";
+    padding: 0 10px 0 0;
+  }
+  .row:last-child .columns:before {
+    content: "└──";
+  }
 }
