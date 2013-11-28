@@ -6,9 +6,10 @@ $light_bg: #CFF0FF;
 
 .loading {
   display: block;
-  height: 24px;
-  width: 24px;
+  height: 16px;
+  width: 16px;
   background: url('loading.gif') no-repeat;
+  background-size: 100%;
 }
 
 .top-bar [class^="fi-"] {
