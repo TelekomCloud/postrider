@@ -78,8 +78,8 @@
           <div class="small-2 large-2 columns"></div>
         </div>
 
-        <div class="row nodeList expanded-{{nodeVisible[n.id]}}" data-ng-repeat="n in nodes | filter:nodeQuery">
-          <div class="columns" ng-click="showNode(n.id)" >
+        <div class="row nodeList expanded-{{nodeVisible[n.id]}} selected-{{nodeSelected[n.id]}}" data-ng-repeat="n in nodes | filter:nodeQuery">
+          <div class="columns" ng-click="selectNode(n.id)" >
             <div class="row">
               <div class="small-11 large-11 columns">{{n.id}}</div>
               <div class="small-1 large-1 columns" ng-show="nodeVisible[n.id] && node[n.id] === undefined">
@@ -120,14 +120,17 @@
           <div class="small-2 large-2 columns"></div>
         </div>
 
-        <div class="row packageList" data-ng-repeat="p in packages | filter:packageQuery">
-          <div class="columns" ng-click="showPackage(p)">
+        <div class="row packageList expanded-{{packageVisible[p.name]}} selected-{{packageSelected[p.name]}}" data-ng-repeat="p in packages | filter:packageQuery">
+          <div class="columns" ng-click="selectPackage(p)">
 
             <div class="row">
-              <div class="columns">{{p.name}}</div>
+              <div class="small-11 large-11 columns">{{p.name}}</div>
+              <div class="small-1 large-1 columns" ng-show="packageFetching[p.name]">
+                <span class="loading"></span>
+              </div>
             </div>
             <!-- Detailed information on a package -->
-            <div class="row packageDetails" ng-show="packageVisible[p.name]">
+            <div class="row packageDetails" ng-show="packageVisible[p.name] || packageSelected[p.name]">
               <div class="columns" ng-show="p.versions.length === 0">
                 <div class="row">
                   <div class="columns">no versions found</div>

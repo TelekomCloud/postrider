@@ -1,7 +1,10 @@
 @import "settings";
 @import "foundation";
 
-$dark_bg: rgb(44, 151, 201);
+// complementary color picks
+$dark_fg: #007AB2;
+$dark_bg: #2C97C9;
+// outlier for hovering
 $light_bg: #CFF0FF;
 
 .loading {
@@ -54,6 +57,9 @@ $light_bg: #CFF0FF;
   cursor: pointer;
   &:hover {
     background: $light_bg;
+  }
+  &.selected-true {
+    color: $dark_fg;
   }
 }
 
