@@ -1,11 +1,15 @@
 @import "settings";
 @import "foundation";
 
+$dark_bg: rgb(44, 151, 201);
+$light_bg: #CFF0FF;
+
 .loading {
   display: block;
-  height: 24px;
-  width: 24px;
+  height: 16px;
+  width: 16px;
   background: url('loading.gif') no-repeat;
+  background-size: 100%;
 }
 
 .top-bar [class^="fi-"] {
@@ -13,7 +17,7 @@
 }
 
 .settingsRow {
-  background: rgb(44, 151, 201);
+  background: $dark_bg;
   color: white;
   h1,h2,h3,h4,h5,h6,label {
     color: white;
@@ -49,7 +53,19 @@
   padding: 4px 0px 4px 0px;
   cursor: pointer;
   &:hover {
-    background: #f8f8f8;
-    color: rgb(44, 151, 201);
+    background: $light_bg;
+  }
+}
+
+.nodeDetails,
+.packageDetails {
+  font-size: small;
+  padding: 5px 0 10px 0;
+  .row .columns:before {
+    content: "├──";
+    padding: 0 10px 0 0;
+  }
+  .row:last-child .columns:before {
+    content: "└──";
   }
 }

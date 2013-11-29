@@ -81,15 +81,13 @@
         <div class="row nodeList expanded-{{nodeVisible[n.id]}}" data-ng-repeat="n in nodes | filter:nodeQuery">
           <div class="columns" ng-click="showNode(n.id)" >
             <div class="row">
-              <div class="small-12 large-12 columns">{{n.id}}</div>
+              <div class="small-11 large-11 columns">{{n.id}}</div>
+              <div class="small-1 large-1 columns" ng-show="nodeVisible[n.id] && node[n.id] === undefined">
+                <span class="loading"></span>
+              </div>
             </div>
             <!-- Detailed information on a node -->
-            <div class="row" ng-show="nodeVisible[n.id]">
-              <div class="columns" ng-show="node[n.id] === undefined">
-                <div class="row">
-                  <div class="columns"><div class="loading"></div></div>
-                </div>
-              </div>
+            <div class="row nodeDetails" ng-show="nodeVisible[n.id] && node[n.id] !== undefined">
               <div class="columns" ng-show="node[n.id] !== undefined && node[n.id].packages.length === 0">
                 <div class="row">
                   <div class="columns">no packages found</div>
@@ -128,8 +126,8 @@
             <div class="row">
               <div class="columns">{{p.name}}</div>
             </div>
-            <!-- Detailed information on a node -->
-            <div class="row" ng-show="packageVisible[p.name]">
+            <!-- Detailed information on a package -->
+            <div class="row packageDetails" ng-show="packageVisible[p.name]">
               <div class="columns" ng-show="p.versions.length === 0">
                 <div class="row">
                   <div class="columns">no versions found</div>
