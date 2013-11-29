@@ -78,8 +78,8 @@
           <div class="small-2 large-2 columns"></div>
         </div>
 
-        <div class="row nodeList expanded-{{nodeVisible[n.id]}}" data-ng-repeat="n in nodes | filter:nodeQuery">
-          <div class="columns" ng-click="showNode(n.id)" >
+        <div class="row nodeList expanded-{{nodeVisible[n.id]}} selected-{{nodeSelected[n.id]}}" data-ng-repeat="n in nodes | filter:nodeQuery">
+          <div class="columns" ng-click="selectNode(n.id)" >
             <div class="row">
               <div class="small-11 large-11 columns">{{n.id}}</div>
               <div class="small-1 large-1 columns" ng-show="nodeVisible[n.id] && node[n.id] === undefined">

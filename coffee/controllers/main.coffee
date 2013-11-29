@@ -13,6 +13,7 @@ angular.module('postriderApp')
 
     $scope.showConfig = false
     $scope.nodeVisible = {}
+    $scope.nodeSelected = {}
     $scope.packageVisible = {}
 
     $scope.nodeQuery = ''
@@ -69,9 +70,15 @@ angular.module('postriderApp')
       $scope.fetchNode(id) if not $scope.node[id]?
 
     $scope.showNode = (id)->
-      console.log("show node #{id}")
       $scope.ensureNode(id)
       $scope.nodeVisible[id] = not $scope.nodeVisible[id]
+
+    $scope.selectNode = (id)->
+      console.log("node #{id} selected")
+      $scope.ensureNode(id)
+      $scope.nodeSelected[id] = not $scope.nodeSelected[id]
+      # ... select packages from this node only ...
+      $scope.showNode(id)
 
     $scope.showPackage = (p)->
       console.log("show package #{p.name}")
