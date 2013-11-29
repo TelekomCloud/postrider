@@ -6,6 +6,9 @@ angular.module('postriderApp')
 
     $scope.ponyExpressHost = $cookies.ponyExpressHost or undefined
     $scope.ponyExpressVersion = 'v1'
+
+    $scope.allNodes = []
+    $scope.allPackages = []
     $scope.nodes = []
     $scope.packages = []
     $scope.node = {}
@@ -35,14 +38,16 @@ angular.module('postriderApp')
       Restangular.all('nodes').getList().
         then (ns) ->
           console.log 'fetch nodes'
-          $scope.nodes = ns
+          $scope.allNodes = ns
+          $scope.updateNodeSelection()
         , fetchError('nodes')
 
     $scope.fetchPackages = ()->
       Restangular.all('packages').getList().
         then (ns) ->
           console.log 'fetch packages'
-          $scope.packages = ns
+          $scope.allPackages = ns
+          $scope.updatePackageSelection()
           for p in ns
             for v in p.versions
               if not $scope.package[v.id]?
@@ -66,6 +71,12 @@ angular.module('postriderApp')
           n.id = id
           $scope.package[id] = n
         , fetchError('packages')
+
+    $scope.updateNodeSelection = ()->
+      $scope.nodes = $scope.allNodes
+
+    $scope.updatePackageSelection = ()->
+      $scope.packages = $scope.allPackages
 
     $scope.ensureNode = (id)->
       $scope.fetchNode(id) if not $scope.node[id]?
