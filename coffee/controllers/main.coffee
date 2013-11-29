@@ -13,6 +13,7 @@ angular.module('postriderApp')
     $scope.packages = []
     $scope.node = {}
     $scope.package = {}
+    $scope.packageByName = {}
 
     $scope.showConfig = false
     $scope.nodeVisible = {}
@@ -49,6 +50,7 @@ angular.module('postriderApp')
           $scope.allPackages = ns
           $scope.updatePackageSelection()
           for p in ns
+            $scope.packageByName[p.name] = p
             for v in p.versions
               if not $scope.package[v.id]?
                 $scope.package[v.id] = {}
