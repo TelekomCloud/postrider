@@ -75,8 +75,33 @@ angular.module('postriderApp')
     $scope.updateNodeSelection = ()->
       $scope.nodes = $scope.allNodes
 
+    updatePackageSelectionFor = (nodes)->
+      # get all packages for these nodes
+      packages = _.chain(nodes).
+        map( (n) ->
+          if $scope.node[n]? and $scope.node[n].packages
+            ( p.id for p in $scope.node[n].packages )
+          else []
+        ).
+        flatten().
+        uniq().
+        value()
+      # only keep packages that were selected
+      ps = _.reject $scope.allPackages, (p)->
+        for v in p.versions
+          if _.indexOf(packages, v.id) >= 0
+            return false
+        true
+      # update the model of package subsets
+      $scope.packages = ps
+
     $scope.updatePackageSelection = ()->
-      $scope.packages = $scope.allPackages
+      # get all selected nodes
+      nodes = ( k for k,isSelected of $scope.nodeSelected when isSelected )
+      if nodes.length is 0
+        $scope.packages = $scope.allPackages
+      else
+        updatePackageSelectionFor(nodes)
 
     $scope.ensureNode = (id)->
       $scope.fetchNode(id) if not $scope.node[id]?
@@ -89,7 +114,7 @@ angular.module('postriderApp')
       console.log("node #{id} selected")
       $scope.ensureNode(id)
       $scope.nodeSelected[id] = not $scope.nodeSelected[id]
-      # ... select packages from this node only ...
+      $scope.updatePackageSelection()
       $scope.showNode(id)
 
     $scope.showPackage = (p)->
