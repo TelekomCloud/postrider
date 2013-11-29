@@ -109,6 +109,10 @@ angular.module('postriderApp')
     $scope.ensureNode = (id)->
       $scope.fetchNode(id) if not $scope.node[id]?
 
+    $scope.ensurePackage = (p)->
+      for v in p.versions
+        $scope.fetchPackage(v.id) if not $scope.package[v.id].nodes?
+
     $scope.showNode = (id)->
       $scope.ensureNode(id)
       $scope.nodeVisible[id] = not $scope.nodeVisible[id]
@@ -121,12 +125,14 @@ angular.module('postriderApp')
       $scope.showNode(id)
 
     $scope.showPackage = (p)->
+      $scope.ensurePackage(p)
       $scope.packageVisible[p.name] = not $scope.packageVisible[p.name]
 
     $scope.selectPackage = (p)->
       console.log("package #{p.name} selected")
+      $scope.ensurePackage(p)
       $scope.packageSelected[p.name] = not $scope.packageSelected[p.name]
-      # ... query all versions of this package
+      $scope.updateNodeSelection()
       $scope.showPackage(p)
 
     $scope.loadData = ()->
