@@ -85,7 +85,7 @@ angular.module('postriderApp')
         # first we get all versions for this package name
         map( (p)-> $scope.packageByName[p].versions ).
         flatten().
-        reject( (e)-> e is undefined ).
+        compact().
         # then get the package id for each package with version
         map( (v)-> v.id ).
         value()
