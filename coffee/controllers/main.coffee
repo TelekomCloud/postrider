@@ -81,7 +81,7 @@ angular.module('postriderApp')
 
     updateNodeSelectionFor = (packages)->
       # get all package ids for the list of package names
-      pids = _.chain(packages).
+      pids = _(packages).
         # first we get all versions for this package name
         map( (p)-> $scope.packageByName[p].versions ).
         flatten().
@@ -90,7 +90,7 @@ angular.module('postriderApp')
         map( (v)-> v.id ).
         value()
       # get all nodes for the selected packages
-      nodes = _.chain(pids).
+      nodes = _(pids).
         map( (pid)->
           if $scope.package[pid]? and $scope.package[pid].nodes
             ( n.id for n in $scope.package[pid].nodes )
@@ -118,7 +118,7 @@ angular.module('postriderApp')
 
     updatePackageSelectionFor = (nodes)->
       # get all packages for these nodes
-      packages = _.chain(nodes).
+      packages = _(nodes).
         map( (n) ->
           if $scope.node[n]? and $scope.node[n].packages
             ( p.id for p in $scope.node[n].packages )
