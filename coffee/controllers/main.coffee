@@ -62,6 +62,7 @@ angular.module('postriderApp')
           console.log 'fetch node '+id
           n.id = id
           $scope.node[id] = n
+          $scope.updatePackageSelection()
         , fetchError('node')
 
     $scope.fetchPackage = (id)->
