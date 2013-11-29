@@ -20,6 +20,7 @@ angular.module('postriderApp')
     $scope.nodeSelected = {}
     $scope.packageVisible = {}
     $scope.packageSelected = {}
+    $scope.packageFetching = {}
 
     $scope.nodeQuery = ''
     $scope.packageQuery = ''
@@ -67,13 +68,15 @@ angular.module('postriderApp')
           $scope.updatePackageSelection()
         , fetchError('node')
 
-    $scope.fetchPackage = (id)->
+    $scope.fetchPackage = (id, name)->
+      $scope.packageFetching[name] += 1
       Restangular.one('package', id).get().
         then (n) ->
           console.log 'fetch package '+id
           n.id = id
           $scope.package[id] = n
           $scope.updateNodeSelection()
+          $scope.packageFetching[name] -= 1
         , fetchError('packages')
 
     updateNodeSelectionFor = (packages)->
@@ -145,8 +148,9 @@ angular.module('postriderApp')
       $scope.fetchNode(id) if not $scope.node[id]?
 
     $scope.ensurePackage = (p)->
+      $scope.packageFetching[p.name] = 0 if not $scope.packageFetching[p.name]?
       for v in p.versions
-        $scope.fetchPackage(v.id) if not $scope.package[v.id].nodes?
+        $scope.fetchPackage(v.id, p.name) if not $scope.package[v.id].nodes?
 
     $scope.showNode = (id)->
       $scope.ensureNode(id)

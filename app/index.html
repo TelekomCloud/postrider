@@ -124,7 +124,10 @@
           <div class="columns" ng-click="selectPackage(p)">
 
             <div class="row">
-              <div class="columns">{{p.name}}</div>
+              <div class="small-11 large-11 columns">{{p.name}}</div>
+              <div class="small-1 large-1 columns" ng-show="packageFetching[p.name]">
+                <span class="loading"></span>
+              </div>
             </div>
             <!-- Detailed information on a package -->
             <div class="row packageDetails" ng-show="packageVisible[p.name] || packageSelected[p.name]">
