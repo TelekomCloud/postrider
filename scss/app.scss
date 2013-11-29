@@ -1,9 +1,13 @@
 @import "settings";
 @import "foundation";
 
+// kuler color configuration:
+// https://kuler.adobe.com/create/color-wheel/?base=2&rule=Complementary&selected=0&name=My%20Kuler%20Theme&mode=rgb&rgbvalues=0,0.47707006369437294,0.7,0.17254901960784313,0.592156862745098,0.788235294117647,0,0.6815286624205328,1,0.7,0.3821514508140126,0,1,0.545930644020018,0&swatchOrder=0,1,2,3,4
 // complementary color picks
-$dark_fg: #007AB2;
-$dark_bg: #2C97C9;
+$color1_fg: #007AB2;
+$color1_bg: #2C97C9;
+$color2_fg: #B26100;
+$color2_bg: #FF8B00;
 // outlier for hovering
 $light_bg: #CFF0FF;
 
@@ -20,7 +24,7 @@ $light_bg: #CFF0FF;
 }
 
 .settingsRow {
-  background: $dark_bg;
+  background: $color1_bg;
   color: white;
   h1,h2,h3,h4,h5,h6,label {
     color: white;
@@ -59,7 +63,7 @@ $light_bg: #CFF0FF;
     background: $light_bg;
   }
   &.selected-true {
-    color: $dark_fg;
+    color: $color1_fg;
   }
 }
 
