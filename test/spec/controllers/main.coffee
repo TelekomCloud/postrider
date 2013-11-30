@@ -37,8 +37,14 @@ describe 'Controller: MainCtrl', ()->
       { 'id': 'my1.full.fqdn' },
       { 'id': 'my2.full.fqdn' }
     ]
-    @httpBackend.whenGET('/v1/nodes').respond(nodes)
-    @httpBackend.expectGET('/v1/nodes')
+
+    url = "/v1/nodes?limit=50&page=1"
+    @httpBackend.whenGET(url).respond(nodes)
+    @httpBackend.expectGET(url)
+    url = "/v1/nodes?limit=50&page=2"
+    @httpBackend.whenGET(url).respond(410,'Gone')
+    @httpBackend.expectGET(url)
+
     scope.fetchNodes()
     @httpBackend.flush()
 
@@ -103,8 +109,14 @@ describe 'Controller: MainCtrl', ()->
         ]
       }
     ]
-    @httpBackend.whenGET('/v1/packages').respond(packages)
-    @httpBackend.expectGET('/v1/packages')
+
+    url = "/v1/packages?limit=50&page=1"
+    @httpBackend.whenGET(url).respond(packages)
+    @httpBackend.expectGET(url)
+    url = "/v1/packages?limit=50&page=2"
+    @httpBackend.whenGET(url).respond(410,'Gone')
+    @httpBackend.expectGET(url)
+
     scope.fetchPackages()
     @httpBackend.flush()
 
