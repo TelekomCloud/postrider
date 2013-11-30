@@ -36,13 +36,20 @@ angular.module('postriderApp')
       else
         '/'+$scope.ponyExpressVersion
 
-    $scope.fetchNodes = ()->
-      Restangular.all('nodes').getList().
+    $scope.fetchNodes = (page = 1)->
+      # construct a query for pagination
+      # page == 0 means that we try to fetch without pagination (usually last attempt)
+      query = if page is 0 then {} else {page: page, limit: 50}
+      Restangular.all('nodes').getList(query).
         then (ns) ->
           console.log 'fetch nodes'
           $scope.allNodes = ns
           $scope.updateNodeSelection()
-        , fetchError('nodes')
+        , ()->
+          # if we tried with pagination, try now without
+          return $scope.fetchNodes(0) if page is 1
+          # otherwise we have a fetch error
+          fetchError("fetch nodes on page #{page}")
 
     $scope.fetchPackages = (page = 1)->
       Restangular.all('packages').getList({ page: page, limit: 50 }).
