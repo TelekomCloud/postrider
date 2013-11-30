@@ -29,6 +29,52 @@ describe 'Controller: MainCtrl', ()->
     @httpBackend.verifyNoOutstandingExpectation()
     @httpBackend.verifyNoOutstandingRequest()
 
+
+  # Some Mockup data:
+  #------------------
+
+  allPackages1 = [
+    { 'name': 'xx', 'versions': [
+        {'version':'1.0','id':'xx10'}
+      ]
+    },
+    { 'name': 'yy', 'versions': [
+        {'version':'1.1','id':'yy11'},
+        {'version':'1.2','id':'yy12'}
+      ]
+    }
+  ]
+
+  package1 = {
+      'name': 'accountsservice',
+      'uri': 'http://us.archive.ubuntu.com/ubuntu/pool/main/a/accountsservice/accountsservice_0.6.15-2ubuntu9_amd64.deb',
+      'summary': 'query and manipulate user account information',
+      'version': '0.6.15-2ubuntu9',
+      'architecture': 'amd64',
+      'provider': 'apt',
+      'archive': 'precise',
+      'nodes': [
+        'my1.full.fqdn'
+      ]
+    }
+
+  package2 = {
+      'name': 'otherservice',
+      'uri': 'http://us.archive.ubuntu.com/ubuntu/pool/main/o/otherservice/otherservice_0.6.15-2ubuntu9_amd64.deb',
+      'summary': 'some other service',
+      'version': '0.2-2ubuntu9',
+      'architecture': 'amd64',
+      'provider': 'apt',
+      'archive': 'precise',
+      'nodes': [
+        'my2.full.fqdn'
+      ]
+    }
+
+
+  # The tests:
+  #-----------
+
   it 'should have no default host configured', () ->
     expect(scope.ponyExpressHost).toBe(undefined)
 
@@ -133,32 +179,22 @@ describe 'Controller: MainCtrl', ()->
     expect(n.packages[0].summary).toBe( 'query and manipulate user account information' )
 
   it 'should be a able to fetch /packages', () ->
-    packages = [
-      { 'name': 'xx', 'versions': [
-          {'version':'1.0','id':'xx10'}
-        ]
-      },
-      { 'name': 'yy', 'versions': [
-          {'version':'1.1','id':'yy11'},
-          {'version':'1.2','id':'yy12'}
-        ]
-      }
-    ]
-    paginateResponse @httpBackend, '/v1/packages', packages, () -> scope.fetchPackages()
+    ps = allPackages1
+    paginateResponse @httpBackend, '/v1/packages', ps, () -> scope.fetchPackages()
 
-    expect(scope.packages.length).toBe(2)
+    expect(scope.packages.length).toBe(ps.length)
     # test both packages
     for idx in [0,1]
-      ps = scope.packages[idx]
-      expect(@typeOf(ps)).toBe('object')
-      expect(ps.name).toBe(packages[idx].name)
-      expect(ps.versions.length).toBe(packages[idx].versions.length)
+      res_p = scope.packages[idx]
+      expect(@typeOf(res_p)).toBe('object')
+      expect(res_p.name).toBe(ps[idx].name)
+      expect(res_p.versions.length).toBe(ps[idx].versions.length)
 
       # every package we load creates an entry in the package map
-      for v in ps.versions
+      for v in res_p.versions
         p = scope.package[v.id]
         expect(@typeOf(p)).toBe('object')
-        expect(p.name).toBe(packages[idx].name)
+        expect(p.name).toBe(ps[idx].name)
         expect(p.version).toBe(v.version)
         expect(p.versions).toBe(undefined)
 
@@ -173,21 +209,9 @@ describe 'Controller: MainCtrl', ()->
     expect(@typeOf(p)).toBe('object')
     expect(p.id).toBe(id)
 
-
   it 'should be able to access /package/xyz info (filled one)', () ->
     id = 'xyz'
-    r = {
-        'name': 'accountsservice',
-        'uri': 'http://us.archive.ubuntu.com/ubuntu/pool/main/a/accountsservice/accountsservice_0.6.15-2ubuntu9_amd64.deb',
-        'summary': 'query and manipulate user account information',
-        'version': '0.6.15-2ubuntu9',
-        'architecture': 'amd64',
-        'provider': 'apt',
-        'archive': 'precise',
-        'nodes': [
-          'my1.full.fqdn'
-        ]
-      }
+    r = package1
     @httpBackend.whenGET('/v1/package/'+id).respond(r)
     @httpBackend.expectGET('/v1/package/'+id)
     scope.fetchPackage(id)
@@ -204,3 +228,17 @@ describe 'Controller: MainCtrl', ()->
     expect(p.provider).toBe(r.provider)
     expect(p.archive).toBe(r.archive)
     expect(p.nodes).toBe(r.nodes)
+
+  it 'should provide all packages if no node is selected', () ->
+    scope.allPackages = allPackages1
+    scope.updatePackageSelection()
+    expect( scope.packages ).toBe( scope.allPackages )
+
+  it 'should provide only the packages assigned to a selected node', () ->
+    scope.allPackages = allPackages1
+    scope.node['n'] = {}
+    scope.node['n'].packages = [ { 'id': allPackages1[0].versions[0].id } ]
+    scope.nodeSelected['n'] = true
+    scope.updatePackageSelection()
+    expect( scope.packages.length ).toBe( 1 )
+    expect( scope.packages[0].name ).toBe( allPackages1[0].name )
