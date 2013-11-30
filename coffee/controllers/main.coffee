@@ -44,12 +44,16 @@ angular.module('postriderApp')
           $scope.updateNodeSelection()
         , fetchError('nodes')
 
-    $scope.fetchPackages = ()->
-      Restangular.all('packages').getList().
+    $scope.fetchPackages = (page = 1)->
+      Restangular.all('packages').getList({ page: page, limit: 50 }).
         then (ns) ->
-          console.log 'fetch packages'
-          $scope.allPackages = ns
+          console.log "fetch packages (page: #{page})"
+          # append the new packages to the list of packages
+          $scope.allPackages.push.apply( $scope.allPackages, ns )
+          # update the selection, i.e. select nodes according to
+          # new package information
           $scope.updatePackageSelection()
+          # add all package info to the map
           for p in ns
             $scope.packageByName[p.name] = p
             for v in p.versions
@@ -57,7 +61,9 @@ angular.module('postriderApp')
                 $scope.package[v.id] = {}
                 $scope.package[v.id].name = p.name
                 $scope.package[v.id].version = v.version
-        , fetchError('packages')
+          # get packages from the next page
+          $scope.fetchPackages( page+1 )
+        , fetchError("fetch packages on page #{page}")
 
     $scope.fetchNode = (id)->
       Restangular.one('node', id).get().
