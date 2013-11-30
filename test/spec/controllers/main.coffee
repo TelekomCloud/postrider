@@ -235,6 +235,18 @@ describe 'Controller: MainCtrl', ()->
     scope.updateNodeSelection()
     expect( scope.nodes ).toBe( scope.allNodes )
 
+  it 'should provide only the node which has the selected package', () ->
+    scope.allNodes = allNodes1
+    scope.packageByName['p'] =
+      'versions': [{ 'id': 'pid' }]
+    scope.package['pid'] = {}
+    scope.package['pid'].nodes = [ { 'id': allNodes1[0].id } ]
+    scope.packageSelected['p'] = true
+    scope.updateNodeSelection()
+    expect( scope.nodes.length ).toBe( 1 )
+    expect( scope.nodes[0].id ).toBe( allNodes1[0].id )
+
+
   it 'should provide all packages if no node is selected', () ->
     scope.allPackages = allPackages1
     scope.updatePackageSelection()
