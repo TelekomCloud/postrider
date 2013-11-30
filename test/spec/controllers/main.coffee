@@ -33,6 +33,11 @@ describe 'Controller: MainCtrl', ()->
   # Some Mockup data:
   #------------------
 
+  allNodes1 = nodes = [
+    { 'id': 'my1.full.fqdn' },
+    { 'id': 'my2.full.fqdn' }
+  ]
+
   allPackages1 = [
     { 'name': 'xx', 'versions': [
         {'version':'1.0','id':'xx10'}
@@ -123,17 +128,13 @@ describe 'Controller: MainCtrl', ()->
     expect(scope.packages.length).toBe(0)
 
   it 'should be able to list /nodes', () ->
-    nodes = [
-      { 'id': 'my1.full.fqdn' },
-      { 'id': 'my2.full.fqdn' }
-    ]
-    paginateResponse @httpBackend, '/v1/nodes', nodes, () -> scope.fetchNodes()
+    paginateResponse @httpBackend, '/v1/nodes', allNodes1, () -> scope.fetchNodes()
 
     expect(scope.nodes.length).toBe(2)
     # test both nodes
     for idx in [0,1]
       expect(@typeOf(scope.nodes[idx])).toBe('object')
-      expect(scope.nodes[idx]['id']).toBe(nodes[idx]['id'])
+      expect(scope.nodes[idx]['id']).toBe(allNodes1[idx]['id'])
 
   it 'should be able to access /node/xyz info (empty node)', () ->
     id = 'test'
@@ -228,6 +229,11 @@ describe 'Controller: MainCtrl', ()->
     expect(p.provider).toBe(r.provider)
     expect(p.archive).toBe(r.archive)
     expect(p.nodes).toBe(r.nodes)
+
+  it 'should provide all nodes if no package is selected', () ->
+    scope.allNodes = allNodes1
+    scope.updateNodeSelection()
+    expect( scope.nodes ).toBe( scope.allNodes )
 
   it 'should provide all packages if no node is selected', () ->
     scope.allPackages = allPackages1
