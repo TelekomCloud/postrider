@@ -52,7 +52,11 @@ angular.module('postriderApp')
           fetchError("fetch nodes on page #{page}")
 
     $scope.fetchPackages = (page = 1)->
-      Restangular.all('packages').getList({ page: page, limit: 50 }).
+      # construct a query for pagination
+      # page == 0 means that we try to fetch without pagination (usually last attempt)
+      query = if page is 0 then {} else {page: page, limit: 50}
+      # get packages
+      Restangular.all('packages').getList(query).
         then (ns) ->
           console.log "fetch packages (page: #{page})"
           # append the new packages to the list of packages
@@ -70,7 +74,11 @@ angular.module('postriderApp')
                 $scope.package[v.id].version = v.version
           # get packages from the next page
           $scope.fetchPackages( page+1 )
-        , fetchError("fetch packages on page #{page}")
+        , ()->
+          # if we tried with pagination, try now without
+          return $scope.fetchPackages(0) if page is 1
+          # otherwise we have a fetch error
+          fetchError("fetch packages on page #{page}")
 
     $scope.fetchNode = (id)->
       Restangular.one('node', id).get().
