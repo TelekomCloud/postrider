@@ -81,16 +81,7 @@ describe 'Controller: MainCtrl', ()->
       { 'id': 'my1.full.fqdn' },
       { 'id': 'my2.full.fqdn' }
     ]
-
-    url = "/v1/nodes?limit=50&page=1"
-    @httpBackend.whenGET(url).respond(nodes)
-    @httpBackend.expectGET(url)
-    url = "/v1/nodes?limit=50&page=2"
-    @httpBackend.whenGET(url).respond(410,'Gone')
-    @httpBackend.expectGET(url)
-
-    scope.fetchNodes()
-    @httpBackend.flush()
+    paginateResponse @httpBackend, '/v1/nodes', nodes, () -> scope.fetchNodes()
 
     expect(scope.nodes.length).toBe(2)
     # test both nodes
@@ -153,16 +144,7 @@ describe 'Controller: MainCtrl', ()->
         ]
       }
     ]
-
-    url = "/v1/packages?limit=50&page=1"
-    @httpBackend.whenGET(url).respond(packages)
-    @httpBackend.expectGET(url)
-    url = "/v1/packages?limit=50&page=2"
-    @httpBackend.whenGET(url).respond(410,'Gone')
-    @httpBackend.expectGET(url)
-
-    scope.fetchPackages()
-    @httpBackend.flush()
+    paginateResponse @httpBackend, '/v1/packages', packages, () -> scope.fetchPackages()
 
     expect(scope.packages.length).toBe(2)
     # test both packages
