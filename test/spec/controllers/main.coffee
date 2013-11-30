@@ -32,6 +32,50 @@ describe 'Controller: MainCtrl', ()->
   it 'should have no default host configured', () ->
     expect(scope.ponyExpressHost).toBe(undefined)
 
+  paginateResponse = (httpBackend, baseUrl, response, action, limit=50)->
+    # 1. working pagination
+    #    it will request page 1, get it,
+    #    and request page 2 and finish
+    url = "#{baseUrl}?limit=#{limit}&page=1"
+    httpBackend.whenGET(url).respond(response)
+    httpBackend.expectGET(url)
+    url = "#{baseUrl}?limit=#{limit}&page=2"
+    httpBackend.whenGET(url).respond(410,'Gone')
+    httpBackend.expectGET(url)
+    # take the action and flush the backend
+    action()
+    httpBackend.flush()
+
+  dontPaginateResponse = (httpBackend, baseUrl, response, action, limit=50)->
+    # 2. no pagination
+    #    it will request page 1, won't get it
+    #    and try without pagination
+    url = "#{baseUrl}?limit=#{limit}&page=1"
+    httpBackend.whenGET(url).respond(410,'Gone')
+    httpBackend.expectGET(url)
+    url = "#{baseUrl}"
+    httpBackend.whenGET(url).respond(response)
+    httpBackend.expectGET(url)
+    # take the action and flush the backend
+    action()
+    httpBackend.flush()
+
+  it 'should paginate /nodes if it supports pagination', ()->
+    paginateResponse @httpBackend, '/v1/nodes', [], () -> scope.fetchNodes()
+    expect(scope.nodes.length).toBe(0)
+
+  it 'should not paginate /nodes if it doesnt supports pagination', ()->
+    dontPaginateResponse @httpBackend, '/v1/nodes', [], ()-> scope.fetchNodes()
+    expect(scope.nodes.length).toBe(0)
+
+  it 'should paginate /packages if it supports pagination', ()->
+    paginateResponse @httpBackend, '/v1/packages', [], ()-> scope.fetchPackages()
+    expect(scope.packages.length).toBe(0)
+
+  it 'should not paginate /packages if it doesnt supports pagination', ()->
+    dontPaginateResponse @httpBackend, '/v1/packages', [], ()-> scope.fetchPackages()
+    expect(scope.packages.length).toBe(0)
+
   it 'should be able to list /nodes', () ->
     nodes = [
       { 'id': 'my1.full.fqdn' },
