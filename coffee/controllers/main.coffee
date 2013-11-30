@@ -36,28 +36,53 @@ angular.module('postriderApp')
       else
         '/'+$scope.ponyExpressVersion
 
-    $scope.fetchNodes = ()->
-      Restangular.all('nodes').getList().
-        then (ns) ->
-          console.log 'fetch nodes'
-          $scope.allNodes = ns
-          $scope.updateNodeSelection()
-        , fetchError('nodes')
+    fetchAllPaginated = (field, action, page = 1, limit = 50)->
+      # construct a query for pagination
+      # page == 0 means that we try to fetch without pagination
+      #   (usually last attempt)
+      query = if page is 0 then {} else {page: page, limit: limit}
+      # fetch the field
+      Restangular.all(field).getList(query).then(
+        # success handling
+        (data) ->
+          console.log "fetched #{field}"
+          action(data)
+          # if we fetched a valid page (page > 0) and got a result
+          # then try fetching the next page
+          fetchAllPaginated(field, action, page + 1, limit) if page > 0
+        # error handling
+        , () ->
+          # if we got an error on the first fetch, try again without pagination
+          return fetchAllPaginated(field, action, 0, limit) if page is 1
+          # otherwise we have a fetch error
+          fetchError("fetch #{field} on page #{page}, limit #{limit}")
+        )
 
-    $scope.fetchPackages = ()->
-      Restangular.all('packages').getList().
-        then (ns) ->
-          console.log 'fetch packages'
-          $scope.allPackages = ns
+    $scope.fetchNodes = (page = 1)->
+      fetchAllPaginated 'nodes',
+        (data) ->
+          # append the new nodes to the list of nodes
+          $scope.allNodes.push.apply( $scope.allNodes, data )
+          # update the selectoin, i.e. select packages according to
+          # new node information
+          $scope.updateNodeSelection()
+
+    $scope.fetchPackages = (page = 1)->
+      fetchAllPaginated 'packages',
+        (data) ->
+          # append the new packages to the list of packages
+          $scope.allPackages.push.apply( $scope.allPackages, data )
+          # update the selection, i.e. select nodes according to
+          # new package information
           $scope.updatePackageSelection()
-          for p in ns
+          # add all package info to the map
+          for p in data
             $scope.packageByName[p.name] = p
             for v in p.versions
               if not $scope.package[v.id]?
                 $scope.package[v.id] = {}
                 $scope.package[v.id].name = p.name
                 $scope.package[v.id].version = v.version
-        , fetchError('packages')
 
     $scope.fetchNode = (id)->
       Restangular.one('node', id).get().
@@ -81,16 +106,16 @@ angular.module('postriderApp')
 
     updateNodeSelectionFor = (packages)->
       # get all package ids for the list of package names
-      pids = _.chain(packages).
+      pids = _(packages).
         # first we get all versions for this package name
         map( (p)-> $scope.packageByName[p].versions ).
         flatten().
-        reject( (e)-> e is undefined ).
+        compact().
         # then get the package id for each package with version
         map( (v)-> v.id ).
         value()
       # get all nodes for the selected packages
-      nodes = _.chain(pids).
+      nodes = _(pids).
         map( (pid)->
           if $scope.package[pid]? and $scope.package[pid].nodes
             ( n.id for n in $scope.package[pid].nodes )
@@ -118,7 +143,7 @@ angular.module('postriderApp')
 
     updatePackageSelectionFor = (nodes)->
       # get all packages for these nodes
-      packages = _.chain(nodes).
+      packages = _(nodes).
         map( (n) ->
           if $scope.node[n]? and $scope.node[n].packages
             ( p.id for p in $scope.node[n].packages )
