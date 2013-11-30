@@ -36,49 +36,53 @@ angular.module('postriderApp')
       else
         '/'+$scope.ponyExpressVersion
 
-    $scope.fetchNodes = (page = 1)->
+    fetchAllPaginated = (field, action, page = 1, limit = 50)->
       # construct a query for pagination
-      # page == 0 means that we try to fetch without pagination (usually last attempt)
-      query = if page is 0 then {} else {page: page, limit: 50}
-      Restangular.all('nodes').getList(query).
-        then (ns) ->
-          console.log 'fetch nodes'
-          $scope.allNodes = ns
-          $scope.updateNodeSelection()
-        , ()->
-          # if we tried with pagination, try now without
-          return $scope.fetchNodes(0) if page is 1
+      # page == 0 means that we try to fetch without pagination
+      #   (usually last attempt)
+      query = if page is 0 then {} else {page: page, limit: limit}
+      # fetch the field
+      Restangular.all(field).getList(query).then(
+        # success handling
+        (data) ->
+          console.log "fetched #{field}"
+          action(data)
+          # if we fetched a valid page (page > 0) and got a result
+          # then try fetching the next page
+          fetchAllPaginated(field, action, page + 1, limit) if page > 0
+        # error handling
+        , () ->
+          # if we got an error on the first fetch, try again without pagination
+          return fetchAllPaginated(field, action, 0, limit) if page is 1
           # otherwise we have a fetch error
-          fetchError("fetch nodes on page #{page}")
+          fetchError("fetch #{field} on page #{page}, limit #{limit}")
+        )
+
+    $scope.fetchNodes = (page = 1)->
+      fetchAllPaginated 'nodes',
+        (data) ->
+          # append the new nodes to the list of nodes
+          $scope.allNodes.push.apply( $scope.allNodes, data )
+          # update the selectoin, i.e. select packages according to
+          # new node information
+          $scope.updateNodeSelection()
 
     $scope.fetchPackages = (page = 1)->
-      # construct a query for pagination
-      # page == 0 means that we try to fetch without pagination (usually last attempt)
-      query = if page is 0 then {} else {page: page, limit: 50}
-      # get packages
-      Restangular.all('packages').getList(query).
-        then (ns) ->
-          console.log "fetch packages (page: #{page})"
+      fetchAllPaginated 'packages',
+        (data) ->
           # append the new packages to the list of packages
-          $scope.allPackages.push.apply( $scope.allPackages, ns )
+          $scope.allPackages.push.apply( $scope.allPackages, data )
           # update the selection, i.e. select nodes according to
           # new package information
           $scope.updatePackageSelection()
           # add all package info to the map
-          for p in ns
+          for p in data
             $scope.packageByName[p.name] = p
             for v in p.versions
               if not $scope.package[v.id]?
                 $scope.package[v.id] = {}
                 $scope.package[v.id].name = p.name
                 $scope.package[v.id].version = v.version
-          # get packages from the next page
-          $scope.fetchPackages( page+1 )
-        , ()->
-          # if we tried with pagination, try now without
-          return $scope.fetchPackages(0) if page is 1
-          # otherwise we have a fetch error
-          fetchError("fetch packages on page #{page}")
 
     $scope.fetchNode = (id)->
       Restangular.one('node', id).get().
