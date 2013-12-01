@@ -25,6 +25,14 @@ Alternatively you can build this project into a client application by running
 at the end. The application is then found in `dist/` and can be used with any webserver (e.g. Apache, Nginx) as a static site.
 
 
+# Contributing
+
+* fork this project
+* add your changes in a separate branch
+* add tests (have a look existing files in `test`)
+* issue a pull request
+
+
 # License
 
 Company: Deutsche Telekom AG
