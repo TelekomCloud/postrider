@@ -4,7 +4,25 @@
 
 A web UI for The Pony Express.
 
-**Under construction...**
+# Installation
+
+If you want to install from source, you will require:
+
+* nodejs (v0.8, v0.10)
+* bower
+* grunt
+
+Run these steps to get the UI running on `http://localhost:9000`
+
+    npm install
+    bower install
+    grunt serve
+
+Alternatively you can build this project into a client application by running
+
+    grunt build
+
+at the end. The application is then found in `dist/` and can be used with any webserver (e.g. Apache, Nginx) as a static site.
 
 
 # License
