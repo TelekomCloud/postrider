@@ -1,6 +1,6 @@
 {
   "name": "postrider",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "dependencies": {},
   "devDependencies": {
     "bower": "~1.2.7",
