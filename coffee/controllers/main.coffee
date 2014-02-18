@@ -39,27 +39,39 @@ angular.module('postriderApp')
     isEmptyArray = (x) ->
       x instanceof Array and x.length == 0
 
-    fetchAllPaginated = (field, action, stop_when = isEmptyArray,
-        page = 1, limit = 50)->
+    fetchAllUnpaginated = (field, action) ->
+      # fetch the field
+      Restangular.all(field).getList().then(
+        (data) ->
+          # if we have a result, process it
+          console.log "fetched #{field} (no pagination)"
+          action(data)
+        , () ->
+          # otherwise we have a fetch error
+          fetchError("fetch #{field} (no pagination)")
+        )
+
+    fetchAllPaginated = (
+      field, action, stop_when = isEmptyArray,
+      page = 1, limit = 50
+      )->
       # construct a query for pagination
-      # page == 0 means that we try to fetch without pagination
-      #   (usually last attempt)
-      query = if page is 0 then {} else {page: page, limit: limit}
+      query = {page: page, limit: limit}
       # fetch the field
       Restangular.all(field).getList(query).then(
         # success handling
         (data) ->
           console.log "fetched #{field} (page = #{page}, limit = #{limit})"
           action(data)
-          # if we fetched a valid page (page > 0) and got a result
+          # if we got a result and want to continue
           # then try fetching the next page
-          if page > 0 and not stop_when(data)
+          if not stop_when(data)
             fetchAllPaginated(field, action, stop_when, page + 1, limit)
         # error handling
         , () ->
           # if we got an error on the first fetch, try again without pagination
           if page is 1
-            return fetchAllPaginated(field, action, stop_when, 0, limit)
+            return fetchAllUnpaginated(field, action)
           # otherwise we have a fetch error
           fetchError("fetch #{field} on page #{page}, limit #{limit}")
         )
