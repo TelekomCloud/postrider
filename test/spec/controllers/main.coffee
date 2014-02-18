@@ -228,7 +228,8 @@ describe 'Controller: MainCtrl', ()->
     expect(p.architecture).toBe(r.architecture)
     expect(p.provider).toBe(r.provider)
     expect(p.archive).toBe(r.archive)
-    expect(p.nodes).toBe(r.nodes)
+    expect(@typeOf(p.nodes)).toBe('array')
+    expect(p.nodes.length).toBe(r.nodes.length)
 
   it 'should provide all nodes if no package is selected', () ->
     scope.allNodes = allNodes1
