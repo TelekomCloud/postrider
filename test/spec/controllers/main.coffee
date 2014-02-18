@@ -112,20 +112,20 @@ describe 'Controller: MainCtrl', ()->
     httpBackend.flush()
 
   it 'should paginate /nodes if it supports pagination', ()->
-    paginateResponse @httpBackend, '/v1/nodes', [], () -> scope.fetchNodes()
-    expect(scope.nodes.length).toBe(0)
+    paginateResponse @httpBackend, '/v1/nodes', allNodes1, () -> scope.fetchNodes()
+    expect(scope.nodes.length).toBe(allNodes1.length)
 
   it 'should not paginate /nodes if it doesnt supports pagination', ()->
-    dontPaginateResponse @httpBackend, '/v1/nodes', [], ()-> scope.fetchNodes()
-    expect(scope.nodes.length).toBe(0)
+    dontPaginateResponse @httpBackend, '/v1/nodes', allNodes1, ()-> scope.fetchNodes()
+    expect(scope.nodes.length).toBe(allNodes1.length)
 
   it 'should paginate /packages if it supports pagination', ()->
-    paginateResponse @httpBackend, '/v1/packages', [], ()-> scope.fetchPackages()
-    expect(scope.packages.length).toBe(0)
+    paginateResponse @httpBackend, '/v1/packages', allPackages1, ()-> scope.fetchPackages()
+    expect(scope.packages.length).toBe(allPackages1.length)
 
   it 'should not paginate /packages if it doesnt supports pagination', ()->
-    dontPaginateResponse @httpBackend, '/v1/packages', [], ()-> scope.fetchPackages()
-    expect(scope.packages.length).toBe(0)
+    dontPaginateResponse @httpBackend, '/v1/packages', allPackages1, ()-> scope.fetchPackages()
+    expect(scope.packages.length).toBe(allPackages1.length)
 
   it 'should be able to list /nodes', () ->
     paginateResponse @httpBackend, '/v1/nodes', allNodes1, () -> scope.fetchNodes()
