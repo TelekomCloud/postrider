@@ -4,7 +4,8 @@ angular.module('postriderApp')
   .controller('MainCtrl', ($scope, $cookies, Restangular) ->
     root.scope = $scope
 
-    $scope.ponyExpressHost = $cookies.ponyExpressHost or undefined
+    $scope.ponyExpressHost =
+      $cookies.ponyExpressHost or ( window.location.host + "/api" )
     $scope.ponyExpressVersion = 'v1'
 
     $scope.allNodes = []

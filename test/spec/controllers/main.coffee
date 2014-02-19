@@ -81,7 +81,7 @@ describe 'Controller: MainCtrl', ()->
   #-----------
 
   it 'should have no default host configured', () ->
-    expect(scope.ponyExpressHost).toBe(undefined)
+    expect(scope.ponyExpressHost).toBe( window.location.host + "/api" )
 
   paginateResponse = (httpBackend, baseUrl, response, action, limit=50)->
     # 1. working pagination
