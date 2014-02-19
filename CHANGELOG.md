@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.1.1
+
+* improvement: configure the default host (pony-express) to be the current host + '/api'
+* improvement: separate unpaginated and paginated queries (better readability)
+* bugfix: stop infinite pagination when the response is empty
+* bugfix: add sass compilation to grunt serve
+
 ## 0.1.0
 
 * feature: query nodes by selected packages
