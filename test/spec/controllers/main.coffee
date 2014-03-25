@@ -87,11 +87,8 @@ describe 'Controller: MainCtrl', ()->
     }
 
 
-  # The tests:
-  #-----------
-
-  it 'should have no default host configured', () ->
-    expect(scope.ponyExpressHost).toBe( window.location.host + "/api" )
+  ## Helpers:
+  ##---------
 
   paginateResponse = (httpBackend, baseUrl, response, action, limit=50)->
     # 1. working pagination
@@ -120,6 +117,16 @@ describe 'Controller: MainCtrl', ()->
     # take the action and flush the backend
     action()
     httpBackend.flush()
+
+
+  # The tests:
+  #-----------
+
+  ## Configuration
+
+  it 'should have no default host configured', () ->
+    expect(scope.ponyExpressHost).toBe( window.location.host + "/api" )
+
 
   it 'should paginate /nodes if it supports pagination', ()->
     paginateResponse @httpBackend, '/v1/nodes', allNodes1, () -> scope.fetchNodes()
