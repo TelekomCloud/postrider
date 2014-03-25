@@ -50,6 +50,16 @@ describe 'Controller: MainCtrl', ()->
     }
   ]
 
+  allMirrors1 = [
+    {
+      'id': '44e5f422-62db-42dc-b1ce-37ca3393710f',
+      'name': 'Magus Mirror',
+      'label': 'live',
+      'url': 'http://archive.canonical.com/ubuntu/dists/precise/partner/binary-amd64/Packages.gz',
+      'provider': 'apt'
+    }
+  ]
+
   package1 = {
       'name': 'accountsservice',
       'uri': 'http://us.archive.ubuntu.com/ubuntu/pool/main/a/accountsservice/accountsservice_0.6.15-2ubuntu9_amd64.deb',
