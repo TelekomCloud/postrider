@@ -124,9 +124,10 @@ describe 'Controller: MainCtrl', ()->
 
   ## Configuration
 
-  it 'should have no default host configured', () ->
+  it 'should have the default host pointing to <HOST>/api', () ->
     expect(scope.ponyExpressHost).toBe( window.location.host + "/api" )
 
+  ## Querying
 
   it 'should paginate /nodes if it supports pagination', ()->
     paginateResponse @httpBackend, '/v1/nodes', allNodes1, () -> scope.fetchNodes()
