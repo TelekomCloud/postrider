@@ -118,6 +118,13 @@ describe 'Controller: MainCtrl', ()->
     action()
     httpBackend.flush()
 
+  callResponse = ($httpBackend, baseUrl, requestType, responseCode, response, action)->
+    $httpBackend["when#{requestType}"](baseUrl).respond(responseCode,response)
+    $httpBackend["expect#{requestType}"](baseUrl)
+    # take the action
+    action()
+    $httpBackend.flush()
+
 
   # The tests:
   #-----------
