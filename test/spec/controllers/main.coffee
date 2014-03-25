@@ -134,7 +134,7 @@ describe 'Controller: MainCtrl', ()->
   it 'should have the default host pointing to <HOST>/api', () ->
     expect(scope.ponyExpressHost).toBe( window.location.host + "/api" )
 
-  ## Querying
+  ## Querying Nodes and Package
 
   it 'should paginate /nodes if it supports pagination', ()->
     paginateResponse @httpBackend, '/v1/nodes', allNodes1, () -> scope.fetchNodes()
@@ -286,3 +286,34 @@ describe 'Controller: MainCtrl', ()->
     scope.updatePackageSelection()
     expect( scope.packages.length ).toBe( 1 )
     expect( scope.packages[0].name ).toBe( allPackages1[0].name )
+
+
+  ## Querying Mirrors
+
+  it 'should be able to [C]reate a new mirror', () ->
+    callResponse @httpBackend, '/v1/mirrors', 'POST', 201, allMirrors1[0], () -> scope.addMirror(allMirrors1[0])
+    expect(scope.mirrors[0]).toBe(allMirrors1[0])
+
+  it 'should [R]ead all mirrors the server has available', () ->
+    paginateResponse @httpBackend, '/v1/mirrors', allMirrors1, () -> scope.fetchMirrors()
+    expect(scope.mirrors.length).toBe(allMirrors1.length)
+
+  it 'should be able to [U]pdate an existing mirror', () ->
+    # TODO: maybe remove the creation and expect it to exist already
+    callResponse @httpBackend, '/v1/mirrors', 'POST', 201, allMirrors1[0], () -> scope.addMirror(allMirrors1[0])
+    expect(scope.mirrors[0]).toBe(allMirrors1[0])
+    # update the name of an existing mirror
+    mirrorUpdate = {
+        'name': 'Minus Monor'
+      }
+    updatedMirror = _.merge( allMirrors1[0], mirrorUpdate)
+    callResponse @httpBackend, '/v1/mirrors', 'PATCH', 200, allMirrors1[0], () -> scope.updateMirror(allMirrors1[0]['id'], mirrorUpdate)
+    expect(scope.mirrors[0]).toBe(updatedMirror)
+
+  it 'should be able to [D]elete an existing mirror', () ->
+    # TODO: maybe remove the creation and expect it to exist already
+    callResponse @httpBackend, '/v1/mirrors', 'POST', 201, allMirrors1[0], () -> scope.addMirror(allMirrors1[0])
+    expect(scope.mirrors[0]).toBe(allMirrors1[0])
+    # update the name of an existing mirror
+    callResponse @httpBackend, '/v1/mirrors', 'DELETE', 204, null, () -> scope.deleteMirror(allMirrors1[0]['id'])
+    expect(scope.mirrors.length).toBe(0)
