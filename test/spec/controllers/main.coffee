@@ -307,7 +307,7 @@ describe 'Controller: MainCtrl', ()->
         'name': 'Minus Monor'
       }
     updatedMirror = _.merge( allMirrors1[0], mirrorUpdate)
-    callResponse @httpBackend, '/v1/mirrors', 'PATCH', 200, allMirrors1[0], () -> scope.updateMirror(allMirrors1[0]['id'], mirrorUpdate)
+    callResponse @httpBackend, '/v1/mirrors', 'PATCH', 200, allMirrors1[0], () -> scope.updateMirror(allMirrors1[0]['id'])
     expect(scope.mirrors[0]).toBe(updatedMirror)
 
   it 'should be able to [D]elete an existing mirror', () ->
