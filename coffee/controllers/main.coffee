@@ -133,6 +133,19 @@ angular.module('postriderApp')
       $scope.mirrors.unshift(nu)
       nu
 
+    $scope.saveMirror = (mirror)->
+      if(mirror.id is undefined)
+        Restangular.one('mirrors').post('',mirror).
+          then (n) ->
+            mirror.id = n.id
+            mirror.saved = true
+          , fetchError('add mirror')
+      else
+        Restangular.one('mirrors', mirror.id).patch(mirror).
+          then (n) ->
+            mirror.saved = true
+          , fetchError('update mirror')
+
     $scope.fetchNode = (id)->
       Restangular.one('node', id).get().
         then (n) ->
