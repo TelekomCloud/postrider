@@ -41,13 +41,14 @@
       <section class="top-bar-section">
         <!-- Right Nav Section -->
         <ul class="right">
-          <li><a ng-click="showConfig = !showConfig" class="fi-widget settingsButton" href="#"></a></li>
+          <li><a ng-click="toggleShow('nav', 'mirrors')" href="#">Mirrors</a></li>
+          <li><a ng-click="toggleShow('nav', 'config')" class="fi-widget settingsButton" href="#"></a></li>
         </ul>
       </section>
     </nav>
     </div>
 
-    <div class="centered-text settingsRow animate-show ng-hide" ng-show="showConfig">
+    <div class="centered-text settingsRow animate-show ng-hide" ng-show="show.nav == 'config'">
       <div class="row">
         <div class="small-12 large-12 columns">
           <h4>Settings</h4>

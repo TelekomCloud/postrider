@@ -17,7 +17,7 @@ angular.module('postriderApp')
     $scope.package = {}
     $scope.packageByName = {}
 
-    $scope.showConfig = false
+    $scope.show = {}
     $scope.nodeVisible = {}
     $scope.nodeSelected = {}
     $scope.packageVisible = {}
@@ -27,6 +27,17 @@ angular.module('postriderApp')
 
     $scope.nodeQuery = ''
     $scope.packageQuery = ''
+
+    # smart toggle function: toggle a field in a group
+    # if no field is active in the group, just activate this field
+    # if this field is already active, deactivate it
+    # if a field is choosen while another is active, the new one will become active
+    # example: toggleShow('nav', 'config'), toggleShow('nav', 'mirrors'), toggleShow('nav', 'mirrors')
+    $scope.toggleShow = (group, field)->
+      if $scope.show[group] == field
+        $scope.show[group] = undefined
+      else
+        $scope.show[group] = field
 
     fetchError = (name)->
       (data) ->
