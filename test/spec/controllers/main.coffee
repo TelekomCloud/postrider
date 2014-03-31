@@ -291,8 +291,16 @@ describe 'Controller: MainCtrl', ()->
   ## Querying Mirrors
 
   it 'should be able to [C]reate a new mirror', () ->
-    callResponse @httpBackend, '/v1/mirrors', 'POST', 201, allMirrors1[0], () -> scope.addMirror(allMirrors1[0])
-    expect(scope.mirrors[0]).toBe(allMirrors1[0])
+    # when you create a new mirror it should add a new position to the list to the front
+    obj = scope.newMirror()
+    expect(obj).toBe(scope.mirrors[0])
+    expect(obj.id).toBe(undefined)
+    expect(obj.saved).toBe(false)
+    # when you click on save, it should issue an post request to the server to indicate a new element
+    callResponse @httpBackend, '/v1/mirrors', 'POST', 201, allMirrors1[0], () -> scope.saveMirror(obj)
+    # make sure nothing is changed if the call was successful
+    expect(obj.id).not.toBe(undefined)
+    expect(obj.saved).toBe(true)
 
   it 'should [R]ead all mirrors the server has available', () ->
     paginateResponse @httpBackend, '/v1/mirrors', allMirrors1, () -> scope.fetchMirrors()
