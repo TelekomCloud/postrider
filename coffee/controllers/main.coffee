@@ -31,8 +31,10 @@ angular.module('postriderApp')
     # smart toggle function: toggle a field in a group
     # if no field is active in the group, just activate this field
     # if this field is already active, deactivate it
-    # if a field is choosen while another is active, the new one will become active
-    # example: toggleShow('nav', 'config'), toggleShow('nav', 'mirrors'), toggleShow('nav', 'mirrors')
+    # if a field is choosen while another is active, the new one
+    #   will become active
+    # example: toggleShow('nav', 'config'), toggleShow('nav', 'mirrors'),
+    # toggleShow('nav', 'mirrors')
     $scope.toggleShow = (group, field)->
       if $scope.show[group] == field
         $scope.show[group] = undefined
