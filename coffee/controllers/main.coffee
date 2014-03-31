@@ -124,6 +124,12 @@ angular.module('postriderApp')
           # append the mirror to the list of mirrors
           $scope.mirrors.push.apply( $scope.mirrors, data )
 
+    $scope.addMirror = (mirror)->
+      Restangular.one('mirrors').post('',mirror).
+        then (n) ->
+          $scope.mirrors.push( n )
+        , fetchError('add mirror')
+
     $scope.fetchNode = (id)->
       Restangular.one('node', id).get().
         then (n) ->
