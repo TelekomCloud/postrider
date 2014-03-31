@@ -318,8 +318,8 @@ describe 'Controller: MainCtrl', ()->
 
   it 'should be able to [D]elete an existing mirror', () ->
     # TODO: maybe remove the creation and expect it to exist already
-    callResponse @httpBackend, '/v1/mirrors', 'POST', 201, allMirrors1[0], () -> scope.addMirror(allMirrors1[0])
-    expect(scope.mirrors[0]).toBe(allMirrors1[0])
+    obj = scope.newMirror()
+    callResponse @httpBackend, '/v1/mirrors', 'POST', 201, allMirrors1[0], () -> scope.saveMirror(obj)
     # update the name of an existing mirror
-    callResponse @httpBackend, '/v1/mirrors', 'DELETE', 204, null, () -> scope.deleteMirror(allMirrors1[0]['id'])
+    callResponse @httpBackend, '/v1/mirrors', 'DELETE', 204, null, () -> scope.deleteMirror(obj)
     expect(scope.mirrors.length).toBe(0)
