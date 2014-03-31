@@ -146,6 +146,17 @@ angular.module('postriderApp')
             mirror.saved = true
           , fetchError('update mirror')
 
+    $scope.deleteMirror = (mirror)->
+      idx = $scope.mirrors.indexOf(mirror)
+      if( idx < 0)
+        console.log("EE can't find mirror to delete")
+        console.log(mirror)
+      else
+        Restangular.one('mirrors').remove(mirror.id).
+          then (n) ->
+            $scope.mirrors.splice(idx,1)
+          , fetchError('delete mirror')
+
     $scope.fetchNode = (id)->
       Restangular.one('node', id).get().
         then (n) ->
