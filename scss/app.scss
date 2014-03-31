@@ -10,6 +10,7 @@ $color2_fg: #B26100;
 $color2_bg: #FF8B00;
 // outlier for hovering
 $light_bg: #CFF0FF;
+$light_grey_bg: #EAEAEA;
 
 .loading {
   display: block;
@@ -90,5 +91,20 @@ $light_bg: #CFF0FF;
   }
   .selected-true {
     color: $color1_fg;
+  }
+}
+
+#mirrorConfig {
+  .mirrorList .columns {
+    padding: 8px 15px;
+    margin: 3px 15px;
+    background: #fff;
+    border-radius: 4px;
+    color: black;
+
+    &:hover {
+      background: $light_grey_bg;
+      cursor: pointer;
+    }
   }
 }
