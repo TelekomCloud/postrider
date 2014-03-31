@@ -83,3 +83,12 @@ $light_bg: #CFF0FF;
 .packageMirrorFilter {
   background: $color1_bg;
 }
+
+#ddPackageMirror {
+  :hover {
+    background: $light_bg;
+  }
+  .selected-true {
+    color: $color1_fg;
+  }
+}

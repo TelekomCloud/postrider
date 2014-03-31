@@ -120,7 +120,7 @@
                 <li><a href="#">no mirrors found</a></li>
               </span>
               <span data-ng-repeat="m in mirrors" ng-show="mirrors.length > 0">
-                <li><a href="#" ng-click="selectPackageMirror(m)">{{m.name}}</a></li>
+                <li><a href="#" ng-click="selectMirror(m)" class="selected-{{mirrorSelected[m.id]}}">{{m.name}}</a></li>
               </span>
             </ul>
 

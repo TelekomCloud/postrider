@@ -23,6 +23,7 @@ angular.module('postriderApp')
     $scope.packageVisible = {}
     $scope.packageSelected = {}
     $scope.packageFetching = {}
+    $scope.mirrorSelected = {}
 
     $scope.nodeQuery = ''
     $scope.packageQuery = ''
@@ -224,6 +225,10 @@ angular.module('postriderApp')
       $scope.packageSelected[p.name] = not $scope.packageSelected[p.name]
       $scope.updateNodeSelection()
       $scope.showPackage(p)
+
+    $scope.selectMirror = (m)->
+      console.log("mirror #{m.name} (#{m.id}) selected")
+      $scope.mirrorSelected[m.id] = not $scope.mirrorSelected[m.id]
 
     $scope.loadData = ()->
       # update the cookie with a working url
