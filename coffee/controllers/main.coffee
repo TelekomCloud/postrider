@@ -12,6 +12,7 @@ angular.module('postriderApp')
     $scope.allPackages = []
     $scope.nodes = []
     $scope.packages = []
+    $scope.mirrors = []
     $scope.node = {}
     $scope.package = {}
     $scope.packageByName = {}
@@ -102,6 +103,12 @@ angular.module('postriderApp')
                 $scope.package[v.id] = {}
                 $scope.package[v.id].name = p.name
                 $scope.package[v.id].version = v.version
+
+    $scope.fetchMirrors = (page = 1)->
+      fetchAllPaginated 'mirrors',
+        (data) ->
+          # append the mirror to the list of mirrors
+          $scope.mirrors.push.apply( $scope.mirrors, data )
 
     $scope.fetchNode = (id)->
       Restangular.one('node', id).get().
@@ -226,6 +233,7 @@ angular.module('postriderApp')
       # fetch base data
       $scope.fetchNodes()
       $scope.fetchPackages()
+      $scope.fetchMirrors()
 
     # initialize this module
     $? && $(document).ready ()->
