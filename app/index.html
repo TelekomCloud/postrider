@@ -48,6 +48,32 @@
     </nav>
     </div>
 
+    <div id="mirrorConfig" class="centered-text settingsRow animate-show ng-hide" ng-show="show.nav == 'mirrors'">
+      <div class="row">
+        <div class="small-12 columns">
+          <h4>Mirror configuration</h4>
+        </div>
+      </div>
+      <div class="row">
+        <div class="small-12 large-6 columns mirrorList">
+          <span ng-show="mirrors.length === undefined || mirrors.length === 0" >
+            <div class="row">
+              <div class="small-12 columns">
+                no mirrors found
+              </div>
+            </div>
+          </span>
+          <span data-ng-repeat="m in mirrors" ng-show="mirrors.length > 0">
+            <div class="row" ng-click="editMirror(m)">
+              <div class="small-12 columns">
+                {{m.name}}
+              </div>
+            </div>
+          </span>
+        </div>
+      </div>
+    </div>
+
     <div class="centered-text settingsRow animate-show ng-hide" ng-show="show.nav == 'config'">
       <div class="row">
         <div class="small-12 large-12 columns">
