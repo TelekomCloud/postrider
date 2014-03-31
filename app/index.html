@@ -109,7 +109,11 @@
       <div class="small-12 large-6 columns">
         <div class="row mainContents">
           <div class="small-12 large-12 columns">
-            <h4>Packages <small>({{packages.length}})</small></h4>
+            <h4>
+              Packages
+              <small>({{packages.length}})</small>
+              <small><a ng-click="showPackageMirrorConfig = !showPackageMirrorConfig" href="#">compare to...</a></small>
+            </h4>
           </div>
         </div>
 
