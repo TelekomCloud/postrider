@@ -24,6 +24,7 @@ angular.module('postriderApp')
     $scope.packageSelected = {}
     $scope.packageFetching = {}
     $scope.mirrorSelected = {}
+    $scope.editingMirror = {}
 
     $scope.nodeQuery = ''
     $scope.packageQuery = ''
@@ -126,10 +127,10 @@ angular.module('postriderApp')
 
     $scope.newMirror = ()->
       nu = {
-          id: undefined,
-          name: undefined
-          saved: false
-        }
+        id: undefined,
+        name: undefined
+        saved: false
+      }
       $scope.mirrors.unshift(nu)
       nu
 
@@ -156,6 +157,10 @@ angular.module('postriderApp')
           then (n) ->
             $scope.mirrors.splice(idx,1)
           , fetchError('delete mirror')
+
+    $scope.editMirror = (mirror)->
+      $scope.editingMirror[mirror.id] = not $scope.editingMirror[mirror.id]
+
 
     $scope.fetchNode = (id)->
       Restangular.one('node', id).get().
