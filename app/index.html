@@ -54,6 +54,48 @@
           <h4>Mirror configuration<small><a ng-click="newMirror()" class="fi-page-add addButton" href="#"></a></small></h4>
         </div>
       </div>
+      <!-- newly created mirrors -->
+      <div class="row">
+        <div class="small-12 columns mirrorList">
+          <div class="row" data-ng-repeat="m in newMirrors" ng-show="newMirrors.length > 0">
+            <div class="small-12 large-6 columns editMirror">
+
+                <div class="row">
+                  <div class="small-12 columns inputLine">
+                    <label>Name: </label>
+                    <input type="text" class="name len-{{m.name.length}}" ng-model="m.name">
+                  </div>
+                </div>
+
+                <div class="row">
+                  <div class="small-12 columns inputLine">
+                    <label>Label: </label>
+                    <input type="text" class="label len-{{m.label.length}}" ng-model="m.label">
+                  </div>
+                </div>
+
+                <div class="row">
+                  <div class="small-12 columns inputLine">
+                    <label>URL: </label>
+                    <input type="text" class="label len-{{m.url.length}}" ng-model="m.url">
+                    <select ng-model="m.provider" for="right-label" class="right inline" style="width: 20%">
+                      <option value="apt">apt</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div class="icons">
+                  <a ng-click="saveMirror(m)" class="fi-save saveButton" href="#"></a>
+                  <a ng-click="cancelEditMirror(m)" class="fi-x exitButton" href="#"></a>
+                </div>
+
+              </div>
+
+          </div>
+        </div>
+      </div>
+
+      <!-- currently active + editing mirrors -->
       <div class="row">
         <div class="small-12 columns mirrorList">
           <span ng-show="mirrors.length === undefined || mirrors.length === 0" >
