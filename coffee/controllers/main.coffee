@@ -177,12 +177,25 @@ angular.module('postriderApp')
       $scope.newMirrors.push({})
 
     $scope.editMirror = (mirror)->
-      if( $scope.editingMirror[mirror.id] is undefined )
-        # copy a cloned copy of all the entries to a separate object for editing
-        $scope.editingMirror[mirror.id] = JSON.parse( JSON.stringify( mirror ) )
+      # copy a cloned copy of all the entries to a separate object for editing
+      $scope.editingMirror[mirror.id] = JSON.parse( JSON.stringify( mirror ) )
+
+    $scope.cancelEditMirror = (mirror)->
+      # if the mirror already exists
+      if mirror.id?
+        # remove it from the list of editings
+        if $scope.editingMirror[mirror.id]?
+          $scope.editingMirror[mirror.id] = undefined
+        else
+          console.error "Can't cancel editing for mirror (#{mirror.id})"
+      # if the mirror is new and doesn't yet have an id
       else
-        # remove the object from editing
-        $scope.editingMirror[mirror.id] = undefined
+        # remove it by index
+        idx = $scope.newMirrors.indexOf(mirror)
+        if idx >= 0
+          $scope.newMirrors.splice(idx,1)
+        else
+          console.error "Can't cancel editing of new mirror #{mirror}."
 
     $scope.fetchNode = (id)->
       Restangular.one('node', id).get().
