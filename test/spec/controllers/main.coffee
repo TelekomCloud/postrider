@@ -292,15 +292,15 @@ describe 'Controller: MainCtrl', ()->
 
   it 'should be able to [C]reate a new mirror', () ->
     # when you create a new mirror it should add a new position to the list to the front
-    obj = scope.newMirror()
-    expect(obj).toBe(scope.mirrors[0])
-    expect(obj.id).toBe(undefined)
-    expect(obj.saved).toBe(false)
+    expect( scope.newMirrors.length ).toBe(0)
+    scope.newMirror()
+    expect( scope.newMirrors.length ).toBe(1)
+    expect( scope.newMirrors[0].id ).toBe(undefined)
     # when you click on save, it should issue an post request to the server to indicate a new element
-    callResponse @httpBackend, '/v1/mirrors', 'POST', 201, allMirrors1[0], () -> scope.saveMirror(obj)
+    callResponse @httpBackend, '/v1/mirrors', 'POST', 201, allMirrors1[0], () -> scope.saveMirror(scope.newMirrors[0])
     # make sure nothing is changed if the call was successful
-    expect(obj.id).not.toBe(undefined)
-    expect(obj.saved).toBe(true)
+    expect( scope.newMirrors.length ).toBe(0)
+    expect( scope.mirrors[0].id ).not.toBe(undefined)
 
   it 'should [R]ead all mirrors the server has available', () ->
     paginateResponse @httpBackend, '/v1/mirrors', allMirrors1, () -> scope.fetchMirrors()
@@ -308,18 +308,32 @@ describe 'Controller: MainCtrl', ()->
 
   it 'should be able to [U]pdate an existing mirror', () ->
     # TODO: maybe remove the creation and expect it to exist already
-    obj = scope.newMirror()
-    callResponse @httpBackend, '/v1/mirrors', 'POST', 201, allMirrors1[0], () -> scope.saveMirror(obj)
-    # update the name of an existing mirror
-    obj.name = 'Minus Monor'
-    obj.saved = false
-    callResponse @httpBackend, '/v1/mirrors/'+obj.id, 'PATCH', 200, allMirrors1[0], () -> scope.saveMirror(obj)
-    expect(obj.saved).toBe(true)
+    scope.newMirror()
+    callResponse @httpBackend, '/v1/mirrors', 'POST', 201, allMirrors1[0], () -> scope.saveMirror(scope.newMirrors[0])
+
+    # initiate editing of a mirror
+    obj = scope.mirrors[0]
+    expect(scope.editingMirror[obj.id]).toBe(undefined)
+    scope.editMirror(obj)
+    expect(scope.editingMirror[obj.id]).not.toBe(undefined)
+
+    # change some property of this mirror
+    scope.editingMirror[obj.id].name = 'Minus Monor'
+
+    # save the result
+    res = allMirrors1[0]
+    res.name = 'Minus Monor'
+    callResponse @httpBackend, '/v1/mirrors/'+obj.id, 'PATCH', 200, res, () -> scope.saveMirror(scope.editingMirror[obj.id])
+
+    # check if the results are correct
+    expect(scope.editingMirror[obj.id]).toBe(undefined)
+    obj = scope.mirrors[0]
+    expect(obj.name).toBe('Minus Monor')
 
   it 'should be able to [D]elete an existing mirror', () ->
     # TODO: maybe remove the creation and expect it to exist already
-    obj = scope.newMirror()
-    callResponse @httpBackend, '/v1/mirrors', 'POST', 201, allMirrors1[0], () -> scope.saveMirror(obj)
+    scope.newMirror()
+    callResponse @httpBackend, '/v1/mirrors', 'POST', 201, allMirrors1[0], () -> scope.saveMirror(scope.newMirrors[0])
     # update the name of an existing mirror
-    callResponse @httpBackend, '/v1/mirrors', 'DELETE', 204, null, () -> scope.deleteMirror(obj)
+    callResponse @httpBackend, '/v1/mirrors', 'DELETE', 204, null, () -> scope.deleteMirror(scope.mirrors[0])
     expect(scope.mirrors.length).toBe(0)

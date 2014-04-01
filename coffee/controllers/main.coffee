@@ -24,6 +24,7 @@ angular.module('postriderApp')
     $scope.packageSelected = {}
     $scope.packageFetching = {}
     $scope.mirrorSelected = {}
+    $scope.newMirrors = []
     $scope.editingMirror = {}
 
     $scope.nodeQuery = ''
@@ -125,27 +126,40 @@ angular.module('postriderApp')
           # append the mirror to the list of mirrors
           $scope.mirrors.push.apply( $scope.mirrors, data )
 
-    $scope.newMirror = ()->
-      nu = {
-        id: undefined,
-        name: undefined
-        saved: false
-      }
-      $scope.mirrors.unshift(nu)
-      nu
+    saveNewMirror = (mirror)->
+      console.log "creating a new mirror..."
+      # or if it's in the new elements, remove it first
+      idx = $scope.newMirrors.indexOf(mirror)
+      if idx >= 0
+        $scope.newMirrors.splice( idx, 1 )
+      else
+        console.error "EE: can't remove new mirror: #{mirror}"
+      # make the request to the server
+      Restangular.one('mirrors').post('',mirror).
+        then (n) ->
+          $scope.mirrors.unshift( n )
+        , fetchError('add mirror')
+
+    saveExistingMirror = (mirror)->
+      console.log "saving the existing mirror id: #{mirror.id}..."
+      # remove the mirror from the list of editings
+      $scope.editingMirror[mirror.id] = undefined
+      # make the request to the server
+      Restangular.one('mirrors', mirror.id).patch(mirror).
+        then (n) ->
+          idx = _.findIndex( $scope.mirrors, (i) -> i.id is mirror.id)
+          if idx >= 0
+            $scope.mirrors[idx] = n
+          else
+            console.error "EE: can't update mirror #{mirror.id}, "+
+              "i can't find it in the list of mirrors"
+        , fetchError('update mirror')
 
     $scope.saveMirror = (mirror)->
-      if(mirror.id is undefined)
-        Restangular.one('mirrors').post('',mirror).
-          then (n) ->
-            $scope.mirrors.unshift( n )
-          , fetchError('add mirror')
+      if(mirror.id?)
+        saveExistingMirror(mirror)
       else
-        Restangular.one('mirrors', mirror.id).patch(mirror).
-          then (n) ->
-            idx = _.findIndex( $scope.mirrors, (i) -> i.id is mirror.id)
-            $scope.mirrors[idx] = n
-          , fetchError('update mirror')
+        saveNewMirror(mirror)
 
     $scope.deleteMirror = (mirror)->
       idx = $scope.mirrors.indexOf(mirror)
@@ -158,6 +172,10 @@ angular.module('postriderApp')
             $scope.mirrors.splice(idx,1)
           , fetchError('delete mirror')
 
+    $scope.newMirror = ()->
+      # add a new mirror object to be edited
+      $scope.newMirrors.push({})
+
     $scope.editMirror = (mirror)->
       if( $scope.editingMirror[mirror.id] is undefined )
         # copy a cloned copy of all the entries to a separate object for editing
@@ -165,11 +183,6 @@ angular.module('postriderApp')
       else
         # remove the object from editing
         $scope.editingMirror[mirror.id] = undefined
-
-    $scope.saveMirrorEdit = (mirror)->
-      $scope.saveMirror(mirror)
-      # end the editing
-      $scope.editingMirror[mirror.id] = undefined
 
     $scope.fetchNode = (id)->
       Restangular.one('node', id).get().
