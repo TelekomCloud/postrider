@@ -108,6 +108,21 @@ $light_grey_bg: #EAEAEA;
     }
   }
 
+  .addButton {
+    color: white;
+    display: inline-block;
+    margin-left: 0.5rem;
+    // font seems to produce a pixel error here...
+    position: relative;
+    top: -1px;
+    padding: 0.4rem;
+    // custom hover effect
+    &:hover {
+      background: lighten( $color1_bg, 10 );
+      border-radius: 0.2rem;
+    }
+  }
+
   .editMirror {
     border: 1px solid #ccc;
     background: white;
