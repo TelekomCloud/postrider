@@ -335,5 +335,5 @@ describe 'Controller: MainCtrl', ()->
     scope.newMirror()
     callResponse @httpBackend, '/v1/mirrors', 'POST', 201, allMirrors1[0], () -> scope.saveMirror(scope.newMirrors[0])
     # update the name of an existing mirror
-    callResponse @httpBackend, '/v1/mirrors', 'DELETE', 204, null, () -> scope.deleteMirror(scope.mirrors[0])
+    callResponse @httpBackend, '/v1/mirrors/'+scope.mirrors[0].id, 'DELETE', 204, null, () -> scope.deleteMirror(scope.mirrors[0])
     expect(scope.mirrors.length).toBe(0)
