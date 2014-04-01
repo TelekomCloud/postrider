@@ -138,13 +138,13 @@ angular.module('postriderApp')
       if(mirror.id is undefined)
         Restangular.one('mirrors').post('',mirror).
           then (n) ->
-            mirror.id = n.id
-            mirror.saved = true
+            $scope.mirrors.unshift( n )
           , fetchError('add mirror')
       else
         Restangular.one('mirrors', mirror.id).patch(mirror).
           then (n) ->
-            mirror.saved = true
+            idx = _.findIndex( $scope.mirrors, (i) -> i.id is mirror.id)
+            $scope.mirrors[idx] = n
           , fetchError('update mirror')
 
     $scope.deleteMirror = (mirror)->
@@ -159,8 +159,17 @@ angular.module('postriderApp')
           , fetchError('delete mirror')
 
     $scope.editMirror = (mirror)->
-      $scope.editingMirror[mirror.id] = not $scope.editingMirror[mirror.id]
+      if( $scope.editingMirror[mirror.id] is undefined )
+        # copy a cloned copy of all the entries to a separate object for editing
+        $scope.editingMirror[mirror.id] = JSON.parse( JSON.stringify( mirror ) )
+      else
+        # remove the object from editing
+        $scope.editingMirror[mirror.id] = undefined
 
+    $scope.saveMirrorEdit = (mirror)->
+      $scope.saveMirror(mirror)
+      # end the editing
+      $scope.editingMirror[mirror.id] = undefined
 
     $scope.fetchNode = (id)->
       Restangular.one('node', id).get().
