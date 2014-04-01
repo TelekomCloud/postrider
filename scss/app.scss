@@ -200,4 +200,16 @@ $light_grey_bg: #EAEAEA;
       }
     }
   }
+
+  .removeButton {
+    margin-top: 0.4rem;
+    margin-bottom: 0.4rem;
+    background-color: #aaa;
+    padding: 0.5rem 0.8rem;
+    border-radius: 0.3rem;
+    font-size: small;
+    &:hover {
+      background-color: #E95353;
+    }
+  }
 }

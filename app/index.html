@@ -139,9 +139,15 @@
                   </div>
                 </div>
 
+                <div class="row">
+                  <div class="small-12 columns">
+                    <a href="#" class="button alert removeButton left" ng-click="deleteMirror(m)">Remove mirror</a>
+                  </div>
+                </div>
+
                 <div class="icons">
                   <a ng-click="saveMirror(editingMirror[m.id])" class="fi-save saveButton" href="#"></a>
-                  <a ng-click="editMirror(m)" class="fi-x exitButton" href="#"></a>
+                  <a ng-click="cancelEditMirror(m)" class="fi-x exitButton" href="#"></a>
                 </div>
 
               </div>
