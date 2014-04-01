@@ -194,6 +194,9 @@ $light_grey_bg: #EAEAEA;
       right: 0.7rem;
       a {
         color: #666;
+        &:hover {
+          color: $color1_fg;
+        }
       }
     }
   }
