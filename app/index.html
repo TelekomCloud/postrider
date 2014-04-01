@@ -51,23 +51,108 @@
     <div id="mirrorConfig" class="centered-text settingsRow animate-show ng-hide" ng-show="show.nav == 'mirrors'">
       <div class="row">
         <div class="small-12 columns">
-          <h4>Mirror configuration</h4>
+          <h4>Mirror configuration<small><a ng-click="newMirror()" class="fi-page-add addButton" href="#"></a></small></h4>
         </div>
       </div>
+      <!-- newly created mirrors -->
       <div class="row">
-        <div class="small-12 large-6 columns mirrorList">
+        <div class="small-12 columns mirrorList">
+          <div class="row" data-ng-repeat="m in newMirrors" ng-show="newMirrors.length > 0">
+            <div class="small-12 large-6 columns editMirror">
+
+                <div class="row">
+                  <div class="small-12 columns inputLine">
+                    <label>Name: </label>
+                    <input type="text" class="name len-{{m.name.length}}" ng-model="m.name">
+                  </div>
+                </div>
+
+                <div class="row">
+                  <div class="small-12 columns inputLine">
+                    <label>Label: </label>
+                    <input type="text" class="label len-{{m.label.length}}" ng-model="m.label">
+                  </div>
+                </div>
+
+                <div class="row">
+                  <div class="small-12 columns inputLine">
+                    <label>URL: </label>
+                    <input type="text" class="label len-{{m.url.length}}" ng-model="m.url">
+                    <select ng-model="m.provider" for="right-label" class="right inline" style="width: 20%">
+                      <option value="apt">apt</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div class="icons">
+                  <a ng-click="saveMirror(m)" class="fi-save saveButton" href="#"></a>
+                  <a ng-click="cancelEditMirror(m)" class="fi-x exitButton" href="#"></a>
+                </div>
+
+              </div>
+
+          </div>
+        </div>
+      </div>
+
+      <!-- currently active + editing mirrors -->
+      <div class="row">
+        <div class="small-12 columns mirrorList">
           <span ng-show="mirrors.length === undefined || mirrors.length === 0" >
             <div class="row">
-              <div class="small-12 columns">
+              <div class="small-12 large-6 columns">
                 no mirrors found
               </div>
             </div>
           </span>
           <span data-ng-repeat="m in mirrors" ng-show="mirrors.length > 0">
-            <div class="row" ng-click="editMirror(m)">
-              <div class="small-12 columns entry">
+            <div class="row" ng-click="editMirror(m)" ng-show="editingMirror[m.id] === undefined">
+              <div class="small-12 large-6 columns entry">
                 {{m.name}}
               </div>
+            </div>
+            <div class="row" ng-show="editingMirror[m.id] !== undefined">
+
+              <div class="small-12 large-6 columns editMirror">
+
+                <div class="row">
+                  <div class="small-12 columns inputLine">
+                    <label>Name: </label>
+                    <input type="text" class="name len-{{editingMirror[m.id].name.length}}" ng-model="editingMirror[m.id].name">
+                  </div>
+                </div>
+
+                <div class="row">
+                  <div class="small-12 columns inputLine">
+                    <label>Label: </label>
+                    <input type="text" class="label len-{{editingMirror[m.id].label.length}}" ng-model="editingMirror[m.id].label">
+                  </div>
+                </div>
+
+                <div class="row">
+                  <div class="small-12 columns inputLine">
+                    <label>URL: </label>
+                    <input type="text" class="label len-{{editingMirror[m.id].url.length}}" ng-model="editingMirror[m.id].url">
+                    <select ng-model="editingMirror[m.id].provider" for="right-label" class="right inline" style="width: 20%">
+                      <option value="apt">apt</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div class="row">
+                  <div class="small-12 columns">
+                    <a href="#" class="button alert removeButton left" ng-click="deleteMirror(m)">Remove mirror</a>
+                  </div>
+                </div>
+
+                <div class="icons">
+                  <a ng-click="saveMirror(editingMirror[m.id])" class="fi-save saveButton" href="#"></a>
+                  <a ng-click="cancelEditMirror(m)" class="fi-x exitButton" href="#"></a>
+                </div>
+
+              </div>
+
+
             </div>
           </span>
         </div>

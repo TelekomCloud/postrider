@@ -98,13 +98,118 @@ $light_grey_bg: #EAEAEA;
   .mirrorList .columns.entry {
     padding: 8px 15px;
     margin: 3px 15px;
-    background: #fff;
     border-radius: 4px;
-    color: black;
+    color: #fff;
+    border: 1px dashed #fff;
 
     &:hover {
-      background: $light_grey_bg;
+      background: lighten( $color1_bg, 10 );
       cursor: pointer;
+    }
+  }
+
+  .addButton {
+    color: white;
+    display: inline-block;
+    margin-left: 0.5rem;
+    // font seems to produce a pixel error here...
+    position: relative;
+    top: -1px;
+    padding: 0.4rem;
+    // custom hover effect
+    &:hover {
+      background: lighten( $color1_bg, 10 );
+      border-radius: 0.2rem;
+    }
+  }
+
+  .editMirror {
+    border: 1px solid #ccc;
+    background: white;
+    color: black;
+    margin: 3px 15px;
+    padding: 0.4rem 0.8rem;
+    border-radius: 4px;
+
+    .inputLine {
+      display: flex;
+      flex: 1 1 0%;
+      margin: 0;
+
+      & label {
+        color: #666;
+        display: inline-block;
+        padding: 0.6rem 0.7rem 0.5rem 0.0rem;
+        height: 2.3125rem;
+        border: 1px solid white;
+        margin-bottom: 0;
+        font-size: small;
+      }
+      & input {
+        color: black;
+        display: flex;
+        height: 2.3125rem;
+        cursor: text;
+        margin-bottom: 0;
+        text-align: left;
+        text-overflow: ellipsis;
+
+        &:not(:focus).len-0 {
+          border: none;
+          border-bottom: 1px solid #E5E5E5;
+          box-shadow: none;
+          height: 1.6rem;
+          padding-top: 1.1rem;
+          padding-bottom: 0;
+        }
+        &:not(:focus):not(.len-0) {
+          //border: 1px dotted #cccccc;
+          border: none;
+          box-shadow: none;
+        }
+
+        &:focus {
+          z-index: 100;
+        }
+      }
+
+      & select {
+        display: flex;
+        margin-bottom: 0;
+
+        &:not(:focus) {
+          border: none;
+          background: none;
+        }
+
+        &:hover {
+          background: #eee;
+        }
+      }
+    }
+
+    .icons {
+      position: absolute;
+      top: 0.3rem;
+      right: 0.7rem;
+      a {
+        color: #666;
+        &:hover {
+          color: $color1_fg;
+        }
+      }
+    }
+  }
+
+  .removeButton {
+    margin-top: 0.4rem;
+    margin-bottom: 0.4rem;
+    background-color: #aaa;
+    padding: 0.5rem 0.8rem;
+    border-radius: 0.3rem;
+    font-size: small;
+    &:hover {
+      background-color: #E95353;
     }
   }
 }
