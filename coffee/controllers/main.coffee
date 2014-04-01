@@ -12,19 +12,34 @@ angular.module('postriderApp')
     $scope.allPackages = []
     $scope.nodes = []
     $scope.packages = []
+    $scope.mirrors = []
     $scope.node = {}
     $scope.package = {}
     $scope.packageByName = {}
 
-    $scope.showConfig = false
+    $scope.show = {}
     $scope.nodeVisible = {}
     $scope.nodeSelected = {}
     $scope.packageVisible = {}
     $scope.packageSelected = {}
     $scope.packageFetching = {}
+    $scope.mirrorSelected = {}
 
     $scope.nodeQuery = ''
     $scope.packageQuery = ''
+
+    # smart toggle function: toggle a field in a group
+    # if no field is active in the group, just activate this field
+    # if this field is already active, deactivate it
+    # if a field is choosen while another is active, the new one
+    #   will become active
+    # example: toggleShow('nav', 'config'), toggleShow('nav', 'mirrors'),
+    # toggleShow('nav', 'mirrors')
+    $scope.toggleShow = (group, field)->
+      if $scope.show[group] == field
+        $scope.show[group] = undefined
+      else
+        $scope.show[group] = field
 
     fetchError = (name)->
       (data) ->
@@ -102,6 +117,45 @@ angular.module('postriderApp')
                 $scope.package[v.id] = {}
                 $scope.package[v.id].name = p.name
                 $scope.package[v.id].version = v.version
+
+    $scope.fetchMirrors = (page = 1)->
+      fetchAllPaginated 'mirrors',
+        (data) ->
+          # append the mirror to the list of mirrors
+          $scope.mirrors.push.apply( $scope.mirrors, data )
+
+    $scope.newMirror = ()->
+      nu = {
+          id: undefined,
+          name: undefined
+          saved: false
+        }
+      $scope.mirrors.unshift(nu)
+      nu
+
+    $scope.saveMirror = (mirror)->
+      if(mirror.id is undefined)
+        Restangular.one('mirrors').post('',mirror).
+          then (n) ->
+            mirror.id = n.id
+            mirror.saved = true
+          , fetchError('add mirror')
+      else
+        Restangular.one('mirrors', mirror.id).patch(mirror).
+          then (n) ->
+            mirror.saved = true
+          , fetchError('update mirror')
+
+    $scope.deleteMirror = (mirror)->
+      idx = $scope.mirrors.indexOf(mirror)
+      if( idx < 0)
+        console.log("EE can't find mirror to delete")
+        console.log(mirror)
+      else
+        Restangular.one('mirrors').remove(mirror.id).
+          then (n) ->
+            $scope.mirrors.splice(idx,1)
+          , fetchError('delete mirror')
 
     $scope.fetchNode = (id)->
       Restangular.one('node', id).get().
@@ -218,6 +272,10 @@ angular.module('postriderApp')
       $scope.updateNodeSelection()
       $scope.showPackage(p)
 
+    $scope.selectMirror = (m)->
+      console.log("mirror #{m.name} (#{m.id}) selected")
+      $scope.mirrorSelected[m.id] = not $scope.mirrorSelected[m.id]
+
     $scope.loadData = ()->
       # update the cookie with a working url
       $cookies.ponyExpressHost = $scope.ponyExpressHost
@@ -226,6 +284,7 @@ angular.module('postriderApp')
       # fetch base data
       $scope.fetchNodes()
       $scope.fetchPackages()
+      $scope.fetchMirrors()
 
     # initialize this module
     $? && $(document).ready ()->

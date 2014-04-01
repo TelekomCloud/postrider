@@ -50,6 +50,16 @@ describe 'Controller: MainCtrl', ()->
     }
   ]
 
+  allMirrors1 = [
+    {
+      'id': '44e5f422-62db-42dc-b1ce-37ca3393710f',
+      'name': 'Magus Mirror',
+      'label': 'live',
+      'url': 'http://archive.canonical.com/ubuntu/dists/precise/partner/binary-amd64/Packages.gz',
+      'provider': 'apt'
+    }
+  ]
+
   package1 = {
       'name': 'accountsservice',
       'uri': 'http://us.archive.ubuntu.com/ubuntu/pool/main/a/accountsservice/accountsservice_0.6.15-2ubuntu9_amd64.deb',
@@ -77,11 +87,8 @@ describe 'Controller: MainCtrl', ()->
     }
 
 
-  # The tests:
-  #-----------
-
-  it 'should have no default host configured', () ->
-    expect(scope.ponyExpressHost).toBe( window.location.host + "/api" )
+  ## Helpers:
+  ##---------
 
   paginateResponse = (httpBackend, baseUrl, response, action, limit=50)->
     # 1. working pagination
@@ -110,6 +117,24 @@ describe 'Controller: MainCtrl', ()->
     # take the action and flush the backend
     action()
     httpBackend.flush()
+
+  callResponse = ($httpBackend, baseUrl, requestType, responseCode, response, action)->
+    $httpBackend["when#{requestType}"](baseUrl).respond(responseCode,response)
+    $httpBackend["expect#{requestType}"](baseUrl)
+    # take the action
+    action()
+    $httpBackend.flush()
+
+
+  # The tests:
+  #-----------
+
+  ## Configuration
+
+  it 'should have the default host pointing to <HOST>/api', () ->
+    expect(scope.ponyExpressHost).toBe( window.location.host + "/api" )
+
+  ## Querying Nodes and Package
 
   it 'should paginate /nodes if it supports pagination', ()->
     paginateResponse @httpBackend, '/v1/nodes', allNodes1, () -> scope.fetchNodes()
@@ -261,3 +286,40 @@ describe 'Controller: MainCtrl', ()->
     scope.updatePackageSelection()
     expect( scope.packages.length ).toBe( 1 )
     expect( scope.packages[0].name ).toBe( allPackages1[0].name )
+
+
+  ## Querying Mirrors
+
+  it 'should be able to [C]reate a new mirror', () ->
+    # when you create a new mirror it should add a new position to the list to the front
+    obj = scope.newMirror()
+    expect(obj).toBe(scope.mirrors[0])
+    expect(obj.id).toBe(undefined)
+    expect(obj.saved).toBe(false)
+    # when you click on save, it should issue an post request to the server to indicate a new element
+    callResponse @httpBackend, '/v1/mirrors', 'POST', 201, allMirrors1[0], () -> scope.saveMirror(obj)
+    # make sure nothing is changed if the call was successful
+    expect(obj.id).not.toBe(undefined)
+    expect(obj.saved).toBe(true)
+
+  it 'should [R]ead all mirrors the server has available', () ->
+    paginateResponse @httpBackend, '/v1/mirrors', allMirrors1, () -> scope.fetchMirrors()
+    expect(scope.mirrors.length).toBe(allMirrors1.length)
+
+  it 'should be able to [U]pdate an existing mirror', () ->
+    # TODO: maybe remove the creation and expect it to exist already
+    obj = scope.newMirror()
+    callResponse @httpBackend, '/v1/mirrors', 'POST', 201, allMirrors1[0], () -> scope.saveMirror(obj)
+    # update the name of an existing mirror
+    obj.name = 'Minus Monor'
+    obj.saved = false
+    callResponse @httpBackend, '/v1/mirrors/'+obj.id, 'PATCH', 200, allMirrors1[0], () -> scope.saveMirror(obj)
+    expect(obj.saved).toBe(true)
+
+  it 'should be able to [D]elete an existing mirror', () ->
+    # TODO: maybe remove the creation and expect it to exist already
+    obj = scope.newMirror()
+    callResponse @httpBackend, '/v1/mirrors', 'POST', 201, allMirrors1[0], () -> scope.saveMirror(obj)
+    # update the name of an existing mirror
+    callResponse @httpBackend, '/v1/mirrors', 'DELETE', 204, null, () -> scope.deleteMirror(obj)
+    expect(scope.mirrors.length).toBe(0)

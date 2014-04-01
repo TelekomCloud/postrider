@@ -41,13 +41,40 @@
       <section class="top-bar-section">
         <!-- Right Nav Section -->
         <ul class="right">
-          <li><a ng-click="showConfig = !showConfig" class="fi-widget settingsButton" href="#"></a></li>
+          <li><a ng-click="toggleShow('nav', 'mirrors')" href="#">Mirrors</a></li>
+          <li><a ng-click="toggleShow('nav', 'config')" class="fi-widget settingsButton" href="#"></a></li>
         </ul>
       </section>
     </nav>
     </div>
 
-    <div class="centered-text settingsRow animate-show ng-hide" ng-show="showConfig">
+    <div id="mirrorConfig" class="centered-text settingsRow animate-show ng-hide" ng-show="show.nav == 'mirrors'">
+      <div class="row">
+        <div class="small-12 columns">
+          <h4>Mirror configuration</h4>
+        </div>
+      </div>
+      <div class="row">
+        <div class="small-12 large-6 columns mirrorList">
+          <span ng-show="mirrors.length === undefined || mirrors.length === 0" >
+            <div class="row">
+              <div class="small-12 columns">
+                no mirrors found
+              </div>
+            </div>
+          </span>
+          <span data-ng-repeat="m in mirrors" ng-show="mirrors.length > 0">
+            <div class="row" ng-click="editMirror(m)">
+              <div class="small-12 columns entry">
+                {{m.name}}
+              </div>
+            </div>
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <div class="centered-text settingsRow animate-show ng-hide" ng-show="show.nav == 'config'">
       <div class="row">
         <div class="small-12 large-12 columns">
           <h4>Settings</h4>
@@ -109,7 +136,21 @@
       <div class="small-12 large-6 columns">
         <div class="row mainContents">
           <div class="small-12 large-12 columns">
-            <h4>Packages <small>({{packages.length}})</small></h4>
+            <h4>
+              Packages
+              <small>({{packages.length}})</small>
+              <small><a data-dropdown="ddPackageMirror" href="#">compare to...</a></small>
+            </h4>
+
+            <ul id="ddPackageMirror" class="f-dropdown" data-dropdown-content>
+              <span ng-show="mirrors.length === undefined || mirrors.length === 0" >
+                <li><a href="#">no mirrors found</a></li>
+              </span>
+              <span data-ng-repeat="m in mirrors" ng-show="mirrors.length > 0">
+                <li><a href="#" ng-click="selectMirror(m)" class="selected-{{mirrorSelected[m.id]}}">{{m.name}}</a></li>
+              </span>
+            </ul>
+
           </div>
         </div>
 
