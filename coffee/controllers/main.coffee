@@ -57,9 +57,9 @@ angular.module('postriderApp')
     isEmptyArray = (x) ->
       x instanceof Array and x.length == 0
 
-    fetchAllUnpaginated = (field, action, query_fields = {}) ->
+    fetchAllUnpaginated = (field, action, opts = {}) ->
       # fetch the field
-      Restangular.all(field).getList(query_fields).then(
+      Restangular.all(field).getList( opts.query || {} ).then(
         (data) ->
           # if we have a result, process it
           console.log "fetched #{field} (no pagination)"
@@ -69,14 +69,14 @@ angular.module('postriderApp')
           fetchError("fetch #{field} (no pagination)")
         )
 
-    fetchAllPaginated = (
-      field, action, stop_when = isEmptyArray,
-      page = 1, limit = 50, query_fields = {}
-      )->
+    fetchAllPaginated = (field, action, opts = {})->
+      stop_when = opts.stop_when || isEmptyArray
+      page = opts.page || 1
+      limit = opts.limit || 50
       # construct a query for pagination
       query = _.merge(
           {page: page, limit: limit},
-          query_fields
+          ( opts.query || {} )
         )
       # fetch the field
       Restangular.all(field).getList(query).then(
@@ -87,7 +87,7 @@ angular.module('postriderApp')
           # if we got a result and want to continue
           # then try fetching the next page
           if not stop_when(data)
-            fetchAllPaginated(field, action, stop_when, page + 1, limit)
+            fetchAllPaginated(field, action, {'stop_when':stop_when, 'page':page + 1, 'limit': limit })
         # error handling
         , () ->
           # if we got an error on the first fetch, try again without pagination
