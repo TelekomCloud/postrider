@@ -57,9 +57,9 @@ angular.module('postriderApp')
     isEmptyArray = (x) ->
       x instanceof Array and x.length == 0
 
-    fetchAllUnpaginated = (field, action) ->
+    fetchAllUnpaginated = (field, action, query_fields = {}) ->
       # fetch the field
-      Restangular.all(field).getList().then(
+      Restangular.all(field).getList(query_fields).then(
         (data) ->
           # if we have a result, process it
           console.log "fetched #{field} (no pagination)"
@@ -71,10 +71,13 @@ angular.module('postriderApp')
 
     fetchAllPaginated = (
       field, action, stop_when = isEmptyArray,
-      page = 1, limit = 50
+      page = 1, limit = 50, query_fields = {}
       )->
       # construct a query for pagination
-      query = {page: page, limit: limit}
+      query = _.merge(
+          {page: page, limit: limit},
+          query_fields
+        )
       # fetch the field
       Restangular.all(field).getList(query).then(
         # success handling
