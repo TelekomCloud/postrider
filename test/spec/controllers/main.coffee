@@ -50,6 +50,18 @@ describe 'Controller: MainCtrl', ()->
     }
   ]
 
+  allPackages2 = [
+    { 'name': 'xx', 'versions': [
+        {'version':'1.0','id':'xx10'}
+      ], 'upstream': '1.2'
+    },
+    { 'name': 'yy', 'versions': [
+        {'version':'1.1','id':'yy11'},
+        {'version':'1.2','id':'yy12'}
+      ], 'upstream': '2.0'
+    }
+  ]
+
   allMirrors1 = [
     {
       'id': '44e5f422-62db-42dc-b1ce-37ca3393710f',
@@ -223,6 +235,24 @@ describe 'Controller: MainCtrl', ()->
         expect(p.name).toBe(ps[idx].name)
         expect(p.version).toBe(v.version)
         expect(p.versions).toBe(undefined)
+
+  it 'should list /packages compared to upstream repositories', () ->
+    # get mirrors
+    paginateResponse @httpBackend, '/v1/mirrors', allMirrors1, () -> scope.fetchMirrors()
+    expect(scope.mirrors.length).toBe(allMirrors1.length)
+    # set packages list when selecting a mirror
+    ps = allPackages2
+    scope.selectMirror(allMirrors1[0])
+    paginateResponse @httpBackend, '/v1/packages?outdated=true&mirror='+allMirrors1[0].id, ps, () -> scope.fetchPackages()
+    # results
+    expect(scope.packages.length).toBe(ps.length)
+    # test both packages
+    for idx in [0,1]
+      res_p = scope.packages[idx]
+      expect(@typeOf(res_p)).toBe('object')
+      expect(res_p.name).toBe(ps[idx].name)
+      expect(res_p.versions.length).toBe(ps[idx].versions.length)
+      expect(res_p.upstream).toBe(ps[idx].upstream)
 
   it 'should be able to access /package/xyz info (empty one)', () ->
     id = 'xyz'
