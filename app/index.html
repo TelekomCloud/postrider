@@ -227,7 +227,7 @@
               <small><a data-dropdown="ddPackageMirror" href="#">compare to {{mirrorSelected.name || '...'}}</a></small>
             </h4>
 
-            <ul id="ddPackageMirror" class="f-dropdown" data-dropdown-content>
+            <ul id="ddPackageMirror" class="f-dropdown" data-dropdown-content onclick="$(this).foundation('dropdown', 'close', $(this))">
               <span ng-show="mirrors.length === undefined || mirrors.length === 0" >
                 <li><a href="#">no mirrors found</a></li>
               </span>
