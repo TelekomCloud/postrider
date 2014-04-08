@@ -102,15 +102,25 @@ describe 'Controller: MainCtrl', ()->
   ## Helpers:
   ##---------
 
+  build_request = (site, params = [])->
+    # remove all undefined
+    p = params.filter (x) -> x?
+    q = ( p.map (x) -> x.join('=') ).join('&')
+    if q.length == 0
+      site
+    else
+      "#{site}?#{q}"
+
   paginateResponse = (httpBackend, baseUrl, response, action, opts = {})->
     limit = opts.limit || 50
+    query = [['limit', limit]].concat opts.query
     # 1. working pagination
     #    it will request page 1, get it,
     #    and request page 2 and finish
-    url = "#{baseUrl}?limit=#{limit}&page=1"
+    url = build_request baseUrl, query.concat [['page', 1]]
     httpBackend.whenGET(url).respond(response)
     httpBackend.expectGET(url)
-    url = "#{baseUrl}?limit=#{limit}&page=2"
+    url = build_request baseUrl, query.concat [['page', 2]]
     httpBackend.whenGET(url).respond(410,'Gone')
     httpBackend.expectGET(url)
     # take the action and flush the backend
@@ -119,13 +129,14 @@ describe 'Controller: MainCtrl', ()->
 
   dontPaginateResponse = (httpBackend, baseUrl, response, action, opts = {})->
     limit = opts.limit || 50
+    query = [['limit', limit]].concat opts.query
     # 2. no pagination
     #    it will request page 1, won't get it
     #    and try without pagination
-    url = "#{baseUrl}?limit=#{limit}&page=1"
+    url = build_request baseUrl, query.concat [['page', 1]]
     httpBackend.whenGET(url).respond(410,'Gone')
     httpBackend.expectGET(url)
-    url = "#{baseUrl}"
+    url = build_request baseUrl, opts.query || []
     httpBackend.whenGET(url).respond(response)
     httpBackend.expectGET(url)
     # take the action and flush the backend
