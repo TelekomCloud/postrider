@@ -334,6 +334,17 @@ angular.module('postriderApp')
       # update the list of packages with the selected repo
       $scope.fetchPackages()
 
+    $scope.isPackageOutdated = (p)->
+      # make sure we have upstream information
+      return null if not p.upstream?
+      # check if every version is on upstream:
+      all = _.every( p.versions, {'version': p.upstream} )
+      # check if any version is on upstream
+      some = _.some( p.versions, {'version': p.upstream} )
+
+      return 'some' if some and not all
+      all is not true
+
     $scope.loadData = ()->
       # update the cookie with a working url
       $cookies.ponyExpressHost = $scope.ponyExpressHost

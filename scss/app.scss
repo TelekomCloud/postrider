@@ -66,6 +66,14 @@ $light_grey_bg: #EAEAEA;
   &.selected-true {
     color: $color1_fg;
   }
+
+  .outdated-true {
+    color: red;
+  }
+
+  .outdated-some {
+    color: #A5A500;
+  }
 }
 
 .nodeDetails,

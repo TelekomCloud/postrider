@@ -53,7 +53,7 @@ describe 'Controller: MainCtrl', ()->
   allPackages2 = [
     { 'name': 'xx', 'versions': [
         {'version':'1.0','id':'xx10'}
-      ], 'upstream': '1.2'
+      ], 'upstream': '1.0'
     },
     { 'name': 'yy', 'versions': [
         {'version':'1.1','id':'yy11'},
@@ -267,6 +267,10 @@ describe 'Controller: MainCtrl', ()->
       expect(res_p.name).toBe(ps[idx].name)
       expect(res_p.versions.length).toBe(ps[idx].versions.length)
       expect(res_p.upstream).toBe(ps[idx].upstream)
+
+    # test if it is outdated
+    expect( scope.isPackageOutdated( scope.packages[0]) ).toBe(false)
+    expect( scope.isPackageOutdated( scope.packages[1]) ).toBe(true)
 
   it 'should be able to access /package/xyz info (empty one)', () ->
     id = 'xyz'
