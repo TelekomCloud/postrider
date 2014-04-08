@@ -131,6 +131,7 @@ angular.module('postriderApp')
                 $scope.package[v.id] = {}
                 $scope.package[v.id].name = p.name
                 $scope.package[v.id].version = v.version
+                $scope.package[v.id].upstream = p.upstream
         , { 'query': query }
 
     $scope.fetchMirrors = (page = 1)->
