@@ -102,7 +102,8 @@ describe 'Controller: MainCtrl', ()->
   ## Helpers:
   ##---------
 
-  paginateResponse = (httpBackend, baseUrl, response, action, limit=50)->
+  paginateResponse = (httpBackend, baseUrl, response, action, opts = {})->
+    limit = opts.limit || 50
     # 1. working pagination
     #    it will request page 1, get it,
     #    and request page 2 and finish
@@ -116,7 +117,8 @@ describe 'Controller: MainCtrl', ()->
     action()
     httpBackend.flush()
 
-  dontPaginateResponse = (httpBackend, baseUrl, response, action, limit=50)->
+  dontPaginateResponse = (httpBackend, baseUrl, response, action, opts = {})->
+    limit = opts.limit || 50
     # 2. no pagination
     #    it will request page 1, won't get it
     #    and try without pagination
