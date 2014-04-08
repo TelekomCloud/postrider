@@ -345,6 +345,12 @@ angular.module('postriderApp')
       return 'some' if some and not all
       all is not true
 
+    $scope.addOutdatedInfo = (p)->
+      p.isOutdated = $scope.isPackageOutdated(p)
+      if p.isOutdated is 'some' or p.isOutdated is true
+        oldest = p.versions.map((x)->x['version']).sort()[0]
+        p.outdated_info = "latest: " + p.upstream
+
     $scope.loadData = ()->
       # update the cookie with a working url
       $cookies.ponyExpressHost = $scope.ponyExpressHost
