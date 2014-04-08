@@ -257,7 +257,7 @@
 
             <div class="row">
               <div class="small-11 large-11 columns">{{p.name}}
-                <span ng-show="{{p.outdated_info}}" class="outdated-info">({{p.outdated_info}})</span>
+                <span ng-show="{{p.outdated_info !== undefined}}" class="outdated-info">({{p.outdated_info}})</span>
               </div>
               <div class="small-1 large-1 columns" ng-show="packageFetching[p.name]">
                 <span class="loading"></span>
