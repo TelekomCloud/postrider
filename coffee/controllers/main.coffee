@@ -87,12 +87,13 @@ angular.module('postriderApp')
           # if we got a result and want to continue
           # then try fetching the next page
           if not stop_when(data)
-            fetchAllPaginated(field, action, {'stop_when':stop_when, 'page':page + 1, 'limit': limit })
+            o = _.merge((opts.query || {}), {'stop_when':stop_when, 'page':page + 1, 'limit': limit })
+            fetchAllPaginated(field, action, o)
         # error handling
         , () ->
           # if we got an error on the first fetch, try again without pagination
           if page is 1
-            return fetchAllUnpaginated(field, action)
+            return fetchAllUnpaginated(field, action, opts)
           # otherwise we have a fetch error
           fetchError("fetch #{field} on page #{page}, limit #{limit}")
         )
