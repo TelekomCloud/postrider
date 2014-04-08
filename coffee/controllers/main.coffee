@@ -331,6 +331,8 @@ angular.module('postriderApp')
     $scope.selectMirror = (m)->
       console.log("mirror #{m.name} (#{m.id}) selected")
       $scope.mirrorSelected[m.id] = not $scope.mirrorSelected[m.id]
+      # update the list of packages with the selected repo
+      $scope.fetchPackages()
 
     $scope.loadData = ()->
       # update the cookie with a working url
