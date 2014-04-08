@@ -109,7 +109,8 @@ angular.module('postriderApp')
           $scope.updateNodeSelection()
 
     $scope.fetchPackages = (page = 1)->
-      filter_by = _.keys( _.pick( $scope.mirrorSelected, (val) -> val is true ) )
+      filter_by = _.keys( _.pick( $scope.mirrorSelected, (val) -> val is true))
+      $scope.allPackages = []
 
       # TODO: only limited to one mirror right now
       if filter_by.length > 0
