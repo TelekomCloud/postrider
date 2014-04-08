@@ -256,7 +256,8 @@ describe 'Controller: MainCtrl', ()->
     # set packages list when selecting a mirror
     ps = allPackages2
     scope.selectMirror(allMirrors1[0])
-    paginateResponse @httpBackend, '/v1/packages?outdated=true&mirror='+allMirrors1[0].id, ps, () -> scope.fetchPackages()
+    opts = {'query': [['mirror',allMirrors1[0].id],['outdated','true']]}
+    dontPaginateResponse @httpBackend, '/v1/packages', ps, (() -> scope.fetchPackages()), opts
     # results
     expect(scope.packages.length).toBe(ps.length)
     # test both packages
