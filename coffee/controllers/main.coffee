@@ -75,9 +75,9 @@ angular.module('postriderApp')
       limit = opts.limit || 50
       # construct a query for pagination
       query = _.merge(
-          {page: page, limit: limit},
-          ( opts.query || {} )
-        )
+        {page: page, limit: limit},
+        ( opts.query || {} )
+      )
       # fetch the field
       Restangular.all(field).getList(query).then(
         # success handling
@@ -87,7 +87,8 @@ angular.module('postriderApp')
           # if we got a result and want to continue
           # then try fetching the next page
           if not stop_when(data)
-            o = _.merge((opts.query || {}), {'stop_when':stop_when, 'page':page + 1, 'limit': limit })
+            o = _.merge( (opts.query || {}),
+              {'stop_when':stop_when, 'page':page + 1, 'limit': limit })
             fetchAllPaginated(field, action, o)
         # error handling
         , () ->
