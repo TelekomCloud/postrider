@@ -250,10 +250,12 @@
         </div>
 
         <div class="row packageList expanded-{{packageVisible[p.name]}} selected-{{packageSelected[p.name]}}" data-ng-repeat="p in packages | filter:packageQuery">
-          <div class="columns" ng-click="selectPackage(p)">
+          <div class="columns outdated-{{p.isOutdated}}" ng-click="selectPackage(p)">
 
             <div class="row">
-              <div class="small-11 large-11 columns">{{p.name}}</div>
+              <div class="small-11 large-11 columns">{{p.name}}
+                <span ng-show="{{p.outdated_info}}" class="outdated-info">({{p.outdated_info}})</span>
+              </div>
               <div class="small-1 large-1 columns" ng-show="packageFetching[p.name]">
                 <span class="loading"></span>
               </div>

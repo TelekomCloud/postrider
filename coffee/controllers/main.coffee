@@ -57,9 +57,9 @@ angular.module('postriderApp')
     isEmptyArray = (x) ->
       x instanceof Array and x.length == 0
 
-    fetchAllUnpaginated = (field, action) ->
+    fetchAllUnpaginated = (field, action, opts = {}) ->
       # fetch the field
-      Restangular.all(field).getList().then(
+      Restangular.all(field).getList( opts.query || {} ).then(
         (data) ->
           # if we have a result, process it
           console.log "fetched #{field} (no pagination)"
@@ -69,12 +69,15 @@ angular.module('postriderApp')
           fetchError("fetch #{field} (no pagination)")
         )
 
-    fetchAllPaginated = (
-      field, action, stop_when = isEmptyArray,
-      page = 1, limit = 50
-      )->
+    fetchAllPaginated = (field, action, opts = {})->
+      stop_when = opts.stop_when || isEmptyArray
+      page = opts.page || 1
+      limit = opts.limit || 50
       # construct a query for pagination
-      query = {page: page, limit: limit}
+      query = _.merge(
+        {page: page, limit: limit},
+        ( opts.query || {} )
+      )
       # fetch the field
       Restangular.all(field).getList(query).then(
         # success handling
@@ -84,12 +87,14 @@ angular.module('postriderApp')
           # if we got a result and want to continue
           # then try fetching the next page
           if not stop_when(data)
-            fetchAllPaginated(field, action, stop_when, page + 1, limit)
+            o = _.merge( (opts.query || {}),
+              {'stop_when':stop_when, 'page':page + 1, 'limit': limit })
+            fetchAllPaginated(field, action, o)
         # error handling
         , () ->
           # if we got an error on the first fetch, try again without pagination
           if page is 1
-            return fetchAllUnpaginated(field, action)
+            return fetchAllUnpaginated(field, action, opts)
           # otherwise we have a fetch error
           fetchError("fetch #{field} on page #{page}, limit #{limit}")
         )
@@ -104,10 +109,24 @@ angular.module('postriderApp')
           $scope.updateNodeSelection()
 
     $scope.fetchPackages = (page = 1)->
+      filter_by = _.keys( _.pick( $scope.mirrorSelected, (val) -> val is true))
+      $scope.allPackages = []
+      $scope.allPackagesMap = {}
+
+      # TODO: only limited to one mirror right now
+      if filter_by.length > 0
+        query = { 'outdated':true, 'mirror': filter_by[0] }
+      else
+        query = {}
+
       fetchAllPaginated 'packages',
         (data) ->
           # append the new packages to the list of packages
-          $scope.allPackages.push.apply( $scope.allPackages, data )
+          for p in data
+            if not $scope.allPackagesMap[p.name]?
+              $scope.addOutdatedInfo(p)
+              $scope.allPackagesMap[p.name] = true
+              $scope.allPackages.push( p )
           # update the selection, i.e. select nodes according to
           # new package information
           $scope.updatePackageSelection()
@@ -119,6 +138,8 @@ angular.module('postriderApp')
                 $scope.package[v.id] = {}
                 $scope.package[v.id].name = p.name
                 $scope.package[v.id].version = v.version
+                $scope.package[v.id].upstream = p.upstream
+        , { 'query': query }
 
     $scope.fetchMirrors = (page = 1)->
       fetchAllPaginated 'mirrors',
@@ -315,6 +336,25 @@ angular.module('postriderApp')
     $scope.selectMirror = (m)->
       console.log("mirror #{m.name} (#{m.id}) selected")
       $scope.mirrorSelected[m.id] = not $scope.mirrorSelected[m.id]
+      # update the list of packages with the selected repo
+      $scope.fetchPackages()
+
+    $scope.isPackageOutdated = (p)->
+      # make sure we have upstream information
+      return null if not p.upstream?
+      # check if every version is on upstream:
+      all = _.every( p.versions, {'version': p.upstream} )
+      # check if any version is on upstream
+      some = _.some( p.versions, {'version': p.upstream} )
+
+      return 'some' if some and not all
+      all is not true
+
+    $scope.addOutdatedInfo = (p)->
+      p.isOutdated = $scope.isPackageOutdated(p)
+      if p.isOutdated is 'some' or p.isOutdated is true
+        oldest = p.versions.map((x)->x['version']).sort()[0]
+        p.outdated_info = "latest: " + p.upstream
 
     $scope.loadData = ()->
       # update the cookie with a working url

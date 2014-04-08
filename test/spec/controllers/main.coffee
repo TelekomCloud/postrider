@@ -50,6 +50,18 @@ describe 'Controller: MainCtrl', ()->
     }
   ]
 
+  allPackages2 = [
+    { 'name': 'xx', 'versions': [
+        {'version':'1.0','id':'xx10'}
+      ], 'upstream': '1.0'
+    },
+    { 'name': 'yy', 'versions': [
+        {'version':'1.1','id':'yy11'},
+        {'version':'1.2','id':'yy12'}
+      ], 'upstream': '2.0'
+    }
+  ]
+
   allMirrors1 = [
     {
       'id': '44e5f422-62db-42dc-b1ce-37ca3393710f',
@@ -90,28 +102,41 @@ describe 'Controller: MainCtrl', ()->
   ## Helpers:
   ##---------
 
-  paginateResponse = (httpBackend, baseUrl, response, action, limit=50)->
+  build_request = (site, params = [])->
+    # remove all undefined
+    p = params.filter (x) -> x?
+    q = ( p.map (x) -> x.join('=') ).join('&')
+    if q.length == 0
+      site
+    else
+      "#{site}?#{q}"
+
+  paginateResponse = (httpBackend, baseUrl, response, action, opts = {})->
+    limit = opts.limit || 50
+    query = [['limit', limit]].concat opts.query
     # 1. working pagination
     #    it will request page 1, get it,
     #    and request page 2 and finish
-    url = "#{baseUrl}?limit=#{limit}&page=1"
+    url = build_request baseUrl, query.concat [['page', 1]]
     httpBackend.whenGET(url).respond(response)
     httpBackend.expectGET(url)
-    url = "#{baseUrl}?limit=#{limit}&page=2"
+    url = build_request baseUrl, query.concat [['page', 2]]
     httpBackend.whenGET(url).respond(410,'Gone')
     httpBackend.expectGET(url)
     # take the action and flush the backend
     action()
     httpBackend.flush()
 
-  dontPaginateResponse = (httpBackend, baseUrl, response, action, limit=50)->
+  dontPaginateResponse = (httpBackend, baseUrl, response, action, opts = {})->
+    limit = opts.limit || 50
+    query = [['limit', limit]].concat opts.query
     # 2. no pagination
     #    it will request page 1, won't get it
     #    and try without pagination
-    url = "#{baseUrl}?limit=#{limit}&page=1"
+    url = build_request baseUrl, query.concat [['page', 1]]
     httpBackend.whenGET(url).respond(410,'Gone')
     httpBackend.expectGET(url)
-    url = "#{baseUrl}"
+    url = build_request baseUrl, opts.query || []
     httpBackend.whenGET(url).respond(response)
     httpBackend.expectGET(url)
     # take the action and flush the backend
@@ -223,6 +248,30 @@ describe 'Controller: MainCtrl', ()->
         expect(p.name).toBe(ps[idx].name)
         expect(p.version).toBe(v.version)
         expect(p.versions).toBe(undefined)
+
+  it 'should list /packages compared to upstream repositories', () ->
+    # get mirrors
+    paginateResponse @httpBackend, '/v1/mirrors', allMirrors1, () -> scope.fetchMirrors()
+    expect(scope.mirrors.length).toBe(allMirrors1.length)
+    # set packages list when selecting a mirror
+    ps = allPackages2
+    scope.selectMirror(allMirrors1[0])
+    opts = {'query': [['mirror',allMirrors1[0].id],['outdated','true']]}
+    dontPaginateResponse @httpBackend, '/v1/packages', ps, (() -> scope.fetchPackages()), opts
+    # results
+    expect(scope.allPackages.length).toBe(ps.length)
+    expect(scope.packages.length).toBe(ps.length)
+    # test both packages
+    for idx in [0,1]
+      res_p = scope.packages[idx]
+      expect(@typeOf(res_p)).toBe('object')
+      expect(res_p.name).toBe(ps[idx].name)
+      expect(res_p.versions.length).toBe(ps[idx].versions.length)
+      expect(res_p.upstream).toBe(ps[idx].upstream)
+
+    # test if it is outdated
+    expect( scope.isPackageOutdated( scope.packages[0]) ).toBe(false)
+    expect( scope.isPackageOutdated( scope.packages[1]) ).toBe(true)
 
   it 'should be able to access /package/xyz info (empty one)', () ->
     id = 'xyz'
