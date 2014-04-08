@@ -23,7 +23,7 @@ angular.module('postriderApp')
     $scope.packageVisible = {}
     $scope.packageSelected = {}
     $scope.packageFetching = {}
-    $scope.mirrorSelected = {}
+    $scope.mirrorSelected = null
     $scope.newMirrors = []
     $scope.editingMirror = {}
 
@@ -109,13 +109,12 @@ angular.module('postriderApp')
           $scope.updateNodeSelection()
 
     $scope.fetchPackages = (page = 1)->
-      filter_by = _.keys( _.pick( $scope.mirrorSelected, (val) -> val is true))
       $scope.allPackages = []
       $scope.allPackagesMap = {}
 
-      # TODO: only limited to one mirror right now
-      if filter_by.length > 0
-        query = { 'outdated':true, 'mirror': filter_by[0] }
+      # If a mirror was selected, filter by it
+      if $scope.mirrorSelected?
+        query = { 'outdated':true, 'mirror': $scope.mirrorSelected.id }
       else
         query = {}
 
@@ -334,8 +333,12 @@ angular.module('postriderApp')
       $scope.showPackage(p)
 
     $scope.selectMirror = (m)->
-      console.log("mirror #{m.name} (#{m.id}) selected")
-      $scope.mirrorSelected[m.id] = not $scope.mirrorSelected[m.id]
+      if m? and m.id?
+        console.log("mirror #{m.name} (#{m.id}) selected")
+        $scope.mirrorSelected = m
+      else
+        console.log("mirror deselected")
+        $scope.mirrorSelected = null
       # update the list of packages with the selected repo
       $scope.fetchPackages()
 

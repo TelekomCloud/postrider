@@ -224,15 +224,18 @@
             <h4>
               Packages
               <small>({{packages.length}})</small>
-              <small><a data-dropdown="ddPackageMirror" href="#">compare to...</a></small>
+              <small><a data-dropdown="ddPackageMirror" href="#">compare to {{mirrorSelected.name || '...'}}</a></small>
             </h4>
 
             <ul id="ddPackageMirror" class="f-dropdown" data-dropdown-content>
               <span ng-show="mirrors.length === undefined || mirrors.length === 0" >
                 <li><a href="#">no mirrors found</a></li>
               </span>
+              <span ng-show="mirrors.length > 0">
+                <li><a href="#" ng-click="selectMirror(null)">...</a></li>
+              </span>
               <span data-ng-repeat="m in mirrors" ng-show="mirrors.length > 0">
-                <li><a href="#" ng-click="selectMirror(m)" class="selected-{{mirrorSelected[m.id]}}">{{m.name}}</a></li>
+                <li><a href="#" ng-click="selectMirror(m)" class="selected-{{m == mirrorSelected}}">{{m.name}}</a></li>
               </span>
             </ul>
 
