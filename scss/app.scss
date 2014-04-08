@@ -99,11 +99,14 @@ $light_grey_bg: #EAEAEA;
 }
 
 #ddPackageMirror {
-  :hover {
-    background: $light_bg;
-  }
   .selected-true {
     color: $color1_fg;
+    &:after {
+      content: ' ✔'
+    }
+  }
+  :hover {
+    background: $light_bg;
   }
 }
 
