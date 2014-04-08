@@ -111,6 +111,7 @@ angular.module('postriderApp')
     $scope.fetchPackages = (page = 1)->
       filter_by = _.keys( _.pick( $scope.mirrorSelected, (val) -> val is true))
       $scope.allPackages = []
+      $scope.allPackagesMap = {}
 
       # TODO: only limited to one mirror right now
       if filter_by.length > 0
@@ -121,7 +122,11 @@ angular.module('postriderApp')
       fetchAllPaginated 'packages',
         (data) ->
           # append the new packages to the list of packages
-          $scope.allPackages.push.apply( $scope.allPackages, data )
+          for p in data
+            if not $scope.allPackagesMap[p.name]?
+              $scope.addOutdatedInfo(p)
+              $scope.allPackagesMap[p.name] = true
+              $scope.allPackages.push( p )
           # update the selection, i.e. select nodes according to
           # new package information
           $scope.updatePackageSelection()

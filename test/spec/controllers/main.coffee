@@ -259,6 +259,7 @@ describe 'Controller: MainCtrl', ()->
     opts = {'query': [['mirror',allMirrors1[0].id],['outdated','true']]}
     dontPaginateResponse @httpBackend, '/v1/packages', ps, (() -> scope.fetchPackages()), opts
     # results
+    expect(scope.allPackages.length).toBe(ps.length)
     expect(scope.packages.length).toBe(ps.length)
     # test both packages
     for idx in [0,1]
