@@ -1,5 +1,20 @@
 # Changelog
 
+## 0.2.0
+
+* feature: query packages with a selected repository
+* feature: added repositoryconfiguration menu
+* feature: added comparison function to compare local package versions to those of an upstream repo
+* improvement: close the repo selection dropdown when one of its items is clicked
+* improvement: nicer styling of repository selection dropdown dialog
+* improvement: for repository editing use an object copy, which updates the current state after the server confirms at save
+* improvement: align top nav bar to container width
+* bugfix: show outdated info only if it is defined
+* bugfix: when fetching packages, empty the list of all packages at the beginning
+* bugfix: pagination requests must correctly propagate query options when iterating
+* bugfix: correct the jquery path that is currently installed from bower
+* bugfix: fix random bower build failures
+
 ## 0.1.1
 
 * improvement: configure the default host (pony-express) to be the current host + '/api'
