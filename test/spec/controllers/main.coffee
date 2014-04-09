@@ -62,10 +62,10 @@ describe 'Controller: MainCtrl', ()->
     }
   ]
 
-  allMirrors1 = [
+  allRepos1 = [
     {
       'id': '44e5f422-62db-42dc-b1ce-37ca3393710f',
-      'name': 'Magus Mirror',
+      'name': 'Magus Repository',
       'label': 'live',
       'url': 'http://archive.canonical.com/ubuntu/dists/precise/partner/binary-amd64/Packages.gz',
       'provider': 'apt'
@@ -105,7 +105,7 @@ describe 'Controller: MainCtrl', ()->
   build_request = (site, params = [])->
     # remove all undefined
     p = params.filter (x) -> x?
-    q = ( p.map (x) -> x.join('=') ).join('&')
+    q = ( p.map (x) -> x.join('=') ).sort().join('&')
     if q.length == 0
       site
     else
@@ -250,13 +250,13 @@ describe 'Controller: MainCtrl', ()->
         expect(p.versions).toBe(undefined)
 
   it 'should list /packages compared to upstream repositories', () ->
-    # get mirrors
-    paginateResponse @httpBackend, '/v1/mirrors', allMirrors1, () -> scope.fetchMirrors()
-    expect(scope.mirrors.length).toBe(allMirrors1.length)
-    # set packages list when selecting a mirror
+    # get repos
+    paginateResponse @httpBackend, '/v1/repositories', allRepos1, () -> scope.fetchRepos()
+    expect(scope.repos.length).toBe(allRepos1.length)
+    # set packages list when selecting a repository
     ps = allPackages2
-    scope.selectMirror(allMirrors1[0])
-    opts = {'query': [['mirror',allMirrors1[0].id],['outdated','true']]}
+    scope.selectRepo(allRepos1[0])
+    opts = {'query': [['repo',allRepos1[0].id],['outdated','true']]}
     dontPaginateResponse @httpBackend, '/v1/packages', ps, (() -> scope.fetchPackages()), opts
     # results
     expect(scope.allPackages.length).toBe(ps.length)
@@ -337,52 +337,52 @@ describe 'Controller: MainCtrl', ()->
     expect( scope.packages[0].name ).toBe( allPackages1[0].name )
 
 
-  ## Querying Mirrors
+  ## Querying Repositories
 
-  it 'should be able to [C]reate a new mirror', () ->
-    # when you create a new mirror it should add a new position to the list to the front
-    expect( scope.newMirrors.length ).toBe(0)
-    scope.newMirror()
-    expect( scope.newMirrors.length ).toBe(1)
-    expect( scope.newMirrors[0].id ).toBe(undefined)
+  it 'should be able to [C]reate a new repository', () ->
+    # when you create a new repository it should add a new position to the list to the front
+    expect( scope.newRepos.length ).toBe(0)
+    scope.newRepo()
+    expect( scope.newRepos.length ).toBe(1)
+    expect( scope.newRepos[0].id ).toBe(undefined)
     # when you click on save, it should issue an post request to the server to indicate a new element
-    callResponse @httpBackend, '/v1/mirrors', 'POST', 201, allMirrors1[0], () -> scope.saveMirror(scope.newMirrors[0])
+    callResponse @httpBackend, '/v1/repositories', 'POST', 201, allRepos1[0], () -> scope.saveRepo(scope.newRepos[0])
     # make sure nothing is changed if the call was successful
-    expect( scope.newMirrors.length ).toBe(0)
-    expect( scope.mirrors[0].id ).not.toBe(undefined)
+    expect( scope.newRepos.length ).toBe(0)
+    expect( scope.repos[0].id ).not.toBe(undefined)
 
-  it 'should [R]ead all mirrors the server has available', () ->
-    paginateResponse @httpBackend, '/v1/mirrors', allMirrors1, () -> scope.fetchMirrors()
-    expect(scope.mirrors.length).toBe(allMirrors1.length)
+  it 'should [R]ead all repositories the server has available', () ->
+    paginateResponse @httpBackend, '/v1/repositories', allRepos1, () -> scope.fetchRepos()
+    expect(scope.repos.length).toBe(allRepos1.length)
 
-  it 'should be able to [U]pdate an existing mirror', () ->
+  it 'should be able to [U]pdate an existing repository', () ->
     # TODO: maybe remove the creation and expect it to exist already
-    scope.newMirror()
-    callResponse @httpBackend, '/v1/mirrors', 'POST', 201, allMirrors1[0], () -> scope.saveMirror(scope.newMirrors[0])
+    scope.newRepo()
+    callResponse @httpBackend, '/v1/repositories', 'POST', 201, allRepos1[0], () -> scope.saveRepo(scope.newRepos[0])
 
-    # initiate editing of a mirror
-    obj = scope.mirrors[0]
-    expect(scope.editingMirror[obj.id]).toBe(undefined)
-    scope.editMirror(obj)
-    expect(scope.editingMirror[obj.id]).not.toBe(undefined)
+    # initiate editing of a repository
+    obj = scope.repos[0]
+    expect(scope.editingRepo[obj.id]).toBe(undefined)
+    scope.editRepo(obj)
+    expect(scope.editingRepo[obj.id]).not.toBe(undefined)
 
-    # change some property of this mirror
-    scope.editingMirror[obj.id].name = 'Minus Monor'
+    # change some property of this repository
+    scope.editingRepo[obj.id].name = 'Minus Monor'
 
     # save the result
-    res = allMirrors1[0]
+    res = allRepos1[0]
     res.name = 'Minus Monor'
-    callResponse @httpBackend, '/v1/mirrors/'+obj.id, 'PATCH', 200, res, () -> scope.saveMirror(scope.editingMirror[obj.id])
+    callResponse @httpBackend, '/v1/repositories/'+obj.id, 'PATCH', 200, res, () -> scope.saveRepo(scope.editingRepo[obj.id])
 
     # check if the results are correct
-    expect(scope.editingMirror[obj.id]).toBe(undefined)
-    obj = scope.mirrors[0]
+    expect(scope.editingRepo[obj.id]).toBe(undefined)
+    obj = scope.repos[0]
     expect(obj.name).toBe('Minus Monor')
 
-  it 'should be able to [D]elete an existing mirror', () ->
+  it 'should be able to [D]elete an existing repository', () ->
     # TODO: maybe remove the creation and expect it to exist already
-    scope.newMirror()
-    callResponse @httpBackend, '/v1/mirrors', 'POST', 201, allMirrors1[0], () -> scope.saveMirror(scope.newMirrors[0])
-    # update the name of an existing mirror
-    callResponse @httpBackend, '/v1/mirrors/'+scope.mirrors[0].id, 'DELETE', 204, null, () -> scope.deleteMirror(scope.mirrors[0])
-    expect(scope.mirrors.length).toBe(0)
+    scope.newRepo()
+    callResponse @httpBackend, '/v1/repositories', 'POST', 201, allRepos1[0], () -> scope.saveRepo(scope.newRepos[0])
+    # update the name of an existing repository
+    callResponse @httpBackend, '/v1/repositories/'+scope.repos[0].id, 'DELETE', 204, null, () -> scope.deleteRepo(scope.repos[0])
+    expect(scope.repos.length).toBe(0)

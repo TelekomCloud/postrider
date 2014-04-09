@@ -41,24 +41,24 @@
       <section class="top-bar-section">
         <!-- Right Nav Section -->
         <ul class="right">
-          <li><a ng-click="toggleShow('nav', 'mirrors')" href="#">Mirrors</a></li>
+          <li><a ng-click="toggleShow('nav', 'repos')" href="#">Repositories</a></li>
           <li><a ng-click="toggleShow('nav', 'config')" class="fi-widget settingsButton" href="#"></a></li>
         </ul>
       </section>
     </nav>
     </div>
 
-    <div id="mirrorConfig" class="centered-text settingsRow animate-show ng-hide" ng-show="show.nav == 'mirrors'">
+    <div id="repoConfig" class="centered-text settingsRow animate-show ng-hide" ng-show="show.nav == 'repos'">
       <div class="row">
         <div class="small-12 columns">
-          <h4>Mirror configuration<small><a ng-click="newMirror()" class="fi-page-add addButton" href="#"></a></small></h4>
+          <h4>Repository configuration<small><a ng-click="newRepo()" class="fi-page-add addButton" href="#"></a></small></h4>
         </div>
       </div>
-      <!-- newly created mirrors -->
+      <!-- newly created repos -->
       <div class="row">
-        <div class="small-12 columns mirrorList">
-          <div class="row" data-ng-repeat="m in newMirrors" ng-show="newMirrors.length > 0">
-            <div class="small-12 large-6 columns editMirror">
+        <div class="small-12 columns repoList">
+          <div class="row" data-ng-repeat="m in newRepos" ng-show="newRepos.length > 0">
+            <div class="small-12 large-6 columns editRepo">
 
                 <div class="row">
                   <div class="small-12 columns inputLine">
@@ -85,8 +85,8 @@
                 </div>
 
                 <div class="icons">
-                  <a ng-click="saveMirror(m)" class="fi-save saveButton" href="#"></a>
-                  <a ng-click="cancelEditMirror(m)" class="fi-x exitButton" href="#"></a>
+                  <a ng-click="saveRepo(m)" class="fi-save saveButton" href="#"></a>
+                  <a ng-click="cancelEditRepo(m)" class="fi-x exitButton" href="#"></a>
                 </div>
 
               </div>
@@ -95,45 +95,45 @@
         </div>
       </div>
 
-      <!-- currently active + editing mirrors -->
+      <!-- currently active + editing repos -->
       <div class="row">
-        <div class="small-12 columns mirrorList">
-          <span ng-show="mirrors.length === undefined || mirrors.length === 0" >
+        <div class="small-12 columns repoList">
+          <span ng-show="repos.length === undefined || repos.length === 0" >
             <div class="row">
               <div class="small-12 large-6 columns">
-                no mirrors found
+                no repositories found
               </div>
             </div>
           </span>
-          <span data-ng-repeat="m in mirrors" ng-show="mirrors.length > 0">
-            <div class="row" ng-click="editMirror(m)" ng-show="editingMirror[m.id] === undefined">
+          <span data-ng-repeat="m in repos" ng-show="repos.length > 0">
+            <div class="row" ng-click="editRepo(m)" ng-show="editingRepo[m.id] === undefined">
               <div class="small-12 large-6 columns entry">
                 {{m.name}}
               </div>
             </div>
-            <div class="row" ng-show="editingMirror[m.id] !== undefined">
+            <div class="row" ng-show="editingRepo[m.id] !== undefined">
 
-              <div class="small-12 large-6 columns editMirror">
+              <div class="small-12 large-6 columns editRepo">
 
                 <div class="row">
                   <div class="small-12 columns inputLine">
                     <label>Name: </label>
-                    <input type="text" class="name len-{{editingMirror[m.id].name.length}}" ng-model="editingMirror[m.id].name">
+                    <input type="text" class="name len-{{editingRepo[m.id].name.length}}" ng-model="editingRepo[m.id].name">
                   </div>
                 </div>
 
                 <div class="row">
                   <div class="small-12 columns inputLine">
                     <label>Label: </label>
-                    <input type="text" class="label len-{{editingMirror[m.id].label.length}}" ng-model="editingMirror[m.id].label">
+                    <input type="text" class="label len-{{editingRepo[m.id].label.length}}" ng-model="editingRepo[m.id].label">
                   </div>
                 </div>
 
                 <div class="row">
                   <div class="small-12 columns inputLine">
                     <label>URL: </label>
-                    <input type="text" class="label len-{{editingMirror[m.id].url.length}}" ng-model="editingMirror[m.id].url">
-                    <select ng-model="editingMirror[m.id].provider" for="right-label" class="right inline" style="width: 20%">
+                    <input type="text" class="label len-{{editingRepo[m.id].url.length}}" ng-model="editingRepo[m.id].url">
+                    <select ng-model="editingRepo[m.id].provider" for="right-label" class="right inline" style="width: 20%">
                       <option value="apt">apt</option>
                     </select>
                   </div>
@@ -141,13 +141,13 @@
 
                 <div class="row">
                   <div class="small-12 columns">
-                    <a href="#" class="button alert removeButton left" ng-click="deleteMirror(m)">Remove mirror</a>
+                    <a href="#" class="button alert removeButton left" ng-click="deleteRepo(m)">Remove repository</a>
                   </div>
                 </div>
 
                 <div class="icons">
-                  <a ng-click="saveMirror(editingMirror[m.id])" class="fi-save saveButton" href="#"></a>
-                  <a ng-click="cancelEditMirror(m)" class="fi-x exitButton" href="#"></a>
+                  <a ng-click="saveRepo(editingRepo[m.id])" class="fi-save saveButton" href="#"></a>
+                  <a ng-click="cancelEditRepo(m)" class="fi-x exitButton" href="#"></a>
                 </div>
 
               </div>
@@ -224,18 +224,18 @@
             <h4>
               Packages
               <small>({{packages.length}})</small>
-              <small><a data-dropdown="ddPackageMirror" href="#">compare to {{mirrorSelected.name || '...'}}</a></small>
+              <small><a data-dropdown="ddPackageRepo" href="#">compare to {{repoSelected.name || '...'}}</a></small>
             </h4>
 
-            <ul id="ddPackageMirror" class="f-dropdown" data-dropdown-content onclick="$(this).foundation('dropdown', 'close', $(this))">
-              <span ng-show="mirrors.length === undefined || mirrors.length === 0" >
-                <li><a href="#">no mirrors found</a></li>
+            <ul id="ddPackageRepo" class="f-dropdown" data-dropdown-content onclick="$(this).foundation('dropdown', 'close', $(this))">
+              <span ng-show="repos.length === undefined || repos.length === 0" >
+                <li><a href="#">no repositories found</a></li>
               </span>
-              <span ng-show="mirrors.length > 0">
-                <li><a href="#" ng-click="selectMirror(null)">...</a></li>
+              <span ng-show="repos.length > 0">
+                <li><a href="#" ng-click="selectRepo(null)">...</a></li>
               </span>
-              <span data-ng-repeat="m in mirrors" ng-show="mirrors.length > 0">
-                <li><a href="#" ng-click="selectMirror(m)" class="selected-{{m == mirrorSelected}}">{{m.name}}</a></li>
+              <span data-ng-repeat="m in repos" ng-show="repos.length > 0">
+                <li><a href="#" ng-click="selectRepo(m)" class="selected-{{m == repoSelected}}">{{m.name}}</a></li>
               </span>
             </ul>
 

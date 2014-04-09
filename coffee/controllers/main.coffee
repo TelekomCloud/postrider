@@ -12,7 +12,7 @@ angular.module('postriderApp')
     $scope.allPackages = []
     $scope.nodes = []
     $scope.packages = []
-    $scope.mirrors = []
+    $scope.repos = []
     $scope.node = {}
     $scope.package = {}
     $scope.packageByName = {}
@@ -23,9 +23,9 @@ angular.module('postriderApp')
     $scope.packageVisible = {}
     $scope.packageSelected = {}
     $scope.packageFetching = {}
-    $scope.mirrorSelected = null
-    $scope.newMirrors = []
-    $scope.editingMirror = {}
+    $scope.repoSelected = null
+    $scope.newRepos = []
+    $scope.editingRepo = {}
 
     $scope.nodeQuery = ''
     $scope.packageQuery = ''
@@ -35,8 +35,8 @@ angular.module('postriderApp')
     # if this field is already active, deactivate it
     # if a field is choosen while another is active, the new one
     #   will become active
-    # example: toggleShow('nav', 'config'), toggleShow('nav', 'mirrors'),
-    # toggleShow('nav', 'mirrors')
+    # example: toggleShow('nav', 'config'), toggleShow('nav', 'repos'),
+    # toggleShow('nav', 'repos')
     $scope.toggleShow = (group, field)->
       if $scope.show[group] == field
         $scope.show[group] = undefined
@@ -112,9 +112,9 @@ angular.module('postriderApp')
       $scope.allPackages = []
       $scope.allPackagesMap = {}
 
-      # If a mirror was selected, filter by it
-      if $scope.mirrorSelected?
-        query = { 'outdated':true, 'mirror': $scope.mirrorSelected.id }
+      # If a repo was selected, filter by it
+      if $scope.repoSelected?
+        query = { 'outdated':true, 'repo': $scope.repoSelected.id }
       else
         query = {}
 
@@ -140,82 +140,82 @@ angular.module('postriderApp')
                 $scope.package[v.id].upstream = p.upstream
         , { 'query': query }
 
-    $scope.fetchMirrors = (page = 1)->
-      fetchAllPaginated 'mirrors',
+    $scope.fetchRepos = (page = 1)->
+      fetchAllPaginated 'repositories',
         (data) ->
-          # append the mirror to the list of mirrors
-          $scope.mirrors.push.apply( $scope.mirrors, data )
+          # append the repo to the list of repos
+          $scope.repos.push.apply( $scope.repos, data )
 
-    saveNewMirror = (mirror)->
-      console.log "creating a new mirror..."
+    saveNewRepo = (repo)->
+      console.log "creating a new repo..."
       # or if it's in the new elements, remove it first
-      idx = $scope.newMirrors.indexOf(mirror)
+      idx = $scope.newRepos.indexOf(repo)
       if idx >= 0
-        $scope.newMirrors.splice( idx, 1 )
+        $scope.newRepos.splice( idx, 1 )
       else
-        console.error "EE: can't remove new mirror: #{mirror}"
+        console.error "EE: can't remove new repo: #{repo}"
       # make the request to the server
-      Restangular.one('mirrors').post('',mirror).
+      Restangular.one('repositories').post('',repo).
         then (n) ->
-          $scope.mirrors.unshift( n )
-        , fetchError('add mirror')
+          $scope.repos.unshift( n )
+        , fetchError('add repo')
 
-    saveExistingMirror = (mirror)->
-      console.log "saving the existing mirror id: #{mirror.id}..."
-      # remove the mirror from the list of editings
-      $scope.editingMirror[mirror.id] = undefined
+    saveExistingRepo = (repo)->
+      console.log "saving the existing repo id: #{repo.id}..."
+      # remove the repo from the list of editings
+      $scope.editingRepo[repo.id] = undefined
       # make the request to the server
-      Restangular.one('mirrors', mirror.id).patch(mirror).
+      Restangular.one('repositories', repo.id).patch(repo).
         then (n) ->
-          idx = _.findIndex( $scope.mirrors, (i) -> i.id is mirror.id)
+          idx = _.findIndex( $scope.repos, (i) -> i.id is repo.id)
           if idx >= 0
-            $scope.mirrors[idx] = n
+            $scope.repos[idx] = n
           else
-            console.error "EE: can't update mirror #{mirror.id}, "+
-              "i can't find it in the list of mirrors"
-        , fetchError('update mirror')
+            console.error "EE: can't update repo #{repo.id}, "+
+              "i can't find it in the list of repos"
+        , fetchError('update repo')
 
-    $scope.saveMirror = (mirror)->
-      if(mirror.id?)
-        saveExistingMirror(mirror)
+    $scope.saveRepo = (repo)->
+      if(repo.id?)
+        saveExistingRepo(repo)
       else
-        saveNewMirror(mirror)
+        saveNewRepo(repo)
 
-    $scope.deleteMirror = (mirror)->
-      idx = $scope.mirrors.indexOf(mirror)
+    $scope.deleteRepo = (repo)->
+      idx = $scope.repos.indexOf(repo)
       if( idx < 0)
-        console.log("EE can't find mirror to delete")
-        console.log(mirror)
+        console.log("EE can't find repo to delete")
+        console.log(repo)
       else
-        Restangular.one('mirrors', mirror.id).remove().
+        Restangular.one('repositories', repo.id).remove().
           then (n) ->
-            $scope.mirrors.splice(idx,1)
-          , fetchError('delete mirror')
+            $scope.repos.splice(idx,1)
+          , fetchError('delete repo')
 
-    $scope.newMirror = ()->
-      # add a new mirror object to be edited
-      $scope.newMirrors.push({})
+    $scope.newRepo = ()->
+      # add a new repo object to be edited
+      $scope.newRepos.push({})
 
-    $scope.editMirror = (mirror)->
+    $scope.editRepo = (repo)->
       # copy a cloned copy of all the entries to a separate object for editing
-      $scope.editingMirror[mirror.id] = JSON.parse( JSON.stringify( mirror ) )
+      $scope.editingRepo[repo.id] = JSON.parse( JSON.stringify( repo ) )
 
-    $scope.cancelEditMirror = (mirror)->
-      # if the mirror already exists
-      if mirror.id?
+    $scope.cancelEditRepo = (repo)->
+      # if the repo already exists
+      if repo.id?
         # remove it from the list of editings
-        if $scope.editingMirror[mirror.id]?
-          $scope.editingMirror[mirror.id] = undefined
+        if $scope.editingRepo[repo.id]?
+          $scope.editingRepo[repo.id] = undefined
         else
-          console.error "Can't cancel editing for mirror (#{mirror.id})"
-      # if the mirror is new and doesn't yet have an id
+          console.error "Can't cancel editing for repo (#{repo.id})"
+      # if the repo is new and doesn't yet have an id
       else
         # remove it by index
-        idx = $scope.newMirrors.indexOf(mirror)
+        idx = $scope.newRepos.indexOf(repo)
         if idx >= 0
-          $scope.newMirrors.splice(idx,1)
+          $scope.newRepos.splice(idx,1)
         else
-          console.error "Can't cancel editing of new mirror #{mirror}."
+          console.error "Can't cancel editing of new repo #{repo}."
 
     $scope.fetchNode = (id)->
       Restangular.one('node', id).get().
@@ -332,13 +332,13 @@ angular.module('postriderApp')
       $scope.updateNodeSelection()
       $scope.showPackage(p)
 
-    $scope.selectMirror = (m)->
+    $scope.selectRepo = (m)->
       if m? and m.id?
-        console.log("mirror #{m.name} (#{m.id}) selected")
-        $scope.mirrorSelected = m
+        console.log("repo #{m.name} (#{m.id}) selected")
+        $scope.repoSelected = m
       else
-        console.log("mirror deselected")
-        $scope.mirrorSelected = null
+        console.log("repo deselected")
+        $scope.repoSelected = null
       # update the list of packages with the selected repo
       $scope.fetchPackages()
 
@@ -367,7 +367,7 @@ angular.module('postriderApp')
       # fetch base data
       $scope.fetchNodes()
       $scope.fetchPackages()
-      $scope.fetchMirrors()
+      $scope.fetchRepos()
 
     # initialize this module
     $? && $(document).ready ()->
