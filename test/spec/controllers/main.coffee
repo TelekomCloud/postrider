@@ -105,7 +105,7 @@ describe 'Controller: MainCtrl', ()->
   build_request = (site, params = [])->
     # remove all undefined
     p = params.filter (x) -> x?
-    q = ( p.map (x) -> x.join('=') ).join('&')
+    q = ( p.map (x) -> x.join('=') ).sort().join('&')
     if q.length == 0
       site
     else
