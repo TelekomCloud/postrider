@@ -94,11 +94,11 @@ $light_grey_bg: #EAEAEA;
   }
 }
 
-.packageMirrorFilter {
+.packageRepoFilter {
   background: $color1_bg;
 }
 
-#ddPackageMirror {
+#ddPackageRepo {
   .selected-true {
     color: $color1_fg;
     &:after {
@@ -110,8 +110,8 @@ $light_grey_bg: #EAEAEA;
   }
 }
 
-#mirrorConfig {
-  .mirrorList .columns.entry {
+#repoConfig {
+  .repoList .columns.entry {
     padding: 8px 15px;
     margin: 3px 15px;
     border-radius: 4px;
@@ -139,7 +139,7 @@ $light_grey_bg: #EAEAEA;
     }
   }
 
-  .editMirror {
+  .editRepo {
     border: 1px solid #ccc;
     background: white;
     color: black;
