@@ -230,13 +230,13 @@
             <div id="repoSelection" class="reveal-modal" data-reveal>
               <div class="row">
                 <div class="medium-12 small-12 columns">
-                  <h2>Select by Label</h2>
+                  <h3>Select by Label</h3>
                   <ul>
                     <span ng-show="repos.length === undefined || repos.length === 0" >
                       <li><a href="#">no repositories found</a></li>
                     </span>
                     <span data-ng-repeat="m in repos" ng-show="repos.length > 0">
-                      <li><a href="#" ng-click="selectRepo(m)" class="selected-{{m == repoSelected}}">{{m.name}}</a></li>
+                      <li class="item"><a href="#" ng-click="selectRepo(m)" class="selected-{{m == repoSelected}}">{{m.name}}</a></li>
                     </span>
                   </ul>
                 </div>
