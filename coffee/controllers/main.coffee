@@ -339,6 +339,9 @@ angular.module('postriderApp')
       $scope.updateNodeSelection()
       $scope.showPackage(p)
 
+    $scope.repoLabels = ()->
+      _.uniq( $scope.repos.map((x) -> x.label) )
+
     $scope.selectRepo = (m)->
       if m? and m.id?
         console.log("repo #{m.name} (#{m.id}) selected")

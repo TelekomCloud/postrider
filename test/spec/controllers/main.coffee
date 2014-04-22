@@ -317,6 +317,16 @@ describe 'Controller: MainCtrl', ()->
     expect(scope.repoSelected).toBe(allRepos1[0])
     expect(scope.repoSelectedLabel).toBe(null)
 
+  it 'provides all repository labels (uniq)', () ->
+    scope.repos = [
+      {'label': 'a'}, {'label': 'a'},
+      {'label': 'b'}
+    ]
+    labels = scope.repoLabels()
+    expect( labels ).toContain('a')
+    expect( labels ).toContain('b')
+    expect( labels.length ).toBe(2)
+
   it 'should be able to access /package/xyz info (empty one)', () ->
     id = 'xyz'
     @httpBackend.whenGET('/v1/package/'+id).respond({})
