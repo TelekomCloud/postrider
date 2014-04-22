@@ -305,12 +305,16 @@ describe 'Controller: MainCtrl', ()->
     expect(scope.repoSelected).toBe(null)
     expect(scope.repoSelectedLabel).toBe(null)
 
-    scope.selectRepoLabel(allRepos1[0].label)
+    opts = {'query': [['repolabel',allRepos1[0].label],['outdated','true']]}
+    select_by_label = () -> scope.selectRepoLabel(allRepos1[0].label)
+    paginateResponse @httpBackend, '/v1/packages', allPackages1, select_by_label, opts
     expect(scope.repoSelected).toBe(null)
     expect(scope.repoSelectedLabel).toBe(allRepos1[0].label)
 
-    scope.selectRepo(allRepos1[0].id)
-    expect(scope.repoSelected).toBe(allRepos1[0].id)
+    opts = {'query': [['repo',allRepos1[0].id],['outdated','true']]}
+    select_by_id = () -> scope.selectRepo(allRepos1[0])
+    paginateResponse @httpBackend, '/v1/packages', allPackages1, select_by_id, opts
+    expect(scope.repoSelected).toBe(allRepos1[0])
     expect(scope.repoSelectedLabel).toBe(null)
 
   it 'should be able to access /package/xyz info (empty one)', () ->
