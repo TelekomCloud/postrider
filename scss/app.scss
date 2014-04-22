@@ -227,6 +227,12 @@ $light_grey_bg: #EAEAEA;
 }
 
 #repoSelection {
+  $margin: 0.33rem;
+
+  h3 {
+    margin-left: $margin;
+  }
+
   ul {
     list-style: none;
     padding: 0;
@@ -234,7 +240,7 @@ $light_grey_bg: #EAEAEA;
   }
 
   li {
-    margin: 0.33rem;
+    margin: $margin;
     float: left;
     &.item {
       padding: 0.2rem 0.55rem;
