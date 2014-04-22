@@ -236,7 +236,7 @@
                       <li><a href="#">no repositories found</a></li>
                     </span>
                     <span data-ng-repeat="m in repos" ng-show="repos.length > 0">
-                      <li class="item selected-{{m == repoSelected}}"><a href="#" ng-click="selectRepo(m)">{{m.name}}</a></li>
+                      <li class="item selected-{{m == repoSelected}}" ng-click="selectRepo(m)"><a href="#">{{m.name}}</a></li>
                     </span>
                   </ul>
                 </div>
@@ -248,7 +248,7 @@
                       <li><a href="#">no labels found</a></li>
                     </span>
                     <span data-ng-repeat="l in repoLabels()" ng-show="repoLabels().length > 0">
-                      <li class="item selected-{{l == repoSelectedLabel}}"><a href="#" ng-click="selectRepoLabel(l)">{{l}}</a></li>
+                      <li class="item selected-{{l == repoSelectedLabel}}" ng-click="selectRepoLabel(l)"><a href="#">{{l}}</a></li>
                     </span>
                   </ul>
                 </div>
