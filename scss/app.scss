@@ -246,12 +246,16 @@ $light_grey_bg: #EAEAEA;
         color: inherit;
       }
 
+      &.selected-true {
+        & > a { color: $color1_fg; }
+        border: 1px solid $color1_fg;
+        box-shadow: 0 0 1px #007ab2;
+      }
+
       &:hover {
         background: $light_bg;
       }
-      &.selected-true > a {
-        color: $color1_fg;
-      }
+
     }
   }
 
