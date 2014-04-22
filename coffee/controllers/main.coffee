@@ -344,8 +344,12 @@ angular.module('postriderApp')
 
     $scope.selectRepo = (m)->
       if m? and m.id?
-        console.log("repo #{m.name} (#{m.id}) selected")
-        $scope.repoSelected = m
+        if $scope.repoSelected? and $scope.repoSelected.id is m.id
+          console.log "deselect repos"
+          $scope.repoSelected = null
+        else
+          console.log("repo #{m.name} (#{m.id}) selected")
+          $scope.repoSelected = m
         # deselect repo selection by Label
         $scope.repoSelectedLabel = null
       else
