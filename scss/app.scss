@@ -106,18 +106,6 @@ $light_grey_bg: #EAEAEA;
   background: $color1_bg;
 }
 
-#ddPackageRepo {
-  .selected-true {
-    color: $color1_fg;
-    &:after {
-      content: ' ✔'
-    }
-  }
-  :hover {
-    background: $light_bg;
-  }
-}
-
 #repoConfig {
   .repoList .columns.entry {
     padding: 8px 15px;
@@ -234,6 +222,23 @@ $light_grey_bg: #EAEAEA;
     font-size: small;
     &:hover {
       background-color: #E95353;
+    }
+  }
+}
+
+#repoSelection {
+  ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+
+    li {
+      margin: 0.33rem;
+      padding: 0.2rem 0.55rem;
+      background: #eee;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      float: left;
     }
   }
 }
