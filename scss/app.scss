@@ -58,17 +58,25 @@ $light_grey_bg: #EAEAEA;
 
 .nodeList,
 .packageList {
-  padding: 4px 0px 4px 0px;
+  padding: 0;
   cursor: pointer;
-  &:hover {
-    background: $light_bg;
-  }
-  &.selected-true {
-    color: $color1_fg;
+
+  & > div {
+    padding-top: 4px;
+    padding-bottom: 4px;
+    &:hover {
+      background: $light_bg;
+    }
+    &.selected-true {
+      color: $color1_fg;
+    }
   }
 
   .outdated-true {
-    color: red;
+    color: #992323;
+    &:hover {
+      background: #FFD7D7;
+    }
   }
 
   .outdated-some {
