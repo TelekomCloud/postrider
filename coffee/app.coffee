@@ -8,4 +8,11 @@ angular.module('postriderApp', [
 ]).config (RestangularProvider) ->
   RestangularProvider.setBaseUrl '/v1'
 
-$(document).foundation() if $?
+if $?
+  # initialize foundation
+  $(document).foundation({
+    reveal : {
+      animation_speed: 100,
+      animation: 'fade'
+    }
+  })
