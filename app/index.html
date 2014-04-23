@@ -224,7 +224,7 @@
             <h4>
               Packages
               <small>({{packages.length}})</small>
-              <small><a data-reveal-id="repoSelection" href="#">compare to {{repoSelectedLabel || repoSelected.name || '...'}}</a></small>
+              <small><a data-reveal-id="repoSelection" href="#">compare to {{selectedReposIndicator}}</a></small>
             </h4>
 
             <div id="repoSelection" class="reveal-modal" data-reveal>
@@ -236,7 +236,7 @@
                       <li><a href="#">no repositories found</a></li>
                     </span>
                     <span data-ng-repeat="m in repos" ng-show="repos.length > 0">
-                      <li class="item selected-{{m == repoSelected}}" ng-click="selectRepo(m)"><a href="#">{{m.name}}</a></li>
+                      <li class="item selected-{{repoSelected[m.id] !== undefined}}" ng-click="selectRepo(m)"><a href="#">{{m.name}}</a></li>
                     </span>
                   </ul>
                 </div>

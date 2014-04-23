@@ -25,6 +25,7 @@ angular.module('postriderApp')
     $scope.packageFetching = {}
     $scope.repoSelected = {}
     $scope.repoSelectedLabel = null
+    $scope.selectedReposIndicator = '...'
     $scope.newRepos = []
     $scope.editingRepo = {}
 
@@ -345,6 +346,15 @@ angular.module('postriderApp')
     $scope.repoSelectedIds = ()->
       _.keys( $scope.repoSelected )
 
+    $scope.updateSelectedReposIndicator = ()->
+      if $scope.repoSelectedLabel?
+        $scope.selectedReposIndicator = $scope.repoSelectedLabel
+      else if $scope.repoSelectedIds().length isnt 0
+        repoNames = _.values( $scope.repoSelected ).map((x) -> x.name )
+        $scope.selectedReposIndicator = repoNames.join(', ')
+      else
+        $scope.selectedReposIndicator = '...'
+
     $scope.selectRepo = (m)->
       if m? and m.id?
         if $scope.repoSelected[m.id]?
@@ -360,6 +370,7 @@ angular.module('postriderApp')
         $scope.repoSelected = {}
         $scope.repoSelectedLabel = null
       # update the list of packages with the selected repo
+      $scope.updateSelectedReposIndicator()
       $scope.fetchPackages()
 
     $scope.selectRepoLabel = (label)->
@@ -369,8 +380,7 @@ angular.module('postriderApp')
         # deselect repo selection by ID
         $scope.repoSelected = {}
       # update the list of packages with the selected repo
-      console.log "-- fetch packages label: #{$scope.repoSelectedLabel}"
-      console.log "-- fetch packages id   : #{$scope.repoSelected}"
+      $scope.updateSelectedReposIndicator()
       $scope.fetchPackages()
 
     $scope.isPackageOutdated = (p)->
