@@ -58,17 +58,25 @@ $light_grey_bg: #EAEAEA;
 
 .nodeList,
 .packageList {
-  padding: 4px 0px 4px 0px;
+  padding: 0;
   cursor: pointer;
-  &:hover {
-    background: $light_bg;
-  }
-  &.selected-true {
-    color: $color1_fg;
+
+  & > div {
+    padding-top: 4px;
+    padding-bottom: 4px;
+    &:hover {
+      background: $light_bg;
+    }
+    &.selected-true {
+      color: $color1_fg;
+    }
   }
 
   .outdated-true {
-    color: red;
+    color: #992323;
+    &:hover {
+      background: #FFD7D7;
+    }
   }
 
   .outdated-some {
@@ -96,18 +104,6 @@ $light_grey_bg: #EAEAEA;
 
 .packageRepoFilter {
   background: $color1_bg;
-}
-
-#ddPackageRepo {
-  .selected-true {
-    color: $color1_fg;
-    &:after {
-      content: ' ✔'
-    }
-  }
-  :hover {
-    background: $light_bg;
-  }
 }
 
 #repoConfig {
@@ -228,4 +224,45 @@ $light_grey_bg: #EAEAEA;
       background-color: #E95353;
     }
   }
+}
+
+#repoSelection {
+  $margin: 0.33rem;
+
+  h3 {
+    margin-left: $margin;
+  }
+
+  ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  li {
+    margin: $margin;
+    float: left;
+    &.item {
+      padding: 0.2rem 0.55rem;
+      background: #fff;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+
+      a {
+        color: inherit;
+      }
+
+      &.selected-true {
+        & > a { color: $color1_fg; }
+        border: 1px solid $color1_fg;
+        box-shadow: 0 0 1px #007ab2;
+      }
+
+      &:hover {
+        background: $light_bg;
+      }
+
+    }
+  }
+
 }

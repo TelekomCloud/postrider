@@ -24,6 +24,7 @@ angular.module('postriderApp')
     $scope.packageSelected = {}
     $scope.packageFetching = {}
     $scope.repoSelected = null
+    $scope.repoSelectedLabel = null
     $scope.newRepos = []
     $scope.editingRepo = {}
 
@@ -87,8 +88,12 @@ angular.module('postriderApp')
           # if we got a result and want to continue
           # then try fetching the next page
           if not stop_when(data)
-            o = _.merge( (opts.query || {}),
-              {'stop_when':stop_when, 'page':page + 1, 'limit': limit })
+            o = {
+              'stop_when':stop_when,
+              'page':page + 1,
+              'limit': limit,
+              'query': (opts.query || {})
+            }
             fetchAllPaginated(field, action, o)
         # error handling
         , () ->
@@ -115,6 +120,8 @@ angular.module('postriderApp')
       # If a repo was selected, filter by it
       if $scope.repoSelected?
         query = { 'outdated':true, 'repo': $scope.repoSelected.id }
+      else if $scope.repoSelectedLabel?
+        query = { 'outdated':true, 'repolabel': $scope.repoSelectedLabel }
       else
         query = {}
 
@@ -332,14 +339,35 @@ angular.module('postriderApp')
       $scope.updateNodeSelection()
       $scope.showPackage(p)
 
+    $scope.repoLabels = ()->
+      _.uniq( $scope.repos.map((x) -> x.label) )
+
     $scope.selectRepo = (m)->
       if m? and m.id?
-        console.log("repo #{m.name} (#{m.id}) selected")
-        $scope.repoSelected = m
+        if $scope.repoSelected? and $scope.repoSelected.id is m.id
+          console.log "deselect repos"
+          $scope.repoSelected = null
+        else
+          console.log("repo #{m.name} (#{m.id}) selected")
+          $scope.repoSelected = m
+        # deselect repo selection by Label
+        $scope.repoSelectedLabel = null
       else
         console.log("repo deselected")
         $scope.repoSelected = null
+        $scope.repoSelectedLabel = null
       # update the list of packages with the selected repo
+      $scope.fetchPackages()
+
+    $scope.selectRepoLabel = (label)->
+      if label? and label isnt ''
+        console.log("selecting repo label: #{label}")
+        $scope.repoSelectedLabel = label
+        # deselect repo selection by ID
+        $scope.repoSelected = null
+      # update the list of packages with the selected repo
+      console.log "-- fetch packages label: #{$scope.repoSelectedLabel}"
+      console.log "-- fetch packages id   : #{$scope.repoSelected}"
       $scope.fetchPackages()
 
     $scope.isPackageOutdated = (p)->

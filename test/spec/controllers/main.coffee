@@ -249,7 +249,7 @@ describe 'Controller: MainCtrl', ()->
         expect(p.version).toBe(v.version)
         expect(p.versions).toBe(undefined)
 
-  it 'should list /packages compared to upstream repositories', () ->
+  it 'should list /packages compared to upstream repositories (by ID)', () ->
     # get repos
     paginateResponse @httpBackend, '/v1/repositories', allRepos1, () -> scope.fetchRepos()
     expect(scope.repos.length).toBe(allRepos1.length)
@@ -272,6 +272,60 @@ describe 'Controller: MainCtrl', ()->
     # test if it is outdated
     expect( scope.isPackageOutdated( scope.packages[0]) ).toBe(false)
     expect( scope.isPackageOutdated( scope.packages[1]) ).toBe(true)
+
+  it 'should list /packages compared to upstream repositories (by label)', () ->
+    # get repos
+    paginateResponse @httpBackend, '/v1/repositories', allRepos1, () -> scope.fetchRepos()
+    expect(scope.repos.length).toBe(allRepos1.length)
+    # set packages list when selecting a repository
+    ps = allPackages2
+    scope.selectRepoLabel(allRepos1[0].label)
+    opts = {'query': [['repolabel',allRepos1[0].label],['outdated','true']]}
+    dontPaginateResponse @httpBackend, '/v1/packages', ps, (() -> scope.fetchPackages()), opts
+    # results
+    expect(scope.allPackages.length).toBe(ps.length)
+    expect(scope.packages.length).toBe(ps.length)
+    # test both packages
+    for idx in [0,1]
+      res_p = scope.packages[idx]
+      expect(@typeOf(res_p)).toBe('object')
+      expect(res_p.name).toBe(ps[idx].name)
+      expect(res_p.versions.length).toBe(ps[idx].versions.length)
+      expect(res_p.upstream).toBe(ps[idx].upstream)
+
+    # test if it is outdated
+    expect( scope.isPackageOutdated( scope.packages[0]) ).toBe(false)
+    expect( scope.isPackageOutdated( scope.packages[1]) ).toBe(true)
+
+  it 'should only allow selecting either repo label or ID', () ->
+    # get repos
+    paginateResponse @httpBackend, '/v1/repositories', allRepos1, () -> scope.fetchRepos()
+    expect(scope.repos.length).toBe(allRepos1.length)
+    # for now...
+    expect(scope.repoSelected).toBe(null)
+    expect(scope.repoSelectedLabel).toBe(null)
+
+    opts = {'query': [['repolabel',allRepos1[0].label],['outdated','true']]}
+    select_by_label = () -> scope.selectRepoLabel(allRepos1[0].label)
+    paginateResponse @httpBackend, '/v1/packages', allPackages1, select_by_label, opts
+    expect(scope.repoSelected).toBe(null)
+    expect(scope.repoSelectedLabel).toBe(allRepos1[0].label)
+
+    opts = {'query': [['repo',allRepos1[0].id],['outdated','true']]}
+    select_by_id = () -> scope.selectRepo(allRepos1[0])
+    paginateResponse @httpBackend, '/v1/packages', allPackages1, select_by_id, opts
+    expect(scope.repoSelected).toBe(allRepos1[0])
+    expect(scope.repoSelectedLabel).toBe(null)
+
+  it 'provides all repository labels (uniq)', () ->
+    scope.repos = [
+      {'label': 'a'}, {'label': 'a'},
+      {'label': 'b'}
+    ]
+    labels = scope.repoLabels()
+    expect( labels ).toContain('a')
+    expect( labels ).toContain('b')
+    expect( labels.length ).toBe(2)
 
   it 'should be able to access /package/xyz info (empty one)', () ->
     id = 'xyz'

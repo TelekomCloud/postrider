@@ -224,20 +224,36 @@
             <h4>
               Packages
               <small>({{packages.length}})</small>
-              <small><a data-dropdown="ddPackageRepo" href="#">compare to {{repoSelected.name || '...'}}</a></small>
+              <small><a data-reveal-id="repoSelection" href="#">compare to {{repoSelectedLabel || repoSelected.name || '...'}}</a></small>
             </h4>
 
-            <ul id="ddPackageRepo" class="f-dropdown" data-dropdown-content onclick="$(this).foundation('dropdown', 'close', $(this))">
-              <span ng-show="repos.length === undefined || repos.length === 0" >
-                <li><a href="#">no repositories found</a></li>
-              </span>
-              <span ng-show="repos.length > 0">
-                <li><a href="#" ng-click="selectRepo(null)">...</a></li>
-              </span>
-              <span data-ng-repeat="m in repos" ng-show="repos.length > 0">
-                <li><a href="#" ng-click="selectRepo(m)" class="selected-{{m == repoSelected}}">{{m.name}}</a></li>
-              </span>
-            </ul>
+            <div id="repoSelection" class="reveal-modal" data-reveal>
+              <div class="row">
+                <div class="medium-6 small-12 columns">
+                  <h3>Select by Name</h3>
+                  <ul>
+                    <span ng-show="repos.length === undefined || repos.length === 0" >
+                      <li><a href="#">no repositories found</a></li>
+                    </span>
+                    <span data-ng-repeat="m in repos" ng-show="repos.length > 0">
+                      <li class="item selected-{{m == repoSelected}}" ng-click="selectRepo(m)"><a href="#">{{m.name}}</a></li>
+                    </span>
+                  </ul>
+                </div>
+
+                <div class="medium-6 small-12 columns">
+                  <h3>Select by Label</h3>
+                  <ul>
+                    <span ng-show="repos.length === undefined || repos.length === 0" >
+                      <li><a href="#">no labels found</a></li>
+                    </span>
+                    <span data-ng-repeat="l in repoLabels()" ng-show="repoLabels().length > 0">
+                      <li class="item selected-{{l == repoSelectedLabel}}" ng-click="selectRepoLabel(l)"><a href="#">{{l}}</a></li>
+                    </span>
+                  </ul>
+                </div>
+              </div>
+            </div>
 
           </div>
         </div>
