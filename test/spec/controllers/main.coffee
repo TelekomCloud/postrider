@@ -72,6 +72,16 @@ describe 'Controller: MainCtrl', ()->
     }
   ]
 
+  allRepos2 = allRepos1 + [
+    {
+      'id': '44e5f422-62db-42dc-b1ce-37ca3393710e',
+      'name': 'Minas Thorun',
+      'label': 'ref',
+      'url': 'http://archive2.canonical.com/ubuntu/dists/precise/partner/binary-amd64/Packages.gz',
+      'provider': 'apt'
+    }
+  ]
+
   package1 = {
       'name': 'accountsservice',
       'uri': 'http://us.archive.ubuntu.com/ubuntu/pool/main/a/accountsservice/accountsservice_0.6.15-2ubuntu9_amd64.deb',
@@ -302,20 +312,26 @@ describe 'Controller: MainCtrl', ()->
     paginateResponse @httpBackend, '/v1/repositories', allRepos1, () -> scope.fetchRepos()
     expect(scope.repos.length).toBe(allRepos1.length)
     # for now...
-    expect(scope.repoSelected).toBe(null)
+    expect(scope.repoSelected).toEqual({})
     expect(scope.repoSelectedLabel).toBe(null)
 
     opts = {'query': [['repolabel',allRepos1[0].label],['outdated','true']]}
     select_by_label = () -> scope.selectRepoLabel(allRepos1[0].label)
     paginateResponse @httpBackend, '/v1/packages', allPackages1, select_by_label, opts
-    expect(scope.repoSelected).toBe(null)
+    expect(scope.repoSelected).toEqual({})
     expect(scope.repoSelectedLabel).toBe(allRepos1[0].label)
 
     opts = {'query': [['repo',allRepos1[0].id],['outdated','true']]}
     select_by_id = () -> scope.selectRepo(allRepos1[0])
     paginateResponse @httpBackend, '/v1/packages', allPackages1, select_by_id, opts
-    expect(scope.repoSelected).toBe(allRepos1[0])
+    expect(scope.repoSelected[allRepos1[0].id]).toBe(allRepos1[0])
     expect(scope.repoSelectedLabel).toBe(null)
+
+    opts = {'query': [['repolabel',allRepos1[0].label],['outdated','true']]}
+    select_by_label = () -> scope.selectRepoLabel(allRepos1[0].label)
+    paginateResponse @httpBackend, '/v1/packages', allPackages1, select_by_label, opts
+    expect(scope.repoSelected).toEqual({})
+    expect(scope.repoSelectedLabel).toBe(allRepos1[0].label)
 
   it 'provides all repository labels (uniq)', () ->
     scope.repos = [
