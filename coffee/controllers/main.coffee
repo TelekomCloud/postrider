@@ -23,7 +23,7 @@ angular.module('postriderApp')
     $scope.packageVisible = {}
     $scope.packageSelected = {}
     $scope.packageFetching = {}
-    $scope.repoSelected = null
+    $scope.repoSelected = {}
     $scope.repoSelectedLabel = null
     $scope.newRepos = []
     $scope.editingRepo = {}
@@ -118,8 +118,8 @@ angular.module('postriderApp')
       $scope.allPackagesMap = {}
 
       # If a repo was selected, filter by it
-      if $scope.repoSelected?
-        query = { 'outdated':true, 'repo': $scope.repoSelected.id }
+      if $scope.repoSelectedIds().length isnt 0
+        query = { 'outdated':true, 'repo': $scope.repoSelectedIds().join(",") }
       else if $scope.repoSelectedLabel?
         query = { 'outdated':true, 'repolabel': $scope.repoSelectedLabel }
       else
@@ -342,19 +342,22 @@ angular.module('postriderApp')
     $scope.repoLabels = ()->
       _.uniq( $scope.repos.map((x) -> x.label) )
 
+    $scope.repoSelectedIds = ()->
+      _.keys( $scope.repoSelected )
+
     $scope.selectRepo = (m)->
       if m? and m.id?
-        if $scope.repoSelected? and $scope.repoSelected.id is m.id
-          console.log "deselect repos"
-          $scope.repoSelected = null
+        if $scope.repoSelected[m.id]?
+          console.log "repo deselect #{m.name} (#{m.id})"
+          delete $scope.repoSelected[m.id]
         else
-          console.log("repo #{m.name} (#{m.id}) selected")
-          $scope.repoSelected = m
+          console.log("repo select #{m.name} (#{m.id})")
+          $scope.repoSelected[m.id] = m
         # deselect repo selection by Label
         $scope.repoSelectedLabel = null
       else
-        console.log("repo deselected")
-        $scope.repoSelected = null
+        console.log("repo deselect all")
+        $scope.repoSelected = {}
         $scope.repoSelectedLabel = null
       # update the list of packages with the selected repo
       $scope.fetchPackages()
@@ -364,7 +367,7 @@ angular.module('postriderApp')
         console.log("selecting repo label: #{label}")
         $scope.repoSelectedLabel = label
         # deselect repo selection by ID
-        $scope.repoSelected = null
+        $scope.repoSelected = {}
       # update the list of packages with the selected repo
       console.log "-- fetch packages label: #{$scope.repoSelectedLabel}"
       console.log "-- fetch packages id   : #{$scope.repoSelected}"
