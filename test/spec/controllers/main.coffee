@@ -327,6 +327,12 @@ describe 'Controller: MainCtrl', ()->
     expect(scope.repoSelected).toBe(allRepos1[0])
     expect(scope.repoSelectedLabel).toBe(null)
 
+    opts = {'query': [['repolabel',allRepos1[0].label],['outdated','true']]}
+    select_by_label = () -> scope.selectRepoLabel(allRepos1[0].label)
+    paginateResponse @httpBackend, '/v1/packages', allPackages1, select_by_label, opts
+    expect(scope.repoSelected).toBe(null)
+    expect(scope.repoSelectedLabel).toBe(allRepos1[0].label)
+
   it 'provides all repository labels (uniq)', () ->
     scope.repos = [
       {'label': 'a'}, {'label': 'a'},
