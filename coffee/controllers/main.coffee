@@ -106,6 +106,9 @@ angular.module('postriderApp')
         )
 
     $scope.fetchNodes = (page = 1)->
+      # empty out the current nodes
+      $scope.allNodes = []
+      # fetch the list of nodes
       fetchAllPaginated 'nodes',
         (data) ->
           # append the new nodes to the list of nodes

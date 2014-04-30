@@ -196,6 +196,11 @@ describe 'Controller: MainCtrl', ()->
       expect(@typeOf(scope.nodes[idx])).toBe('object')
       expect(scope.nodes[idx]['id']).toBe(allNodes1[idx]['id'])
 
+  it 'should not containe duplicate nodes when fetching mutliple times', () ->
+    paginateResponse @httpBackend, '/v1/nodes', allNodes1, () -> scope.fetchNodes()
+    paginateResponse @httpBackend, '/v1/nodes', allNodes1, () -> scope.fetchNodes()
+    expect(scope.nodes.length).toBe(2)
+
   it 'should be able to access /node/xyz info (empty node)', () ->
     id = 'test'
     @httpBackend.whenGET('/v1/node/'+id).respond({
