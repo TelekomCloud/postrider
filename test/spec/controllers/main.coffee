@@ -72,7 +72,7 @@ describe 'Controller: MainCtrl', ()->
     }
   ]
 
-  allRepos2 = allRepos1 + [
+  allRepos2 = allRepos1.concat [
     {
       'id': '44e5f422-62db-42dc-b1ce-37ca3393710e',
       'name': 'Minas Thorun',
