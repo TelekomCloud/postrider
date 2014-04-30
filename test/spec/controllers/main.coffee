@@ -264,6 +264,11 @@ describe 'Controller: MainCtrl', ()->
         expect(p.version).toBe(v.version)
         expect(p.versions).toBe(undefined)
 
+  it 'should not contain duplicate packages when fetching multiple times', () ->
+    paginateResponse @httpBackend, '/v1/packages', allPackages1, () -> scope.fetchPackages()
+    paginateResponse @httpBackend, '/v1/packages', allPackages1, () -> scope.fetchPackages()
+    expect(scope.packages.length).toBe(allPackages1.length)
+
   it 'should list /packages compared to upstream repositories (by ID)', () ->
     # get repos
     paginateResponse @httpBackend, '/v1/repositories', allRepos1, () -> scope.fetchRepos()
