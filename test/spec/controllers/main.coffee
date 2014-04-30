@@ -72,7 +72,7 @@ describe 'Controller: MainCtrl', ()->
     }
   ]
 
-  allRepos2 = allRepos1 + [
+  allRepos2 = allRepos1.concat [
     {
       'id': '44e5f422-62db-42dc-b1ce-37ca3393710e',
       'name': 'Minas Thorun',
@@ -196,6 +196,11 @@ describe 'Controller: MainCtrl', ()->
       expect(@typeOf(scope.nodes[idx])).toBe('object')
       expect(scope.nodes[idx]['id']).toBe(allNodes1[idx]['id'])
 
+  it 'should not containe duplicate nodes when fetching mutliple times', () ->
+    paginateResponse @httpBackend, '/v1/nodes', allNodes1, () -> scope.fetchNodes()
+    paginateResponse @httpBackend, '/v1/nodes', allNodes1, () -> scope.fetchNodes()
+    expect(scope.nodes.length).toBe(2)
+
   it 'should be able to access /node/xyz info (empty node)', () ->
     id = 'test'
     @httpBackend.whenGET('/v1/node/'+id).respond({
@@ -258,6 +263,11 @@ describe 'Controller: MainCtrl', ()->
         expect(p.name).toBe(ps[idx].name)
         expect(p.version).toBe(v.version)
         expect(p.versions).toBe(undefined)
+
+  it 'should not contain duplicate packages when fetching multiple times', () ->
+    paginateResponse @httpBackend, '/v1/packages', allPackages1, () -> scope.fetchPackages()
+    paginateResponse @httpBackend, '/v1/packages', allPackages1, () -> scope.fetchPackages()
+    expect(scope.packages.length).toBe(allPackages1.length)
 
   it 'should list /packages compared to upstream repositories (by ID)', () ->
     # get repos
@@ -424,6 +434,12 @@ describe 'Controller: MainCtrl', ()->
   it 'should [R]ead all repositories the server has available', () ->
     paginateResponse @httpBackend, '/v1/repositories', allRepos1, () -> scope.fetchRepos()
     expect(scope.repos.length).toBe(allRepos1.length)
+
+  it 'should have the expected list of repositories when reading multiple times', () ->
+    paginateResponse @httpBackend, '/v1/repositories', allRepos1, () -> scope.fetchRepos()
+    expect(scope.repos.length).toEqual(allRepos1.length)
+    paginateResponse @httpBackend, '/v1/repositories', allRepos1, () -> scope.fetchRepos()
+    expect(scope.repos.length).toEqual(allRepos1.length)
 
   it 'should be able to [U]pdate an existing repository', () ->
     # TODO: maybe remove the creation and expect it to exist already

@@ -106,6 +106,9 @@ angular.module('postriderApp')
         )
 
     $scope.fetchNodes = (page = 1)->
+      # empty out the current nodes
+      $scope.allNodes = []
+      # fetch the list of nodes
       fetchAllPaginated 'nodes',
         (data) ->
           # append the new nodes to the list of nodes
@@ -149,9 +152,12 @@ angular.module('postriderApp')
         , { 'query': query }
 
     $scope.fetchRepos = (page = 1)->
+      # empty out the list of repositories
+      $scope.repos = []
+      # get all repositories
       fetchAllPaginated 'repositories',
         (data) ->
-          # append the repo to the list of repos
+          # append any new repo to the list of repos
           $scope.repos.push.apply( $scope.repos, data )
 
     saveNewRepo = (repo)->
