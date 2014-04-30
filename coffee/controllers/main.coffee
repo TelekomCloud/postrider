@@ -381,8 +381,13 @@ angular.module('postriderApp')
 
     $scope.selectRepoLabel = (label)->
       if label? and label isnt ''
-        console.log("selecting repo label: #{label}")
-        $scope.repoSelectedLabel = label
+        # toggle label selection
+        if $scope.repoSelectedLabel is label
+          console.log "repo selection by label cleared"
+          $scope.repoSelectedLabel = null
+        else
+          console.log "selecting repo label: #{label}"
+          $scope.repoSelectedLabel = label
         # deselect repo selection by ID
         $scope.repoSelected = {}
       # update the list of packages with the selected repo
