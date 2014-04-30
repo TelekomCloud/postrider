@@ -425,6 +425,12 @@ describe 'Controller: MainCtrl', ()->
     paginateResponse @httpBackend, '/v1/repositories', allRepos1, () -> scope.fetchRepos()
     expect(scope.repos.length).toBe(allRepos1.length)
 
+  it 'should have the expected list of repositories when reading multiple times', () ->
+    paginateResponse @httpBackend, '/v1/repositories', allRepos1, () -> scope.fetchRepos()
+    expect(scope.repos.length).toEqual(allRepos1.length)
+    paginateResponse @httpBackend, '/v1/repositories', allRepos1, () -> scope.fetchRepos()
+    expect(scope.repos.length).toEqual(allRepos1.length)
+
   it 'should be able to [U]pdate an existing repository', () ->
     # TODO: maybe remove the creation and expect it to exist already
     scope.newRepo()
