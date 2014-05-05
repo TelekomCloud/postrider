@@ -346,9 +346,9 @@ angular.module('postriderApp')
       $scope.updatePackageSelection()
       $scope.showNode(id)
 
-    $scope.showPackage = (p)->
+    $scope.showPackage = (p, do_show)->
       $scope.ensurePackage(p)
-      $scope.packageVisible[p.name] = not $scope.packageVisible[p.name]
+      $scope.packageVisible[p.name] = do_show
 
     # select a package with all its versions
     # also deselects a package if it is currently selected
@@ -363,7 +363,7 @@ angular.module('postriderApp')
 
       # check if all versions are selected
       $scope.updateNodeSelection()
-      $scope.showPackage(p)
+      $scope.showPackage(p, $scope.packageSelected[p.name])
 
     $scope.selectPackageVersion = (p, pv)->
       # sanity check
