@@ -64,8 +64,11 @@ $light_grey_bg: #EAEAEA;
   & > div {
     padding-top: 4px;
     padding-bottom: 4px;
-    &:hover {
+    &.packageItem:hover {
       background: $light_bg;
+    }
+    & > .packageDetails:hover {
+      background: darken( $light_bg, 10);
     }
     &.selected-true {
       color: $color1_fg;

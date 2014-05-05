@@ -269,9 +269,9 @@
         </div>
 
         <div class="row packageList expanded-{{packageVisible[p.name]}}" data-ng-repeat="p in packages | filter:packageQuery">
-          <div class="columns outdated-{{p.isOutdated}} selected-{{packageSelected[p.name]}}" ng-click="selectPackage(p)">
+          <div class="columns packageItem outdated-{{p.isOutdated}} selected-{{packageSelected[p.name]}}">
 
-            <div class="row">
+            <div class="row packageHeadline" ng-click="selectPackage(p)">
               <div class="small-11 large-11 columns">{{p.name}}
                 <span ng-show="{{p.outdated_info !== undefined}}" class="outdated-info">({{p.outdated_info}})</span>
               </div>
