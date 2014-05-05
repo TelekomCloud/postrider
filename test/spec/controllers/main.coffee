@@ -407,7 +407,19 @@ describe 'Controller: MainCtrl', ()->
 
     expect( scope.nodes.length ).toBe( 2 )
     expect( scope.nodes[0].id ).toBe( allNodes1[0].id )
+    expect( scope.nodes[1].id ).toBe( allNodes1[1].id )
 
+  it 'should provide only the node which has the selected a specific package version', () ->
+    scope.allNodes = allNodes1
+    scope.package['version_xyz_id'] = {}
+    scope.package['version_xyz_id'].nodes = [ { 'id': allNodes1[0].id } ]
+
+    scope.packageSelectedVersions['p'] = {}
+    scope.packageSelectedVersions['p']['version_xyz_id'] = true
+    scope.updateNodeSelection()
+
+    expect( scope.nodes.length ).toBe( 1 )
+    expect( scope.nodes[0].id ).toBe( allNodes1[0].id )
 
   it 'should provide all packages if no node is selected', () ->
     scope.allPackages = allPackages1
