@@ -287,7 +287,7 @@
                 </div>
               </div>
               <div class="columns" ng-show="p.versions.length > 0">
-                <div class="row" data-ng-repeat="pv in p.versions">
+                <div class="row selected-{{packageSelectedVersions[p.name][pv.id]}}" data-ng-repeat="pv in p.versions">
                   <div class="columns" ng-click="selectPackageVersion(p,pv)">{{pv.version}}</div>
                 </div>
               </div>

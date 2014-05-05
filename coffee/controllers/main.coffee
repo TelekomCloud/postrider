@@ -366,9 +366,29 @@ angular.module('postriderApp')
       $scope.showPackage(p)
 
     $scope.selectPackageVersion = (p, pv)->
-      console.log("package with version selected")
-      console.log(p)
-      console.log(pv)
+      # sanity check
+      if not pv.version?
+        console.log("EE invalid call of selectPackageVersion with package version object: #{pv}")
+        return
+
+      # log and ensure
+      console.log("package #{p.name} with version #{pv.version} selected")
+      $scope.ensurePackage(p)
+
+      # if no package versions have been selected so far, create the map
+      if not $scope.packageSelectedVersions[p.name]
+        $scope.packageSelectedVersions[p.name] = {}
+      # toggle this selected package version
+      $scope.packageSelectedVersions[p.name][pv.id] =
+        not $scope.packageSelectedVersions[p.name][pv.id]
+
+      # since we select a specific version, make sure the package is not selected
+      # if the package is selected, it indicates all versions are selected,
+      # otherwise only specific versions as listed above are selected
+      $scope.packageSelected[p.name] = false
+
+      # check if all versions are selected
+      $scope.updateNodeSelection()
 
     $scope.repoLabels = ()->
       _.uniq( $scope.repos.map((x) -> x.label) )
