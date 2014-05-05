@@ -289,7 +289,7 @@ angular.module('postriderApp')
         compact().flatten().
         value()
       # merge the two lists
-      _.union(pids.vids)
+      _.union(pids,vids)
 
     $scope.updateNodeSelection = ()->
       # get all selected packages versions
