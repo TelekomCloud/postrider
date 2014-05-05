@@ -193,16 +193,16 @@
           <div class="small-2 large-2 columns"></div>
         </div>
 
-        <div class="row nodeList expanded-{{nodeVisible[n.id]}} selected-{{nodeSelected[n.id]}}" data-ng-repeat="n in nodes | filter:nodeQuery">
-          <div class="columns" ng-click="selectNode(n.id)" >
-            <div class="row">
+        <div class="row nodeList expanded-{{nodeVisible[n.id]}}" data-ng-repeat="n in nodes | filter:nodeQuery">
+          <div class="columns item selected-{{nodeSelected[n.id]}}" ng-click="selectNode(n.id)" >
+            <div class="row itemHeadline">
               <div class="small-11 large-11 columns">{{n.id}}</div>
               <div class="small-1 large-1 columns" ng-show="nodeVisible[n.id] && node[n.id] === undefined">
                 <span class="loading"></span>
               </div>
             </div>
             <!-- Detailed information on a node -->
-            <div class="row nodeDetails" ng-show="nodeVisible[n.id] && node[n.id] !== undefined">
+            <div class="row itemDetails" ng-show="nodeVisible[n.id] && node[n.id] !== undefined">
               <div class="columns" ng-show="node[n.id] !== undefined && node[n.id].packages.length === 0">
                 <div class="row">
                   <div class="columns">no packages found</div>
@@ -269,9 +269,9 @@
         </div>
 
         <div class="row packageList expanded-{{packageVisible[p.name]}}" data-ng-repeat="p in packages | filter:packageQuery">
-          <div class="columns packageItem outdated-{{p.isOutdated}} selected-{{packageSelected[p.name]}}">
+          <div class="columns item outdated-{{p.isOutdated}} selected-{{packageSelected[p.name]}}">
 
-            <div class="row packageHeadline" ng-click="selectPackage(p)">
+            <div class="row itemHeadline" ng-click="selectPackage(p)">
               <div class="small-11 large-11 columns">{{p.name}}
                 <span ng-show="{{p.outdated_info !== undefined}}" class="outdated-info">({{p.outdated_info}})</span>
               </div>
@@ -280,7 +280,7 @@
               </div>
             </div>
             <!-- Detailed information on a package -->
-            <div class="row packageDetails" ng-show="packageVisible[p.name] || packageSelected[p.name]">
+            <div class="row itemDetails" ng-show="packageVisible[p.name] || packageSelected[p.name]">
               <div class="columns" ng-show="p.versions.length === 0">
                 <div class="row">
                   <div class="columns">no versions found</div>

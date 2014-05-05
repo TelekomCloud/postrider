@@ -61,18 +61,13 @@ $light_grey_bg: #EAEAEA;
   padding: 0;
   cursor: pointer;
 
-  & > div {
+  .itemHeadline {
     padding-top: 4px;
     padding-bottom: 4px;
-    &.packageItem:hover {
-      background: $light_bg;
-    }
-    & > .packageDetails:hover {
-      background: darken( $light_bg, 10);
-    }
-    &.selected-true {
-      color: $color1_fg;
-    }
+  }
+
+  .item.selected-true {
+    color: $color1_fg;
   }
 
   .outdated-true {
@@ -92,10 +87,24 @@ $light_grey_bg: #EAEAEA;
   }
 }
 
-.nodeDetails,
-.packageDetails {
+// hover animation for node
+.nodeList {
+  .item:hover {
+    background: $light_bg;
+  }
+}
+
+// hover animation for packages
+.packageList {
+  .itemHeadline:hover,
+  .itemDetails:hover {
+    background: $light_bg;
+  }
+}
+
+.itemDetails {
   font-size: small;
-  padding: 5px 0 10px 0;
+  padding: 0 0 10px 0;
   .row .columns:before {
     content: "├──";
     padding: 0 10px 0 0;
