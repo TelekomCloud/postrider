@@ -268,8 +268,8 @@
           <div class="small-2 large-2 columns"></div>
         </div>
 
-        <div class="row packageList expanded-{{packageVisible[p.name]}} selected-{{packageSelected[p.name]}}" data-ng-repeat="p in packages | filter:packageQuery">
-          <div class="columns outdated-{{p.isOutdated}}" ng-click="selectPackage(p)">
+        <div class="row packageList expanded-{{packageVisible[p.name]}}" data-ng-repeat="p in packages | filter:packageQuery">
+          <div class="columns outdated-{{p.isOutdated}} selected-{{packageSelected[p.name]}}" ng-click="selectPackage(p)">
 
             <div class="row">
               <div class="small-11 large-11 columns">{{p.name}}
@@ -288,7 +288,7 @@
               </div>
               <div class="columns" ng-show="p.versions.length > 0">
                 <div class="row" data-ng-repeat="pv in p.versions">
-                  <div class="columns">{{pv.version}}</div>
+                  <div class="columns" ng-click="selectPackageVersion(p,pv)">{{pv.version}}</div>
                 </div>
               </div>
             </div>
