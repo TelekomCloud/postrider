@@ -368,7 +368,8 @@ angular.module('postriderApp')
     $scope.selectPackageVersion = (p, pv)->
       # sanity check
       if not pv.version?
-        console.log("EE invalid call of selectPackageVersion with package version object: #{pv}")
+        console.log("EE invalid call of selectPackageVersion with package"+
+                    " version object: #{pv}")
         return
 
       # log and ensure
@@ -382,9 +383,10 @@ angular.module('postriderApp')
       $scope.packageSelectedVersions[p.name][pv.id] =
         not $scope.packageSelectedVersions[p.name][pv.id]
 
-      # since we select a specific version, make sure the package is not selected
-      # if the package is selected, it indicates all versions are selected,
-      # otherwise only specific versions as listed above are selected
+      # since we select a specific version, make sure the package is not
+      # selected if the package is selected, it indicates all versions
+      # are selected, otherwise only specific versions as listed above
+      # are selected
       $scope.packageSelected[p.name] = false
 
       # check if all versions are selected
