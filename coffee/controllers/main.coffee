@@ -22,6 +22,7 @@ angular.module('postriderApp')
     $scope.nodeSelected = {}
     $scope.packageVisible = {}
     $scope.packageSelected = {}
+    $scope.packageSelectedVersions = {}
     $scope.packageFetching = {}
     $scope.repoSelected = {}
     $scope.repoSelectedLabel = null
@@ -251,25 +252,15 @@ angular.module('postriderApp')
           $scope.packageFetching[name] -= 1
         , fetchError('packages')
 
-    updateNodeSelectionFor = (packages)->
-      # get all package ids for the list of package names
-      pids = _(packages).
-        # first we get all versions for this package name
-        map( (p)-> $scope.packageByName[p].versions ).
-        flatten().
-        compact().
-        # then get the package id for each package with version
-        map( (v)-> v.id ).
-        value()
+    updateNodeSelectionFor = (versions)->
       # get all nodes for the selected packages
-      nodes = _(pids).
+      nodes = _(versions).
         map( (pid)->
           if $scope.package[pid]? and $scope.package[pid].nodes
             ( n.id for n in $scope.package[pid].nodes )
           else []
         ).
-        flatten().
-        uniq().
+        flatten().uniq().
         value()
       # only keep nodes that were selected
       ns = _.reject $scope.allNodes, (n)->
@@ -279,14 +270,34 @@ angular.module('postriderApp')
       # update the model of nodes subset
       $scope.nodes = ns
 
-    $scope.updateNodeSelection = ()->
-      # get all selected packages
+    getSelectedPackageVersions = ()->
+      # get all packages that are selected without version selection
       packages =
         ( k for k,isSelected of $scope.packageSelected when isSelected )
-      if packages.length is 0
+      pids = _( packages ).
+        # first we get all versions for this package name
+        map( (p)-> $scope.packageByName[p].versions ).
+        compact().flatten().
+        # then get the package id for each package with version
+        map( (v)-> v.id ).
+        value()
+      # next get all of the explicitly set versions
+      vids = _($scope.packageSelectedVersions).
+        map((versions,p) ->
+          (version for version,isSelected of versions when isSelected)
+        ).
+        compact().flatten().
+        value()
+      # merge the two lists
+      _.union(pids,vids)
+
+    $scope.updateNodeSelection = ()->
+      # get all selected packages versions
+      selected_versions = getSelectedPackageVersions()
+      if selected_versions.length is 0
         $scope.nodes = $scope.allNodes
       else
-        updateNodeSelectionFor(packages)
+        updateNodeSelectionFor(selected_versions)
 
     updatePackageSelectionFor = (nodes)->
       # get all packages for these nodes
@@ -335,16 +346,51 @@ angular.module('postriderApp')
       $scope.updatePackageSelection()
       $scope.showNode(id)
 
-    $scope.showPackage = (p)->
+    $scope.showPackage = (p, do_show)->
       $scope.ensurePackage(p)
-      $scope.packageVisible[p.name] = not $scope.packageVisible[p.name]
+      $scope.packageVisible[p.name] = do_show
 
+    # select a package with all its versions
+    # also deselects a package if it is currently selected
     $scope.selectPackage = (p)->
       console.log("package #{p.name} selected")
       $scope.ensurePackage(p)
+
+      # if the package is not yet selected, select it
       $scope.packageSelected[p.name] = not $scope.packageSelected[p.name]
+      if $scope.packageSelected[p.name]
+        $scope.packageSelectedVersions[p.name] = {}
+
+      # check if all versions are selected
       $scope.updateNodeSelection()
-      $scope.showPackage(p)
+      $scope.showPackage(p, $scope.packageSelected[p.name])
+
+    $scope.selectPackageVersion = (p, pv)->
+      # sanity check
+      if not pv.version?
+        console.log("EE invalid call of selectPackageVersion with package"+
+                    " version object: #{pv}")
+        return
+
+      # log and ensure
+      console.log("package #{p.name} with version #{pv.version} selected")
+      $scope.ensurePackage(p)
+
+      # if no package versions have been selected so far, create the map
+      if not $scope.packageSelectedVersions[p.name]
+        $scope.packageSelectedVersions[p.name] = {}
+      # toggle this selected package version
+      $scope.packageSelectedVersions[p.name][pv.id] =
+        not $scope.packageSelectedVersions[p.name][pv.id]
+
+      # since we select a specific version, make sure the package is not
+      # selected if the package is selected, it indicates all versions
+      # are selected, otherwise only specific versions as listed above
+      # are selected
+      $scope.packageSelected[p.name] = false
+
+      # check if all versions are selected
+      $scope.updateNodeSelection()
 
     $scope.repoLabels = ()->
       _.uniq( $scope.repos.map((x) -> x.label) )

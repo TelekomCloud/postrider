@@ -390,17 +390,36 @@ describe 'Controller: MainCtrl', ()->
     scope.updateNodeSelection()
     expect( scope.nodes ).toBe( scope.allNodes )
 
-  it 'should provide only the node which has the selected package', () ->
+  it 'should provide only the node which has the selected package (all versions)', () ->
     scope.allNodes = allNodes1
     scope.packageByName['p'] =
-      'versions': [{ 'id': 'pid' }]
-    scope.package['pid'] = {}
-    scope.package['pid'].nodes = [ { 'id': allNodes1[0].id } ]
+      'versions': [
+        { 'id': 'version_xyz_id1' },
+        { 'id': 'version_xyz_id2' }
+      ]
+    scope.package['version_xyz_id1'] = {}
+    scope.package['version_xyz_id1'].nodes = [ { 'id': allNodes1[0].id } ]
+    scope.package['version_xyz_id2'] = {}
+    scope.package['version_xyz_id2'].nodes = [ { 'id': allNodes1[1].id } ]
+
     scope.packageSelected['p'] = true
     scope.updateNodeSelection()
+
+    expect( scope.nodes.length ).toBe( 2 )
+    expect( scope.nodes[0].id ).toBe( allNodes1[0].id )
+    expect( scope.nodes[1].id ).toBe( allNodes1[1].id )
+
+  it 'should provide only the node which has the selected a specific package version', () ->
+    scope.allNodes = allNodes1
+    scope.package['version_xyz_id'] = {}
+    scope.package['version_xyz_id'].nodes = [ { 'id': allNodes1[0].id } ]
+
+    scope.packageSelectedVersions['p'] = {}
+    scope.packageSelectedVersions['p']['version_xyz_id'] = true
+    scope.updateNodeSelection()
+
     expect( scope.nodes.length ).toBe( 1 )
     expect( scope.nodes[0].id ).toBe( allNodes1[0].id )
-
 
   it 'should provide all packages if no node is selected', () ->
     scope.allPackages = allPackages1
