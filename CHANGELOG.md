@@ -1,5 +1,17 @@
 # Changelog
 
+## 0.3.0
+
+* feature: query packages by repo label
+* feature: allow querying packages by multiple repositories
+* feature: only select specific package versions in frontend
+* improvement: restyled node and package selection items to support subselection
+* improvement: simplify popup animation type and speed
+* improvement: coloring of outdated packages
+* bugfix: allow deselection of repo filter by label
+* bugfix: prevent duplication of nodes when fetching multiple times
+* bugfix: prevent duplications in repository list
+
 ## 0.2.0
 
 * feature: query packages with a selected repository
