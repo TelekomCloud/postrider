@@ -6,3 +6,6 @@ app/bower_components
 app/styles
 app/scripts
 node_modules
+.bower-cache
+.bower-registry
+mock.rb
