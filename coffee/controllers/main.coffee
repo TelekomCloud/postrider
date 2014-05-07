@@ -7,6 +7,7 @@ angular.module('postriderApp')
     $scope.ponyExpressHost =
       $cookies.ponyExpressHost or ( window.location.host + "/api" )
     $scope.ponyExpressVersion = 'v1'
+    $scope.ponyExpressHostOk = false
 
     $scope.allNodes = []
     $scope.allPackages = []
@@ -457,15 +458,31 @@ angular.module('postriderApp')
         oldest = p.versions.map((x)->x['version']).sort()[0]
         p.outdated_info = "latest: " + p.upstream
 
+    $scope.isEndpointOk = (next)->
+      Restangular.one('status').get().then(
+        (data) ->
+          if not data? or data.name isnt 'pony-express'
+            $scope.ponyExpressHostOk = false
+            console.log( new Error("endpoint is not pony-express") )
+          else
+            $scope.ponyExpressHostOk = true
+            next() if next?
+        , () ->
+          # otherwise we have a fetch error
+          $scope.ponyExpressHostOk = false
+          console.log( new Error("endpoint is not alive") )
+        )
+
     $scope.loadData = ()->
       # update the cookie with a working url
       $cookies.ponyExpressHost = $scope.ponyExpressHost
       # set restangular to use the current url
       Restangular.setBaseUrl apiUrl()
       # fetch base data
-      $scope.fetchNodes()
-      $scope.fetchPackages()
-      $scope.fetchRepos()
+      $scope.isEndpointOk ()->
+        $scope.fetchNodes()
+        $scope.fetchPackages()
+        $scope.fetchRepos()
 
     # initialize this module
     $? && $(document).ready ()->

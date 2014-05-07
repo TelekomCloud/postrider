@@ -153,12 +153,12 @@ describe 'Controller: MainCtrl', ()->
     action()
     httpBackend.flush()
 
-  callResponse = ($httpBackend, baseUrl, requestType, responseCode, response, action)->
-    $httpBackend["when#{requestType}"](baseUrl).respond(responseCode,response)
-    $httpBackend["expect#{requestType}"](baseUrl)
+  callResponse = (httpBackend, baseUrl, requestType, responseCode, response, action)->
+    httpBackend["when#{requestType}"](baseUrl).respond(responseCode,response)
+    httpBackend["expect#{requestType}"](baseUrl)
     # take the action
     action()
-    $httpBackend.flush()
+    httpBackend.flush()
 
 
   # The tests:
@@ -168,6 +168,24 @@ describe 'Controller: MainCtrl', ()->
 
   it 'should have the default host pointing to <HOST>/api', () ->
     expect(scope.ponyExpressHost).toBe( window.location.host + "/api" )
+
+  it 'should check the endpoint health to be ok', ()->
+    callResponse @httpBackend, '/v1/status', 'GET',
+      200, {'version': '0.6.0', 'name': 'pony-express'},
+      () -> scope.isEndpointOk()
+    expect(scope.ponyExpressHostOk).toBe(true)
+
+  it 'should check the endpoint health to be not ok (non-responsive)', ()->
+    callResponse @httpBackend, '/v1/status', 'GET',
+      404, {},
+      () -> scope.isEndpointOk()
+    expect(scope.ponyExpressHostOk).toBe(false)
+
+  it 'should check the endpoint health to be not ok (invalid)', ()->
+    callResponse @httpBackend, '/v1/status', 'GET',
+      200, {'version': '0.6.0'},
+      () -> scope.isEndpointOk()
+    expect(scope.ponyExpressHostOk).toBe(false)
 
   ## Querying Nodes and Package
 
