@@ -273,18 +273,23 @@ describe 'Controller: MainCtrl', ()->
     paginateResponse @httpBackend, '/v1/packages', allPackages1, () -> scope.fetchPackages()
     expect(scope.packages.length).toBe(allPackages1.length)
 
-  it 'should list /packages compared to upstream repositories (by ID)', () ->
+  query_packages_with_upstream_repo_id = (httpBackend)->
     # get repos
-    paginateResponse @httpBackend, '/v1/repositories', allRepos1, () -> scope.fetchRepos()
+    paginateResponse httpBackend, '/v1/repositories', allRepos1, () -> scope.fetchRepos()
     expect(scope.repos.length).toBe(allRepos1.length)
     # set packages list when selecting a repository
     ps = allPackages2
     scope.selectRepo(allRepos1[0])
     opts = {'query': [['repo',allRepos1[0].id],['outdated','true']]}
-    dontPaginateResponse @httpBackend, '/v1/packages', ps, (() -> scope.fetchPackages()), opts
+    dontPaginateResponse httpBackend, '/v1/packages', ps, (() -> scope.fetchPackages()), opts
     # results
     expect(scope.allPackages.length).toBe(ps.length)
     expect(scope.packages.length).toBe(ps.length)
+    # return the packages we returned from the query
+    return ps
+
+  it 'should list /packages compared to upstream repositories (by ID)', () ->
+    ps = query_packages_with_upstream_repo_id(@httpBackend)
     # test both packages
     for idx in [0,1]
       res_p = scope.packages[idx]
