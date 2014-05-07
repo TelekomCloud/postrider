@@ -455,7 +455,7 @@ angular.module('postriderApp')
       p.isOutdated = $scope.isPackageOutdated(p)
       if p.isOutdated is 'some' or p.isOutdated is true
         oldest = p.versions.map((x)->x['version']).sort()[0]
-        p.outdated_info = "latest: " + p.upstream
+        p.outdated_info = 'latest: ' + p.upstream.latest
 
     $scope.loadData = ()->
       # update the cookie with a working url

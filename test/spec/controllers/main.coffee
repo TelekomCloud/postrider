@@ -326,6 +326,15 @@ describe 'Controller: MainCtrl', ()->
     expect( scope.isPackageOutdated( scope.packages[0]) ).toBe(false)
     expect( scope.isPackageOutdated( scope.packages[1]) ).toBe(true)
 
+  it 'should add the outdated info to a package', ()->
+    ps = query_packages_with_upstream_repo_id(@httpBackend)
+    # test if non-outdated don't get an outdated_info
+    scope.addOutdatedInfo( scope.packages[0] )
+    expect( scope.packages[0].outdated_info ).toBe( undefined )
+    # outdated packages should have the info field
+    scope.addOutdatedInfo( scope.packages[1] )
+    expect( scope.packages[1].outdated_info ).toBe( 'latest: '+scope.packages[1].upstream.latest )
+
   it 'should only allow selecting either repo label or ID', () ->
     # get repos
     paginateResponse @httpBackend, '/v1/repositories', allRepos1, () -> scope.fetchRepos()
