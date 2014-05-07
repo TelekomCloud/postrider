@@ -41,12 +41,12 @@ describe 'Controller: MainCtrl', ()->
   allPackages1 = [
     { 'name': 'xx', 'versions': [
         {'version':'1.0','id':'xx10'}
-      ]
+      ], 'upstream': {}
     },
     { 'name': 'yy', 'versions': [
         {'version':'1.1','id':'yy11'},
         {'version':'1.2','id':'yy12'}
-      ]
+      ], 'upstream': {}
     }
   ]
 
@@ -334,6 +334,12 @@ describe 'Controller: MainCtrl', ()->
     # outdated packages should have the info field
     scope.addOutdatedInfo( scope.packages[1] )
     expect( scope.packages[1].outdated_info ).toBe( 'latest: '+scope.packages[1].upstream.latest )
+
+  it 'should not containd upstream version infos in packages without an upstream repo query', ()->
+    ps = allPackages1
+    paginateResponse @httpBackend, '/v1/packages', ps, () -> scope.fetchPackages()
+    for idx in [0,1]
+      expect( scope.packages[idx].upstream ).toBe( undefined )
 
   it 'should only allow selecting either repo label or ID', () ->
     # get repos
