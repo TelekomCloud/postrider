@@ -11,6 +11,9 @@ $color2_bg: #FF8B00;
 // outlier for hovering
 $light_bg: #CFF0FF;
 $light_grey_bg: #EAEAEA;
+// ok/nok
+$color_ok_bg: $light_bg;
+$color_ok_fg: $color1_fg;
 
 .loading {
   display: block;
@@ -29,6 +32,18 @@ $light_grey_bg: #EAEAEA;
   color: white;
   h1,h2,h3,h4,h5,h6,label {
     color: white;
+  }
+
+  input {
+    margin: 0;
+    &.valid-true {
+      border-color: $color_ok_fg;
+      box-shadow: 0px 0px 2px $color_ok_fg;
+    }
+  }
+
+  .hidden-true {
+    display: none;
   }
 }
 

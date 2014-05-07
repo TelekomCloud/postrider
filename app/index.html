@@ -167,8 +167,10 @@
       </div>
       <div class="row">
         <div class="small-12 large-4 columns">
-          <label>Host</label>
-          <input type="text" ng-model="ponyExpressHost" ng-change="loadData()">
+          <label>Host
+            <input class="valid-{{ponyExpressHostOk}}" type="text" ng-model="ponyExpressHost" ng-change="loadData()">
+          </label>
+          <small class="error hidden-{{ponyExpressHostOk}}">You must provide a valid endpoint.</small>
         </div>
         <div class="small-0 large-8 columns">
         </div>
