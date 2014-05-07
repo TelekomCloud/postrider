@@ -53,12 +53,16 @@ describe 'Controller: MainCtrl', ()->
   allPackages2 = [
     { 'name': 'xx', 'versions': [
         {'version':'1.0','id':'xx10'}
-      ], 'upstream': '1.0'
+      ], 'upstream': {
+        'latest': '1.0'
+      }
     },
     { 'name': 'yy', 'versions': [
         {'version':'1.1','id':'yy11'},
         {'version':'1.2','id':'yy12'}
-      ], 'upstream': '2.0'
+      ], 'upstream': {
+        'latest': '2.0'
+      }
     }
   ]
 
@@ -287,7 +291,7 @@ describe 'Controller: MainCtrl', ()->
       expect(@typeOf(res_p)).toBe('object')
       expect(res_p.name).toBe(ps[idx].name)
       expect(res_p.versions.length).toBe(ps[idx].versions.length)
-      expect(res_p.upstream).toBe(ps[idx].upstream)
+      expect(res_p.upstream).toEqual(ps[idx].upstream)
 
     # test if it is outdated
     expect( scope.isPackageOutdated( scope.packages[0]) ).toBe(false)
@@ -311,7 +315,7 @@ describe 'Controller: MainCtrl', ()->
       expect(@typeOf(res_p)).toBe('object')
       expect(res_p.name).toBe(ps[idx].name)
       expect(res_p.versions.length).toBe(ps[idx].versions.length)
-      expect(res_p.upstream).toBe(ps[idx].upstream)
+      expect(res_p.upstream).toEqual(ps[idx].upstream)
 
     # test if it is outdated
     expect( scope.isPackageOutdated( scope.packages[0]) ).toBe(false)

@@ -444,9 +444,9 @@ angular.module('postriderApp')
       # make sure we have upstream information
       return null if not p.upstream?
       # check if every version is on upstream:
-      all = _.every( p.versions, {'version': p.upstream} )
+      all = _.every( p.versions, {'version': p.upstream.latest} )
       # check if any version is on upstream
-      some = _.some( p.versions, {'version': p.upstream} )
+      some = _.some( p.versions, {'version': p.upstream.latest} )
 
       return 'some' if some and not all
       all is not true
