@@ -118,6 +118,34 @@ angular.module('postriderApp')
           # new node information
           $scope.updateNodeSelection()
 
+    receivePackageData = (data, filterByOutdated)->
+      # append the new packages to the list of packages
+      for pkg in data
+        # if the package is not yet in the map
+        if not $scope.allPackagesMap[pkg.name]?
+          # add metainformation
+          if not filterByOutdated
+            delete pkg.upstream
+          else
+            $scope.addOutdatedInfo(pkg)
+          # add the package
+          $scope.allPackagesMap[pkg.name] = true
+          $scope.allPackages.push( pkg )
+
+      # update the selection, i.e. select nodes according to
+      # new package information
+      $scope.updatePackageSelection()
+
+      # add all package info to the map
+      for pkg in data
+        $scope.packageByName[pkg.name] = pkg
+        for v in pkg.versions
+          if not $scope.package[v.id]?
+            $scope.package[v.id] = {}
+            $scope.package[v.id].name = pkg.name
+            $scope.package[v.id].version = v.version
+            $scope.package[v.id].upstream = pkg.upstream
+
     $scope.fetchPackages = (page = 1)->
       $scope.allPackages = []
       $scope.allPackagesMap = {}
@@ -125,32 +153,17 @@ angular.module('postriderApp')
       # If a repo was selected, filter by it
       if $scope.repoSelectedIds().length isnt 0
         query = { 'outdated':true, 'repo': $scope.repoSelectedIds().join(",") }
+        filterByOutdated = true
       else if $scope.repoSelectedLabel?
         query = { 'outdated':true, 'repolabel': $scope.repoSelectedLabel }
+        filterByOutdated = true
       else
         query = {}
+        filterByOutdated = false
 
       fetchAllPaginated 'packages',
-        (data) ->
-          # append the new packages to the list of packages
-          for p in data
-            if not $scope.allPackagesMap[p.name]?
-              $scope.addOutdatedInfo(p)
-              $scope.allPackagesMap[p.name] = true
-              $scope.allPackages.push( p )
-          # update the selection, i.e. select nodes according to
-          # new package information
-          $scope.updatePackageSelection()
-          # add all package info to the map
-          for p in data
-            $scope.packageByName[p.name] = p
-            for v in p.versions
-              if not $scope.package[v.id]?
-                $scope.package[v.id] = {}
-                $scope.package[v.id].name = p.name
-                $scope.package[v.id].version = v.version
-                $scope.package[v.id].upstream = p.upstream
-        , { 'query': query }
+        (data) -> receivePackageData(data, filterByOutdated),
+        { 'query': query }
 
     $scope.fetchRepos = (page = 1)->
       # empty out the list of repositories
@@ -444,9 +457,9 @@ angular.module('postriderApp')
       # make sure we have upstream information
       return null if not p.upstream?
       # check if every version is on upstream:
-      all = _.every( p.versions, {'version': p.upstream} )
+      all = _.every( p.versions, {'version': p.upstream.latest} )
       # check if any version is on upstream
-      some = _.some( p.versions, {'version': p.upstream} )
+      some = _.some( p.versions, {'version': p.upstream.latest} )
 
       return 'some' if some and not all
       all is not true
@@ -455,7 +468,7 @@ angular.module('postriderApp')
       p.isOutdated = $scope.isPackageOutdated(p)
       if p.isOutdated is 'some' or p.isOutdated is true
         oldest = p.versions.map((x)->x['version']).sort()[0]
-        p.outdated_info = "latest: " + p.upstream
+        p.outdated_info = 'latest: ' + p.upstream.latest
 
     $scope.loadData = ()->
       # update the cookie with a working url

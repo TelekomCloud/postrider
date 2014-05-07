@@ -41,24 +41,28 @@ describe 'Controller: MainCtrl', ()->
   allPackages1 = [
     { 'name': 'xx', 'versions': [
         {'version':'1.0','id':'xx10'}
-      ]
+      ], 'upstream': {}
     },
     { 'name': 'yy', 'versions': [
         {'version':'1.1','id':'yy11'},
         {'version':'1.2','id':'yy12'}
-      ]
+      ], 'upstream': {}
     }
   ]
 
   allPackages2 = [
     { 'name': 'xx', 'versions': [
         {'version':'1.0','id':'xx10'}
-      ], 'upstream': '1.0'
+      ], 'upstream': {
+        'latest': '1.0'
+      }
     },
     { 'name': 'yy', 'versions': [
         {'version':'1.1','id':'yy11'},
         {'version':'1.2','id':'yy12'}
-      ], 'upstream': '2.0'
+      ], 'upstream': {
+        'latest': '2.0'
+      }
     }
   ]
 
@@ -269,25 +273,30 @@ describe 'Controller: MainCtrl', ()->
     paginateResponse @httpBackend, '/v1/packages', allPackages1, () -> scope.fetchPackages()
     expect(scope.packages.length).toBe(allPackages1.length)
 
-  it 'should list /packages compared to upstream repositories (by ID)', () ->
+  query_packages_with_upstream_repo_id = (httpBackend)->
     # get repos
-    paginateResponse @httpBackend, '/v1/repositories', allRepos1, () -> scope.fetchRepos()
+    paginateResponse httpBackend, '/v1/repositories', allRepos1, () -> scope.fetchRepos()
     expect(scope.repos.length).toBe(allRepos1.length)
     # set packages list when selecting a repository
     ps = allPackages2
     scope.selectRepo(allRepos1[0])
     opts = {'query': [['repo',allRepos1[0].id],['outdated','true']]}
-    dontPaginateResponse @httpBackend, '/v1/packages', ps, (() -> scope.fetchPackages()), opts
+    dontPaginateResponse httpBackend, '/v1/packages', ps, (() -> scope.fetchPackages()), opts
     # results
     expect(scope.allPackages.length).toBe(ps.length)
     expect(scope.packages.length).toBe(ps.length)
+    # return the packages we returned from the query
+    return ps
+
+  it 'should list /packages compared to upstream repositories (by ID)', () ->
+    ps = query_packages_with_upstream_repo_id(@httpBackend)
     # test both packages
     for idx in [0,1]
       res_p = scope.packages[idx]
       expect(@typeOf(res_p)).toBe('object')
       expect(res_p.name).toBe(ps[idx].name)
       expect(res_p.versions.length).toBe(ps[idx].versions.length)
-      expect(res_p.upstream).toBe(ps[idx].upstream)
+      expect(res_p.upstream).toEqual(ps[idx].upstream)
 
     # test if it is outdated
     expect( scope.isPackageOutdated( scope.packages[0]) ).toBe(false)
@@ -311,11 +320,26 @@ describe 'Controller: MainCtrl', ()->
       expect(@typeOf(res_p)).toBe('object')
       expect(res_p.name).toBe(ps[idx].name)
       expect(res_p.versions.length).toBe(ps[idx].versions.length)
-      expect(res_p.upstream).toBe(ps[idx].upstream)
+      expect(res_p.upstream).toEqual(ps[idx].upstream)
 
     # test if it is outdated
     expect( scope.isPackageOutdated( scope.packages[0]) ).toBe(false)
     expect( scope.isPackageOutdated( scope.packages[1]) ).toBe(true)
+
+  it 'should add the outdated info to a package', ()->
+    ps = query_packages_with_upstream_repo_id(@httpBackend)
+    # test if non-outdated don't get an outdated_info
+    scope.addOutdatedInfo( scope.packages[0] )
+    expect( scope.packages[0].outdated_info ).toBe( undefined )
+    # outdated packages should have the info field
+    scope.addOutdatedInfo( scope.packages[1] )
+    expect( scope.packages[1].outdated_info ).toBe( 'latest: '+scope.packages[1].upstream.latest )
+
+  it 'should not containd upstream version infos in packages without an upstream repo query', ()->
+    ps = allPackages1
+    paginateResponse @httpBackend, '/v1/packages', ps, () -> scope.fetchPackages()
+    for idx in [0,1]
+      expect( scope.packages[idx].upstream ).toBe( undefined )
 
   it 'should only allow selecting either repo label or ID', () ->
     # get repos
