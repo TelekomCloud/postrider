@@ -17,6 +17,7 @@ angular.module('postriderApp')
     $scope.node = {}
     $scope.package = {}
     $scope.packageByName = {}
+    $scope.querying = {}
 
     $scope.show = {}
     $scope.nodeVisible = {}
@@ -62,21 +63,30 @@ angular.module('postriderApp')
       x instanceof Array and x.length == 0
 
     fetchAllUnpaginated = (field, action, opts = {}) ->
+      # make sure to add the querying indicator
+      $scope.querying[field] = true
       # fetch the field
       Restangular.all(field).getList( opts.query || {} ).then(
         (data) ->
           # if we have a result, process it
           console.log "fetched #{field} (no pagination)"
+          # end the querying indicator
+          delete $scope.querying[field]
+          # process the action
           action(data)
         , () ->
           # otherwise we have a fetch error
           fetchError("fetch #{field} (no pagination)")
+          # end the querying indicator
+          delete $scope.querying[field]
         )
 
     fetchAllPaginated = (field, action, opts = {})->
       stop_when = opts.stop_when || isEmptyArray
       page = opts.page || 1
       limit = opts.limit || 50
+      # make sure to add the querying indicator
+      $scope.querying[field] = true
       # construct a query for pagination
       query = _.merge(
         {page: page, limit: limit},
@@ -98,6 +108,9 @@ angular.module('postriderApp')
               'query': (opts.query || {})
             }
             fetchAllPaginated(field, action, o)
+          else
+            # end the querying indicator
+            delete $scope.querying[field]
         # error handling
         , () ->
           # if we got an error on the first fetch, try again without pagination
@@ -105,6 +118,8 @@ angular.module('postriderApp')
             return fetchAllUnpaginated(field, action, opts)
           # otherwise we have a fetch error
           fetchError("fetch #{field} on page #{page}, limit #{limit}")
+          # end the querying indicator
+          delete $scope.querying[field]
         )
 
     $scope.fetchNodes = (page = 1)->
