@@ -14,6 +14,10 @@ $light_grey_bg: #EAEAEA;
 // ok/nok
 $color_ok_bg: $light_bg;
 $color_ok_fg: $color1_fg;
+$color_outdated_some_fg: #A5A500;
+$color_outdated_fg_selected: #ff0000;
+$color_outdated_fg: #992323;
+$color_outdated_bg: #FFD7D7;
 
 .loading {
   display: block;
@@ -71,6 +75,13 @@ $color_ok_fg: $color1_fg;
   padding: 20px 0px 20px 0px;
 }
 
+// hover animation for node
+.nodeList {
+  .item:hover {
+    background: $light_bg;
+  }
+}
+
 .nodeList,
 .packageList {
   padding: 0;
@@ -84,29 +95,6 @@ $color_ok_fg: $color1_fg;
   .selected-true {
     color: $color1_fg;
   }
-
-  .outdated-true {
-    color: #992323;
-    &:hover {
-      background: #FFD7D7;
-    }
-  }
-
-  .outdated-some {
-    color: #A5A500;
-  }
-
-  .outdated-info {
-    font-size: small;
-    color: #999;
-  }
-}
-
-// hover animation for node
-.nodeList {
-  .item:hover {
-    background: $light_bg;
-  }
 }
 
 // hover animation for packages
@@ -114,6 +102,27 @@ $color_ok_fg: $color1_fg;
   .itemHeadline:hover,
   .itemDetails:hover {
     background: $light_bg;
+  }
+
+  .outdated-true {
+    color: $color_outdated_fg;
+    .itemHeadline:hover,
+    .itemDetails:hover {
+      background: $color_outdated_bg;
+    }
+
+    &.selected-true, .selected-true {
+      color: $color_outdated_fg_selected;
+    }
+  }
+
+  .outdated-some {
+    color: $color_outdated_some_fg;
+  }
+
+  .outdated-info {
+    font-size: small;
+    color: #999;
   }
 }
 
