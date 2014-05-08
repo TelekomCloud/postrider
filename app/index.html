@@ -195,9 +195,15 @@
           <div class="small-2 large-2 columns"></div>
         </div>
 
-        <div ng-show="nodes_filtered.length == 0" class="row">
+        <div ng-show="nodes_filtered.length == 0 && !(querying.node === true || ( querying.package === true && packagesSelected().length > 0 ))" class="row">
           <div class="columns">
-            no nodes found
+            no packages found
+          </div>
+        </div>
+
+        <div ng-show="nodes_filtered.length == 0 && (querying.node === true || ( querying.package === true && packagesSelected().length > 0 ))" class="row">
+          <div class="columns">
+            querying...
           </div>
         </div>
 
@@ -276,9 +282,15 @@
           <div class="small-2 large-2 columns"></div>
         </div>
 
-        <div ng-show="packages_filtered.length == 0" class="row">
+        <div ng-show="packages_filtered.length == 0 && !(querying.package === true || ( querying.node === true && nodesSelected().length > 0 ))" class="row">
           <div class="columns">
             no packages found
+          </div>
+        </div>
+
+        <div ng-show="packages_filtered.length == 0 && (querying.package === true || ( querying.node === true && nodesSelected().length > 0 ))" class="row">
+          <div class="columns">
+            querying...
           </div>
         </div>
 

@@ -262,24 +262,40 @@ angular.module('postriderApp')
           console.error "Can't cancel editing of new repo #{repo}."
 
     $scope.fetchNode = (id)->
-      Restangular.one('node', id).get().
-        then (n) ->
+      $scope.querying['node'] = true
+      Restangular.one('node', id).get().then(
+        (n) ->
           console.log 'fetch node '+id
           n.id = id
           $scope.node[id] = n
           $scope.updatePackageSelection()
-        , fetchError('node')
+          delete $scope.querying['node']
+        , () ->
+          fetchError('node')
+          delete $scope.querying['node']
+        )
 
     $scope.fetchPackage = (id, name)->
+      $scope.querying['package'] = true
       $scope.packageFetching[name] += 1
-      Restangular.one('package', id).get().
-        then (n) ->
+      Restangular.one('package', id).get().then(
+        (n) ->
           console.log 'fetch package '+id
           n.id = id
           $scope.package[id] = n
           $scope.updateNodeSelection()
           $scope.packageFetching[name] -= 1
-        , fetchError('packages')
+          delete $scope.querying['package']
+        , () ->
+          fetchError('packages')
+          delete $scope.querying['package']
+        )
+
+    $scope.nodesSelected = ()->
+      node for node,isSelected of $scope.nodeSelected when isSelected
+
+    $scope.packagesSelected = ()->
+      package for package,isSelected of $scope.packageSelected when isSelected
 
     updateNodeSelectionFor = (versions)->
       # get all nodes for the selected packages
@@ -301,8 +317,7 @@ angular.module('postriderApp')
 
     getSelectedPackageVersions = ()->
       # get all packages that are selected without version selection
-      packages =
-        ( k for k,isSelected of $scope.packageSelected when isSelected )
+      packages = $scope.pacpackagesSelected()
       pids = _( packages ).
         # first we get all versions for this package name
         map( (p)-> $scope.packageByName[p].versions ).
@@ -350,7 +365,7 @@ angular.module('postriderApp')
 
     $scope.updatePackageSelection = ()->
       # get all selected nodes
-      nodes = ( k for k,isSelected of $scope.nodeSelected when isSelected )
+      nodes = $scope.nodesSelected()
       if nodes.length is 0
         $scope.packages = $scope.allPackages
       else
