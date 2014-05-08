@@ -203,7 +203,7 @@
 
         <div ng-show="nodes_filtered.length == 0 && (querying.node === true || ( querying.package === true && packagesSelected().length > 0 ))" class="row">
           <div class="columns">
-            querying...
+            <span class="loading"></span>
           </div>
         </div>
 
@@ -290,7 +290,7 @@
 
         <div ng-show="packages_filtered.length == 0 && (querying.package === true || ( querying.node === true && nodesSelected().length > 0 ))" class="row">
           <div class="columns">
-            querying...
+            <span class="loading"></span>
           </div>
         </div>
 
