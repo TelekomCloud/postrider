@@ -17,6 +17,7 @@ angular.module('postriderApp')
     $scope.node = {}
     $scope.package = {}
     $scope.packageByName = {}
+    $scope.querying = {}
 
     $scope.show = {}
     $scope.nodeVisible = {}
@@ -62,21 +63,30 @@ angular.module('postriderApp')
       x instanceof Array and x.length == 0
 
     fetchAllUnpaginated = (field, action, opts = {}) ->
+      # make sure to add the querying indicator
+      $scope.querying[field] = true
       # fetch the field
       Restangular.all(field).getList( opts.query || {} ).then(
         (data) ->
           # if we have a result, process it
           console.log "fetched #{field} (no pagination)"
+          # end the querying indicator
+          delete $scope.querying[field]
+          # process the action
           action(data)
         , () ->
           # otherwise we have a fetch error
           fetchError("fetch #{field} (no pagination)")
+          # end the querying indicator
+          delete $scope.querying[field]
         )
 
     fetchAllPaginated = (field, action, opts = {})->
       stop_when = opts.stop_when || isEmptyArray
       page = opts.page || 1
       limit = opts.limit || 50
+      # make sure to add the querying indicator
+      $scope.querying[field] = true
       # construct a query for pagination
       query = _.merge(
         {page: page, limit: limit},
@@ -98,6 +108,9 @@ angular.module('postriderApp')
               'query': (opts.query || {})
             }
             fetchAllPaginated(field, action, o)
+          else
+            # end the querying indicator
+            delete $scope.querying[field]
         # error handling
         , () ->
           # if we got an error on the first fetch, try again without pagination
@@ -105,6 +118,8 @@ angular.module('postriderApp')
             return fetchAllUnpaginated(field, action, opts)
           # otherwise we have a fetch error
           fetchError("fetch #{field} on page #{page}, limit #{limit}")
+          # end the querying indicator
+          delete $scope.querying[field]
         )
 
     $scope.fetchNodes = (page = 1)->
@@ -247,24 +262,40 @@ angular.module('postriderApp')
           console.error "Can't cancel editing of new repo #{repo}."
 
     $scope.fetchNode = (id)->
-      Restangular.one('node', id).get().
-        then (n) ->
+      $scope.querying['node'] = true
+      Restangular.one('node', id).get().then(
+        (n) ->
           console.log 'fetch node '+id
           n.id = id
           $scope.node[id] = n
           $scope.updatePackageSelection()
-        , fetchError('node')
+          delete $scope.querying['node']
+        , () ->
+          fetchError('node')
+          delete $scope.querying['node']
+        )
 
     $scope.fetchPackage = (id, name)->
+      $scope.querying['package'] = true
       $scope.packageFetching[name] += 1
-      Restangular.one('package', id).get().
-        then (n) ->
+      Restangular.one('package', id).get().then(
+        (n) ->
           console.log 'fetch package '+id
           n.id = id
           $scope.package[id] = n
           $scope.updateNodeSelection()
           $scope.packageFetching[name] -= 1
-        , fetchError('packages')
+          delete $scope.querying['package']
+        , () ->
+          fetchError('packages')
+          delete $scope.querying['package']
+        )
+
+    $scope.nodesSelected = ()->
+      node for node,isSelected of $scope.nodeSelected when isSelected
+
+    $scope.packagesSelected = ()->
+      pkg for pkg,isSelected of $scope.packageSelected when isSelected
 
     updateNodeSelectionFor = (versions)->
       # get all nodes for the selected packages
@@ -286,8 +317,7 @@ angular.module('postriderApp')
 
     getSelectedPackageVersions = ()->
       # get all packages that are selected without version selection
-      packages =
-        ( k for k,isSelected of $scope.packageSelected when isSelected )
+      packages = $scope.packagesSelected()
       pids = _( packages ).
         # first we get all versions for this package name
         map( (p)-> $scope.packageByName[p].versions ).
@@ -335,7 +365,7 @@ angular.module('postriderApp')
 
     $scope.updatePackageSelection = ()->
       # get all selected nodes
-      nodes = ( k for k,isSelected of $scope.nodeSelected when isSelected )
+      nodes = $scope.nodesSelected()
       if nodes.length is 0
         $scope.packages = $scope.allPackages
       else

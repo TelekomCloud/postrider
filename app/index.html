@@ -195,7 +195,19 @@
           <div class="small-2 large-2 columns"></div>
         </div>
 
-        <div class="row nodeList expanded-{{nodeVisible[n.id]}}" data-ng-repeat="n in nodes | filter:nodeQuery">
+        <div ng-show="nodes_filtered.length == 0 && !(querying.node === true || ( querying.package === true && packagesSelected().length > 0 ))" class="row">
+          <div class="columns">
+            no nodes found
+          </div>
+        </div>
+
+        <div ng-show="nodes_filtered.length == 0 && (querying.node === true || ( querying.package === true && packagesSelected().length > 0 ))" class="row">
+          <div class="columns">
+            <span class="loading"></span>
+          </div>
+        </div>
+
+        <div class="row nodeList expanded-{{nodeVisible[n.id]}}" data-ng-repeat="n in nodes_filtered = (nodes | filter:nodeQuery)">
           <div class="columns item selected-{{nodeSelected[n.id]}}" ng-click="selectNode(n.id)" >
             <div class="row itemHeadline">
               <div class="small-11 large-11 columns">{{n.id}}</div>
@@ -270,7 +282,19 @@
           <div class="small-2 large-2 columns"></div>
         </div>
 
-        <div class="row packageList expanded-{{packageVisible[p.name]}}" data-ng-repeat="p in packages | filter:packageQuery">
+        <div ng-show="packages_filtered.length == 0 && !(querying.package === true || ( querying.node === true && nodesSelected().length > 0 ))" class="row">
+          <div class="columns">
+            no packages found
+          </div>
+        </div>
+
+        <div ng-show="packages_filtered.length == 0 && (querying.package === true || ( querying.node === true && nodesSelected().length > 0 ))" class="row">
+          <div class="columns">
+            <span class="loading"></span>
+          </div>
+        </div>
+
+        <div class="row packageList expanded-{{packageVisible[p.name]}}" data-ng-repeat="p in packages_filtered = (packages | filter:packageQuery)">
           <div class="columns item outdated-{{p.isOutdated}} selected-{{packageSelected[p.name]}}">
 
             <div class="row itemHeadline" ng-click="selectPackage(p)">
