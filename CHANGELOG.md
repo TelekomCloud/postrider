@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.3.1
+
+* feature: add a check to see if the pony-express endpoint is alive
+* bugfix: ignore the upstream field in packages if it's not queried
+
 ## 0.3.0
 
 * feature: query packages by repo label
