@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.3.2
+
+* bugfix: change url -> uri in repo model
+
 ## 0.3.1
 
 * feature: add a check to see if the pony-express endpoint is alive
