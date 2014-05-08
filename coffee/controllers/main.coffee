@@ -295,7 +295,7 @@ angular.module('postriderApp')
       node for node,isSelected of $scope.nodeSelected when isSelected
 
     $scope.packagesSelected = ()->
-      package for package,isSelected of $scope.packageSelected when isSelected
+      pkg for pkg,isSelected of $scope.packageSelected when isSelected
 
     updateNodeSelectionFor = (versions)->
       # get all nodes for the selected packages
@@ -317,7 +317,7 @@ angular.module('postriderApp')
 
     getSelectedPackageVersions = ()->
       # get all packages that are selected without version selection
-      packages = $scope.pacpackagesSelected()
+      packages = $scope.packagesSelected()
       pids = _( packages ).
         # first we get all versions for this package name
         map( (p)-> $scope.packageByName[p].versions ).
