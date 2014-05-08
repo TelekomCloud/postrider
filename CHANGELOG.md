@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.3.3
+
+* feature: add a query indicator
+* improvement: add an indicator to show that the list of packages or nodes is empty
+* improvement: extend coloring if some packages are outdated
+* bugfix: fix loading indicator gif
+* bugfix: red-ish highlighting for outdated packages
+
 ## 0.3.2
 
 * bugfix: change url -> uri in repo model
