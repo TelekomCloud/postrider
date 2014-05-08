@@ -71,7 +71,7 @@ describe 'Controller: MainCtrl', ()->
       'id': '44e5f422-62db-42dc-b1ce-37ca3393710f',
       'name': 'Magus Repository',
       'label': 'live',
-      'url': 'http://archive.canonical.com/ubuntu/dists/precise/partner/binary-amd64/Packages.gz',
+      'uri': 'http://archive.canonical.com/ubuntu/dists/precise/partner/binary-amd64/Packages.gz',
       'provider': 'apt'
     }
   ]
@@ -81,7 +81,7 @@ describe 'Controller: MainCtrl', ()->
       'id': '44e5f422-62db-42dc-b1ce-37ca3393710e',
       'name': 'Minas Thorun',
       'label': 'ref',
-      'url': 'http://archive2.canonical.com/ubuntu/dists/precise/partner/binary-amd64/Packages.gz',
+      'uri': 'http://archive2.canonical.com/ubuntu/dists/precise/partner/binary-amd64/Packages.gz',
       'provider': 'apt'
     }
   ]
