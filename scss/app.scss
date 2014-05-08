@@ -14,7 +14,9 @@ $light_grey_bg: #EAEAEA;
 // ok/nok
 $color_ok_bg: $light_bg;
 $color_ok_fg: $color1_fg;
-$color_outdated_some_fg: #A5A500;
+$color_outdated_some_fg_selected: #DABF00;
+$color_outdated_some_fg: #ACAC00;
+$color_outdated_some_bg: #FFFFE2;
 $color_outdated_fg_selected: #ff0000;
 $color_outdated_fg: #992323;
 $color_outdated_bg: #FFD7D7;
@@ -118,6 +120,14 @@ $color_outdated_bg: #FFD7D7;
 
   .outdated-some {
     color: $color_outdated_some_fg;
+    .itemHeadline:hover,
+    .itemDetails:hover {
+      background: $color_outdated_some_bg;
+    }
+
+    &.selected-true, .selected-true {
+      color: $color_outdated_some_fg_selected;
+    }
   }
 
   .outdated-info {
